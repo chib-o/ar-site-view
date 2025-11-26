@@ -1,0 +1,682 @@
+<div style="margin-bottom: 15px;" ng-show="!vm.utils.tabs.tabActive('clipboard') && !vm.utils.tabs.tabActive('quick_capture') && !vm.utils.tabs.tabActive('sensitivity_review') && !vm.utils.saving_media">
+		
+	<ul class="nav nav-pills" style="margin-bottom: 0px;">
+		<li role="presentation" class="nav-item">
+			<a href="javascript: void(0);" class="nav-link" ng-class="{ 'active': vm.utils.tabs.tabActive('form') }" ng-click="vm.utils.tabs.changeTab('form')">Risk Assessment</a>
+		</li>
+		<li role="presentation" class="nav-item">
+			<a href="javascript: void(0);" class="nav-link" ng-class="{ 'active': vm.utils.tabs.tabActive('images') }" ng-click="vm.utils.tabs.changeTab('images')"><i class="bi bi-image-fill"></i> Images (<span ng-bind="vm.utils.ra_record.num_files || '0'"></span>)</a>
+		</li>
+	</ul>
+
+</div>
+
+<div class="alert alert-warning" ng-show="!vm.utils.saved && !vm.utils.tabs.tabActive('clipboard') && !vm.utils.tabs.tabActive('quick_capture') && !vm.utils.tabs.tabActive('sensitivity_review')" style="margin-bottom: 15px;">
+	<span class="alert-text" style="font-weight: bold;"><i class="bi bi-exclamation-circle-fill"></i> You have unsaved changes</span>
+</div>
+
+<div ng-show="vm.utils.tabs.tabActive('form')">
+
+	<!-- <div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">Hazard Type</div> -->
+
+	<!-- <div class="form-group">
+		<label class="form-label">Hazard Set</label>
+		<select class="form-select" ng-model="vm.utils.hazard_utils.hazard_set_id" ng-change="vm.utils.hazardSetChanged()" ng-options="option.ID as option.Title for option in vm.utils.hazard_utils.hazard_sets"></select>
+	</div> -->
+
+	<div class="form-group mt-2">
+		<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.hazard_type }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.hazard_type"></i> Hazard Type</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.hazard_type" ng-change="vm.utils.hazard_utils.filterHazardOrigins(vm.utils.ra_record.hazard_type); vm.utils.hazard_utils.filterHazardConsequences(vm.utils.ra_record.hazard_type); vm.utils.hazardChanged(); vm.utils.notSaved();" ng-options="option.HazardID as option.HazardName for option in vm.utils.hazard_utils.visible_types"></select>
+	</div>
+
+	<div class="form-group mt-2">
+		<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.hazard_origin && vm.utils.hazard_utils.visible_origins.length }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.hazard_origin && vm.utils.hazard_utils.visible_origins.length"></i> Hazard Origin</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.hazard_origin" ng-change="vm.utils.originChanged(); vm.utils.notSaved();" ng-disabled="!vm.utils.ra_record.hazard_type || !vm.utils.hazard_utils.visible_origins.length" ng-options="option.HazardOriginID as option.Description for option in vm.utils.hazard_utils.visible_origins"></select>
+	</div>
+
+	<div class="form-group mt-2">
+		<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.hazard_consequence && vm.utils.hazard_utils.visible_consequences.length }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.hazard_consequence && vm.utils.hazard_utils.visible_consequences.length"></i> Hazard Consequence</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.hazard_consequence" ng-change="vm.utils.consequenceChanged(); vm.utils.notSaved();" ng-disabled="!vm.utils.ra_record.hazard_type || !vm.utils.hazard_utils.visible_consequences.length" ng-options="option.HazardConsequenceID as option.Description for option in vm.utils.hazard_utils.visible_consequences"></select>
+	</div>
+
+	<!-- <div class="mt-5" style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">Hazard Description</div> -->
+
+	<div class="form-group mt-5">
+		<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.hazard_description.length }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.hazard_description.length"></i> Hazard Description</label>
+		<textarea class="form-control" ng-model="vm.utils.ra_record.hazard_description" ng-change="vm.utils.notSaved();" style="height: 200px;"></textarea>
+	</div>
+
+	<!-- <div class="mt-5" style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">Control Measure</div> -->
+
+	<div class="form-group mt-5">
+		<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.control_description.length }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.control_description.length"></i> Control Measure</label>
+		<textarea class="form-control" ng-model="vm.utils.ra_record.control_description" ng-change="vm.utils.notSaved();" style="height: 200px;"></textarea>
+	</div>
+
+
+	<div ng-show="!vm.utils.exam_mode.isActive()">
+
+		<div class="form-group my-5">
+			<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.assessment_method }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.assessment_method"></i> Risk Method</label>
+			<select class="form-select" ng-model="vm.utils.ra_record.assessment_method" ng-change="vm.utils.methodChanged(); vm.utils.notSaved();" ng-options="option.id as option.name for option in vm.utils.risk_methods"></select>
+
+
+			<div class="text-end mt-2" ng-show="vm.utils.defaultRiskMethodChanged() || !vm.utils.defaultRiskMethodSet()">
+				<a href="javascript: void(0);" ng-click="vm.utils.updateDefaultRiskMethod()">Make default</a>
+			</div>
+		</div>
+
+		<div ng-show="vm.utils.showPhaSliderToggle()" class="my-5">
+			<input type="checkbox" ng-model="vm.utils.user_settings.data.show_pha_slider" ng-change="vm.utils.methodChanged(); vm.utils.user_settings.save();" ng-disabled="vm.utils.user_settings.loading" ><span style="font-weight: 600;"> Use sliders</span>
+		</div>
+
+		<!-- START RISK METHOD INCLUDE -->
+		<div ng-include="vm.utils.risk_method_template"></div>
+		<!-- END RISK METHOD INCLUDE -->
+
+		<div class="form-group mt-5">
+			<label class="form-label" ng-class="{ 'text-danger': !vm.utils.ra_record.statutory }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.statutory"></i> Duty Level</label>
+			<select class="form-select" ng-model="vm.utils.ra_record.statutory" ng-change="vm.utils.statutoryChanged(); vm.utils.notSaved();" ng-options="option.value as option.display for option in vm.utils.statutory_options"></select>
+		</div>
+
+	</div>
+
+	<div ng-show="vm.utils.exit_stage == 1" class="form-group text-center" style="margin-top: 30px;">
+		<div class="text-muted" style="margin-bottom: 10px;" ng-show="vm.utils.ra_record.status == '4'">Upon save the risk assessment will be published automatically if all fields are completed in full</div>
+		<button type="button" class="btn btn-success" ng-click="vm.utils.saveClose();" ng-disabled="vm.utils.is_loading">Save and Close</button>
+	</div>
+
+	<div ng-show="vm.utils.exit_stage == 1" style="margin-top: 30px;" class="text-center">
+		<a href="javascript: void(0);" ng-click="vm.utils.tryExit();" style="color: red;">Exit</a>
+	</div>
+
+	<div ng-show="vm.utils.exit_stage == 2" style="margin-top: 30px;" class="text-center">
+		
+		<p class="text-center">Are you sure you want to exit without saving?</p>
+
+		<div class="row">
+			<div class="col-lg-6 text-end">
+				<button type="button" class="btn btn-danger btn-sm" ng-click="vm.utils.exit_stage = 1">Cancel</button>
+			</div>
+			<div class="col-lg-6 text-start">
+				<button type="button" class="btn btn-primary btn-sm" ng-click="vm.utils.exit();">Exit</button>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<div ng-show="vm.utils.tabs.tabActive('images')">
+
+	<div ng-show="!vm.utils.risk_media.delete_multiple.loading && !vm.utils.saving_media">
+
+		<ul style="padding: 0px; list-style-type: none; margin-top: 15px; margin-bottom: 15px;">
+		    <li style="display: inline-block;" ng-show="!vm.utils.risk_media.re_order_media_mode && !vm.utils.risk_media.delete_multiple_mode">
+		    	<div class="btn-group dropdown">
+			        <!-- DEVICE CAMERA -->
+			        <button ng-show="vm.utils.is_mobile" type="button" class="btn btn-success btn-sm">
+			            <label for="riskPhotoInput" style="padding: none; margin-bottom: 0px;"><i class="bi bi-camera-fill"></i> Take Photo</label>
+			        </button>
+			        <!-- DESKTOP CAMERA -->
+			        <button ng-show="!vm.utils.is_mobile" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.risk_media.takePhotoDesktop();">
+			            <i class="bi bi-camera-fill"></i> Take Photo
+			        </button>
+			        <!-- DROPDOWN BUTTON -->
+			        <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="riskFormMediaDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			            <span class="caret"></span>
+			        </button>
+			        <ul class="dropdown-menu" aria-labelledby="riskFormMediaDropdownMenu">
+			            <li>
+			                <label class="dropdown-item" for="riskInputFile">Choose File</label>
+			            </li>
+			            <li>
+			                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.clipboard.browseRecordsInline(['image'],'risk_image', vm.utils.ra_record);">From Clipboard</a>
+			            </li>
+			            <li>
+			                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.tabs.changeTab('quick_capture'); vm.utils.quick_capture.load();">From Quick Capture</a>
+			            </li>
+			        </ul>
+			    </div>
+		    </li>
+			<li style="display: inline-block;" ng-show="!vm.utils.risk_media.re_order_media_mode && !vm.utils.risk_media.delete_multiple_mode">
+				<button class="btn btn-sm btn-danger" ng-click="vm.utils.risk_media.delete_multiple.startMode()"><i class="bi bi-trash-fill"></i> Delete multiple</button>
+			</li>
+			<li style="display: inline-block;" ng-show="vm.utils.risk_media.delete_multiple_mode"> 
+				<button class="btn btn-sm btn-primary" ng-click="vm.utils.risk_media.delete_multiple.confirm(vm.utils.risk_media.delete_multiple.selected_media)">Delete selected images (<span ng-bind="vm.utils.risk_media.delete_multiple.selected_media.length || '0'"></span>)</button>
+			</li>
+			<li style="display: inline-block;" ng-show="vm.utils.risk_media.delete_multiple_mode"> 
+				<button class="btn btn-sm btn-danger" ng-click="vm.utils.risk_media.delete_multiple.close();"><i class="bi bi-arrow-left"></i> Cancel</button>
+			</li>
+		</ul>
+
+		<div style="text-align: right; margin-bottom: 20px;">
+
+			<div ng-show="!vm.utils.risk_media.re_order_media_mode && !vm.utils.risk_media.delete_multiple_mode">
+				<a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.risk_media.toggleMediaStatusView('live')" ng-show="vm.utils.risk_media.filters.status == 3" style="text-decoration: none;">
+			        <i class="bi bi-chevron-left"></i> <span style="font-weight: bold;">View Live Images</span>
+			    </a>
+			    <a class="text-danger" href="javascript: void(0);" ng-click="vm.utils.risk_media.toggleMediaStatusView('deleted')" ng-show="vm.utils.risk_media.filters.status == 1" style="text-decoration: none;">
+			        <i class="bi bi-trash-fill"></i> <span style="font-weight: bold;">View Deleted Images</span>
+			    </a>
+			</div>
+
+			<br>
+
+			<div ng-show="!vm.utils.risk_media.delete_multiple_mode">
+				<a href="javascript: void(0);" class="fw-bold" ng-click="vm.utils.risk_media.toggleReOrderMediaMode()" ng-show="!vm.utils.risk_media.re_order_media_mode"><i class="bi bi-arrows-move"></i> Re-order Images</a>
+
+		        <a href="javascript: void(0);" class="fw-bold text-danger" ng-click="vm.utils.risk_media.toggleReOrderMediaMode()" ng-show="vm.utils.risk_media.re_order_media_mode">Exit Re-order Images</a>
+		   	</div>
+		</div>
+
+		<!-- START IMAGES CONTAINER -->
+		<div style="margin-top: 15px;">
+
+			<!-- DOWNLOADING MEDIA FILE -->
+	    	<div ng-show="vm.utils.risk_media.downloading_file" class="text-center padding margin-top-lg">
+	    		<img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+	            <div style="margin-top: 20px;">
+	                <p class="fw-bold">Downloading file...</p>
+	                <p>This can take a while depending on the size of the file</p>
+	            </div>
+	    	</div>
+	    	<!-- END DOWNLOADING MEDIA FILE -->
+
+	    	<div ng-show="vm.utils.risk_media.is_loading" class="padding margin-top-lg text-center">
+	    		<img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+	    		<div class="fw-bold">Loading images...</div>
+	    	</div>
+
+	    	<div ng-show="!vm.utils.risk_media.is_loading && !vm.utils.saving_media">
+	    		<div ng-show="!vm.utils.risk_media.visible_media.length" class="text-muted text-center" style="font-weight: bold;">No images have been taken for this assessment</div>
+		    
+			    <div ng-show="vm.utils.risk_media.visible_media.length > 0 && !vm.utils.risk_media.downloading_file" class="media-grid">
+
+			        <div ng-repeat="(file_index, file_data) in vm.utils.risk_media.visible_media | filter: { is_video: false, is_audio: false } track by file_data._id" ng-style="vm.utils.mediaStyle(file_data);" style="border-radius: 5px; padding: 5px; position: relative;">
+
+			        	<div ng-show="file_data.file_downloaded == null" class="text-center padding">
+		            		<a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.risk_media.downloadMediaFile(file_data)">
+		            			<i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+		            		</a>
+		            	</div>
+			            
+			            <a href="javascript: void(0);" style="text-decoration: none;" ng-show="file_data.file_downloaded == 'Yes'">
+			                <img ng-src="{{ file_data.url }}" class="img-fluid" />
+			            </a>
+
+			            <div style="padding: 10px;">
+			            	<a href="javascript: void(0);" ng-click="vm.utils.media_form.edit(file_data);" ng-show="!vm.utils.media_form.isActive(file_data) && file_data.file_downloaded == 'Yes'">
+			            		<div ng-bind="file_data.title || 'No image title provided'" class="text-muted" style="font-size: 0.8em; font-weight: bold;"></div>
+			            		<div ng-bind="file_data.description || 'No image description provided'" class="text-muted" style="font-size: 0.8em;"></div>
+			            	</a>
+			            	<input ng-show="vm.utils.media_form.isActive(file_data);" type="text" class="form-control" ng-model="vm.utils.media_form.record.title" ng-disabled="vm.utils.media_form.is_loading" placeholder="Image title..." style="margin-bottom: 5px;">
+			            	<div class="input-group" ng-show="vm.utils.media_form.isActive(file_data);">
+			        			<input type="text" class="form-control" ng-model="vm.utils.media_form.record.description" ng-disabled="vm.utils.media_form.is_loading" placeholder="Image description...">
+			        			<div class="input-group-btn">
+			        				<button type="button" class="btn btn-success" ng-click="vm.utils.media_form.save();" ng-disabled="vm.utils.media_form.is_loading"><i class="bi bi-save-fill"></i></button>
+			        			</div>
+			        		</div>
+			            </div>
+
+			            <div style="position: absolute; top: -10px; right: -10px;">
+			                
+			            	<ul class="menu-list-inline">
+			            		<li ng-hide="!vm.utils.risk_media.re_order_media_mode || file_data.file_downloaded == null">
+	                                <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaUp($index, vm.utils.risk_media.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+	                                    <i class="bi bi-chevron-left"></i>
+	                                </a>
+	                            </li>
+	                            <li ng-hide="!vm.utils.risk_media.re_order_media_mode || file_data.file_downloaded == null">
+	                                <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaDown($index, vm.utils.risk_media.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+	                                    <i class="bi bi-chevron-right"></i>
+	                                </a>
+	                            </li>
+	                            <li ng-hide="file_data.file_downloaded == null || vm.utils.risk_media.re_order_media_mode || vm.utils.risk_media.delete_multiple_mode">
+	                            	<a ng-class="{'text-primary': file_data.profile_image, 'not-selected-text': !file_data.profile_image}" href="javascript: void(0);" ng-click="vm.utils.risk_media.setNewProfileImage(file_data)" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+		                                <i class="bi bi-file-image-fill"></i>
+		                            </a>
+	                            </li>
+			            		<li ng-hide="file_data.file_downloaded == null || vm.utils.risk_media.re_order_media_mode || vm.utils.risk_media.delete_multiple_mode">
+		                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.drawing_pad.start(file_data, 'assessment');" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+		                                <i class="bi bi-pencil-fill"></i>
+		                            </a>
+			            		</li>
+			            		<li ng-hide="file_data.file_downloaded == null || vm.utils.risk_media.re_order_media_mode || vm.utils.risk_media.delete_multiple_mode">
+		                            <div data-toggle-on-clipboard data-iteminfo="{ record_type: 'image', record_id: file_data._id, record_ref: null, data_type: null, data: null, title: file_data.title, description: file_data.description, directive_id: vm.utils.image_sensitivity_review.directive_id }"></div>
+			            		</li>
+			            		<li ng-hide="vm.utils.risk_media.re_order_media_mode || vm.utils.risk_media.delete_multiple_mode">
+			            			<a href="javascript: void(0);" ng-click="vm.utils.risk_media.deleteMediaRecord(file_data, vm.utils.active_question.record);" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+					                    <i class="bi bi-trash-fill text-danger"></i>
+					                </a>
+					                <a href="javascript: void(0);" ng-click="vm.utils.risk_media.recoverMediaRecord(file_data, vm.utils.active_question.record);" ng-show="file_data.status == '3'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+					                    <i class="bi bi-arrow-clockwise"></i>
+					                </a>
+			            		</li>
+			            		<li ng-hide="file_data.file_downloaded == null || !vm.utils.risk_media.delete_multiple_mode">
+		                            <a href="javascript: void(0);" ng-click="vm.utils.risk_media.delete_multiple.toggleSelect(file_data)" ng-show="file_data.status == '1'" ng-style="vm.utils.risk_media.delete_multiple.selectStyle(file_data)" style="border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+		                                <i class="bi bi-check-circle"></i>
+		                            </a>
+			            		</li>
+			            	</ul>
+			            </div>
+
+			        </div>
+
+			    </div>
+	    	</div>
+
+	    	
+
+		</div>
+		<!-- END IMAGES CONTAINER -->
+
+	</div>
+
+	<!-- START CLONING -->
+	<div ng-show="vm.utils.saving_media">
+		<div class="mt-5 text-center">
+			
+			<img src="../images/loading-icon.gif" style="height: 40px; width: auto;" class="mb-2">
+			<p class="fw-bold" ng-bind="vm.utils.saving_media_message"></p>
+
+		</div>
+	</div>
+	<!-- END CLONING -->
+
+	<!-- START MULTIPLE DELETE LOADING -->
+	<div ng-show="vm.utils.risk_media.delete_multiple.loading">
+		
+		<div class="mt-5 text-center">
+			
+			<img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+		    <div class="mt-4">
+		        <p class="fw-bold">Deleting selected media...</p>
+		    </div>
+
+		</div>
+
+	</div>
+	<!-- END MULTIPLE DELETE LOADING -->
+
+</div>
+
+<!-- START CLIPBOARD -->
+<div ng-show="vm.utils.tabs.tabActive('clipboard')">
+	<div riskmach-clipboard></div>
+</div>
+<!-- END CLIPBOARD -->
+
+<!-- START QUICK CAPTURE -->
+<div ng-show="vm.utils.tabs.tabActive('quick_capture')">
+
+	<div style="margin-bottom: 15px;">
+		<a href="javascript: void(0);" ng-click="vm.utils.tabs.changeTab('images')" style="text-decoration: none;">
+			<img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+		</a>
+	</div>
+
+	<div class="fw-bold mt-3">You have selected <span ng-bind="vm.utils.quick_capture.select_mode.items.length"></span> images</div>
+
+	<div style="margin-top: 15px;">
+		<button type="button" class="btn btn-success" ng-click="vm.utils.quick_capture.select_mode.confirmSelection()">Confirm Selection</button>
+		<button type="button" class="btn btn-danger" ng-click="vm.utils.quick_capture.select_mode.clearSelection();">Cancel</button>
+	</div>
+
+	<div class="mt-5 text-center" ng-show="vm.utils.quick_capture.loading">
+		<p class="fw-bold">Loading Quick Capture gallery, please wait...</p>
+	</div>
+	
+	<div ng-show="!vm.utils.quick_capture.loading">
+
+		<!-- <ul style="margin: 0px; padding: 0px; list-style-type: none; margin-bottom: 15px;">
+		    <li style="display: inline-block;">
+		        <label for="quickCaptureInputFile" class="upload-file-label">Choose File</label>  
+		    </li>
+		    <li ng-show="vm.utils.is_mobile" style="display: inline-block;">
+		        <label for="quickCapturePhotoInput" class="take-photo-label"><span class="glyphicon glyphicon-camera"></span> Take Photo</label>
+		    </li>
+		    <li ng-show="!vm.utils.is_mobile" style="display: inline-block;">
+		        <button type="button" ng-click="vm.utils.take_photo.start(vm.utils.asset_form.record,'asset');" class="btn btn-success"><span class="glyphicon glyphicon-camera"></span> <span style="font-weight: bold;">Take Photo</span></button>
+		    </li>
+		</ul> -->
+
+		<div class="btn-group dropdown" style="margin-top: 15px; margin-bottom: 15px;">
+	        <!-- DEVICE CAMERA -->
+	        <!-- <button ng-show="vm.utils.is_mobile" type="button" class="btn btn-success btn-sm">
+	            <label for="quickCapturePhotoInput" style="padding: none; margin-bottom: 0px;"><i class="bi bi-camera-fill"></i> Take Photo</label>
+	        </button> -->
+
+	        <!-- DESKTOP CAMERA -->
+	        <!-- <button ng-show="!vm.utils.is_mobile" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.take_photo.start(vm.utils.quick_capture.record,'assessment','quickCapture');">
+	            <i class="bi bi-camera-fill"></i> Take Photo
+	        </button> -->
+
+	        <!-- DROPDOWN BUTTON -->
+	        <!-- <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="quickCaptureMediaDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+	            <span class="caret"></span>
+	        </button>
+	        <ul class="dropdown-menu dropdown-menu" aria-labelledby="quickCaptureMediaDropdownMenu">
+	            <li>
+	                <label class="dropdown-item" for="quickCaptureInputFile">Choose File</label>
+	            </li>
+	        </ul> -->
+	    </div>
+
+		<div style="text-align: right; margin-bottom: 20px;">
+
+			<!-- <div ng-show="!vm.utils.quick_capture.re_order_media_mode">
+				<a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.quick_capture.toggleMediaStatusView('live')" ng-show="vm.utils.quick_capture.filters.status == 3" style="text-decoration: none;">
+			        <i class="bi bi-chevron-left"></i> <span style="font-weight: bold;">View Live Images</span>
+			    </a>
+			    <a class="text-danger" href="javascript: void(0);" ng-click="vm.utils.quick_capture.toggleMediaStatusView('deleted')" ng-show="vm.utils.quick_capture.filters.status == 1" style="text-decoration: none;">
+			        <i class="bi bi-trash-fill"></i> <span style="font-weight: bold;">View Deleted Images</span>
+			    </a>
+			</div> -->
+
+			<br>
+
+			<!-- <a href="javascript: void(0);" class="fw-bold" ng-click="vm.utils.quick_capture.toggleReOrderMediaMode()" ng-show="!vm.utils.quick_capture.re_order_media_mode"><i class="bi bi-arrows-move"></i> Re-order Images</a> -->
+
+	        <a href="javascript: void(0);" class="fw-bold text-danger" ng-click="vm.utils.quick_capture.toggleReOrderMediaMode()" ng-show="vm.utils.quick_capture.re_order_media_mode">Exit Re-order Images</a>
+		</div>
+		
+		<!-- START IMAGES CONTAINER -->
+		<div style="margin-top: 15px;">
+
+			<!-- DOWNLOADING MEDIA FILE -->
+	    	<div ng-show="vm.utils.quick_capture.downloading_file" class="text-center padding margin-top-lg">
+	    		<img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+	            <div style="margin-top: 20px;">
+	                <p class="fw-bold">Downloading file...</p>
+	                <p>This can take a while depending on the size of the file</p>
+	            </div>
+	    	</div>
+	    	<!-- END DOWNLOADING MEDIA FILE -->
+
+			<div ng-show="!vm.utils.quick_capture.visible_media.length && !vm.utils.asset_form.cloning" class="text-muted text-center" style="font-weight: bold;">
+				<span ng-show="vm.utils.quick_capture.filters.status == 1">No quick capture images have been taken for this inspection</span>
+				<span ng-show="vm.utils.quick_capture.filters.status == 3">There are no deleted quick capture images for this inspection</span>
+			</div>
+		    
+		    <div ng-show="vm.utils.quick_capture.visible_media.length && !vm.utils.quick_capture.downloading_file" class="media-grid">
+
+		        <div ng-repeat="(file_index, file_data) in vm.utils.quick_capture.visible_media | filter: { is_video: false, is_audio: false } track by file_data._id" ng-style="vm.utils.mediaStyle(file_data);" style="border-radius: 5px; padding: 5px; position: relative;">
+
+		        	<div ng-show="file_data.file_downloaded == null" class="text-center padding">
+	            		<a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.quick_capture.downloadMediaFile(file_data)">
+	            			<i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+	            		</a>
+	            	</div>
+		            
+		            <a href="javascript: void(0);" style="text-decoration: none;" ng-show="file_data.file_downloaded == 'Yes'">
+		                <img ng-src="{{ file_data.url }}" class="img-fluid" />
+		            </a>
+
+		            <div style="padding: 10px;">
+		            	<a href="javascript: void(0);" ng-show="!vm.utils.media_form.isActive(file_data) && file_data.file_downloaded == 'Yes'">
+		            		<div ng-bind="file_data.title || 'No image title provided'" class="text-muted" style="font-size: 0.8em; font-weight: bold;"></div>
+		            		<div ng-bind="file_data.description || 'No image description provided'" class="text-muted" style="font-size: 0.8em;"></div>
+		            	</a>
+		            	<input ng-show="vm.utils.media_form.isActive(file_data);" type="text" class="form-control" ng-model="vm.utils.media_form.record.title" ng-disabled="vm.utils.media_form.is_loading" placeholder="Image title..." style="margin-bottom: 5px;">
+		            	<div class="input-group" ng-show="vm.utils.media_form.isActive(file_data);">
+		        			<input type="text" class="form-control" ng-model="vm.utils.media_form.record.description" ng-disabled="vm.utils.media_form.is_loading" placeholder="Image description...">
+		        			<div class="input-group-btn">
+		        				<button type="button" class="btn btn-success" ng-click="vm.utils.media_form.save();" ng-disabled="vm.utils.media_form.is_loading"><i class="bi bi-save-fill"></i></button>
+		        			</div>
+		        		</div>
+		            </div>
+
+		            <div style="position: absolute; top: -10px; right: -10px;">
+		               
+		            	<ul class="menu-list-inline" ng-hide="file_data.file_downloaded == null">
+		            		<li ng-show="vm.utils.quick_capture.re_order_media_mode">
+	                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaUp($index, vm.utils.quick_capture.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+	                                <i class="bi bi-chevron-left"></i>
+	                            </a>
+	                        </li>
+	                        <li ng-show="vm.utils.quick_capture.re_order_media_mode">
+	                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaDown($index, vm.utils.quick_capture.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+	                                <i class="bi bi-chevron-right"></i>
+	                            </a>
+	                        </li>
+	                        <li ng-show="vm.utils.quick_capture.re_order_media_mode">
+	                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaDown($index, vm.utils.quick_capture.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+	                            	<i class="bi bi-check2"></i>
+	                            </a>
+	                        </li>
+	                        <a href="javascript: void(0)" ng-click="vm.utils.quick_capture.select_mode.toggleSelect(file_data)" ng-style="vm.utils.quick_capture.select_mode.selectStyle(file_data)" style="display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+								<i class="bi bi-check2"></i>
+							</a>
+		            		<!-- <li ng-show="!vm.utils.quick_capture.re_order_media_mode">
+	                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.drawing_pad.start(file_data, 'asset');" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+	                                <i class="bi bi-pencil-fill"></i>
+	                            </a>
+	                        </li> -->
+	                        <!-- <li ng-show="!vm.utils.quick_capture.re_order_media_mode">
+	                        	<div data-toggle-on-clipboard data-iteminfo="{ record_type: 'image', record_id: file_data._id, record_ref: null, data_type: null, data: null, title: file_data.title, description: file_data.description }"></div>
+	                        </li> -->
+		            		<!-- <li ng-show="!vm.utils.quick_capture.re_order_media_mode">
+		            			<a href="javascript: void(0);" ng-click="vm.utils.quick_capture.deleteMediaRecord(file_data, vm.utils.active_question.record);" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+				                    <i class="bi bi-trash-fill text-danger"></i>
+				                </a>
+				                <a href="javascript: void(0);" ng-click="vm.utils.quick_capture.recoverMediaRecord(file_data, vm.utils.active_question.record);" ng-show="file_data.status == '3'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+				                    <i class="bi bi-arrow-clockwise"></i>
+				                </a>
+		            		</li> -->
+		            	</ul>
+		                
+		            </div>
+
+		        </div>
+
+		    </div>
+
+		</div>
+		<!-- END IMAGES CONTAINER -->
+
+	</div>
+
+</div>
+<!-- END QUICK CAPTURE -->
+
+<!-- START SENSITIVITY REVIEW -->
+<div ng-show="vm.utils.tabs.tabActive('sensitivity_review')">
+
+	<div style="margin-bottom: 15px;">
+		<a href="javascript: void(0);" ng-click="vm.utils.tabs.changeTab('images')" style="text-decoration: none;">
+			<img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+		</a>
+	</div>
+
+	<div class="card">
+        <div class="card-header">
+            
+            <!-- START REVIEW INSTRUCTIONS -->
+            <div ng-show="vm.utils.image_sensitivity_review.tabs.tabActive('review')">
+                <p><span class="fw-bold">Instructions: </span>  Please review the following images to determine suitability for sharing across different companies</p>
+
+                <p><i class="bi bi-info-circle-fill text-primary"></i> Toggle the lock on each image to set whether the image is suitable (unlocked) or not to share across different companies</p>
+
+                <div class="text-end">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.utils.image_sensitivity_review.tabs.changeTab('confirmation')">Next <i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+            <!-- END REVIEW INSTRUCTIONS -->
+
+            <!-- START CONFIRMATION INSTRUCTIONS -->
+            <div ng-show="vm.utils.image_sensitivity_review.tabs.tabActive('confirmation')">
+
+                <div ng-show="vm.utils.image_sensitivity_review.error" class="alert alert-danger">
+                    <p class="text-danger fw-bold" ng-bind="vm.utils.image_sensitivity_review.error_message"></p>
+
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.utils.image_sensitivity_review.clearError();">OK</button>
+                    </div>
+                </div>
+
+                <div ng-show="!vm.utils.image_sensitivity_review.error">
+
+                    <p><span class="fw-bold">Instruction: </span> You are trying to update (<span class="fw-bold" ng-bind="vm.utils.image_sensitivity_review.countInsensitiveImages(vm.utils.image_sensitivity_review.data)"></span>) images so that they can be used across different companies. Please confirm the following: </p>
+
+                    <div class="ps-3">
+
+                        <div>
+                            <p class="mb-1">1. <span class="fw-bold">Confidentiality: </span> The image does not contain sensitive or proprietary information that is restricted to internal use.</p>
+
+                            <div class="ps-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="confidentiality" id="agree1" ng-model="vm.utils.image_sensitivity_review.confidentiality" value="agree">
+                                    <label class="form-check-label" for="agree1">
+                                        Agree
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="confidentiality" id="disagree1" ng-model="vm.utils.image_sensitivity_review.confidentiality" value="disagree">
+                                    <label class="form-check-label" for="disagree1">
+                                        Disagree
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="mb-1">2. <span class="fw-bold">Relevance: </span> The image accurately represents a scenario or risk that is common to multiple companies.</p>
+
+                            <div class="ps-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="relevance" id="agree2" ng-model="vm.utils.image_sensitivity_review.relevance" value="agree">
+                                    <label class="form-check-label" for="agree2">
+                                        Agree
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="relevance" id="disagree2" ng-model="vm.utils.image_sensitivity_review.relevance" value="disagree">
+                                    <label class="form-check-label" for="disagree2">
+                                        Disagree
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="mb-1">3. <span class="fw-bold">Quality and Clarity: </span> Is the image of sufficient resolution to be reused in other risk assessments.</p>
+
+                            <div class="ps-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="qandc" id="agree3" ng-model="vm.utils.image_sensitivity_review.quality_clarity" value="agree">
+                                    <label class="form-check-label" for="agree3">
+                                        Agree
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="qandc" id="disagree3" ng-model="vm.utils.image_sensitivity_review.quality_clarity" value="disagree">
+                                    <label class="form-check-label" for="disagree3">
+                                        Disagree
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-success" ng-click="vm.utils.image_sensitivity_review.completeReview();">Save Review</button>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- END CONFIRMATION INSTRUCTIONS -->
+
+        </div>
+
+        <div class="card-body">
+                
+            <div class="mt-5 text-center" ng-show="vm.utils.image_sensitivity_review.loading">
+                <p class="fw-bold">Loading images for review, please wait...</p>
+            </div>
+            
+            <div ng-show="!vm.utils.image_sensitivity_review.loading">
+                
+                <!-- START IMAGES CONTAINER -->
+                <div style="margin-top: 15px;">
+
+                    <div ng-show="!vm.utils.image_sensitivity_review.data.length" class="text-muted text-center" style="font-weight: bold;">
+                        <span>There are no images to review</span>
+                    </div>
+                    
+                    <div ng-show="vm.utils.image_sensitivity_review.data.length" class="media-grid">
+
+                        <div ng-repeat="(file_index, file_data) in vm.utils.image_sensitivity_review.data | filter: { is_video: false, is_audio: false } track by file_data._id" ng-style="vm.utils.image_sensitivity_review.mediaStyle(file_data);" style="border-radius: 5px; padding: 5px; position: relative;">
+
+                            <div ng-show="file_data.file_downloaded == null && !file_data.downloading_file" class="text-center padding">
+                                <a href="javascript: void(0);" ng-click="vm.utils.image_sensitivity_review.downloadMediaFile(file_data)" style="text-decoration: none;">
+                                    <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                                </a>
+                            </div>
+
+                            <div class="text-center" ng-show="file_data.downloading_file">
+                                <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+                            </div>
+                            
+                            <a href="javascript: void(0);" style="text-decoration: none;" ng-show="file_data.file_downloaded == 'Yes'">
+                                <img ng-src="{{ file_data.url }}" class="img-fluid" />
+                            </a>
+
+                            <div style="padding: 10px;">
+                                <a href="javascript: void(0);" ng-show="file_data.file_downloaded == 'Yes'">
+                                    <div ng-bind="file_data.title || 'No image title provided'" class="text-muted" style="font-size: 0.8em; font-weight: bold;"></div>
+                                    <div ng-bind="file_data.description || 'No image description provided'" class="text-muted" style="font-size: 0.8em;"></div>
+                                </a>
+                            </div>
+
+                            <div style="position: absolute; top: -10px; right: -10px;">
+                               
+                                <ul class="menu-list-inline" ng-hide="file_data.file_downloaded == null">
+                                    <li>
+                                        <a href="javascript: void(0)" ng-show="file_data.insensitive_media == 'No'" style="display: inline-block; border-radius: 5px; padding: 2px 6px; background-color: #dc3545; color: white; text-decoration: none; font-size: 1.2em;" ng-click="vm.utils.image_sensitivity_review.toggleInsensitive(file_data)">
+                                            <span><i class="bi bi-lock-fill"></i></span>
+                                        </a>
+                                        <a href="javascript: void(0);" ng-show="file_data.insensitive_media == 'Yes'" style="display: inline-block; border-radius: 5px; padding: 2px 6px; background-color: #146c43; color: white; text-decoration: none; font-size: 1.2em;" ng-click="vm.utils.image_sensitivity_review.toggleInsensitive(file_data)">
+                                            <span><i class="bi bi-unlock-fill"></i></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- END IMAGES CONTAINER -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- END SENSITIVITY REVIEW -->
+
+
+<!-- START TOASTS -->
+<div style="position: fixed; z-index: 1000; bottom: 0px; left: 0px; margin-bottom: 15px; margin-left: 15px;" class="me-5">
+
+    <div id="RiskFormCloneImageErrorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span ng-bind="vm.utils.clone_image.image_errors.error_message"></span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+</div>
+<!-- END TOASTS -->

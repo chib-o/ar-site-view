@@ -1,0 +1,52 @@
+		
+	<div>
+
+		<div ng-show="vm.utils.video_ref" style="width: 100%; max-width: 100%;">
+
+			<!-- START LOADING VIDEO INDICATOR -->
+			<div ng-show="vm.utils.video.loading" class="text-center">
+				<img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+			</div>
+			<!-- END LOADING VIDEO INDICATOR -->
+
+			<div ng-show="!vm.utils.video.loading">
+
+				<!-- START ERROR INDICATOR -->
+				<div ng-show="vm.utils.error_handler.error" class="mt-5">
+					<div class="alert alert-danger text-center">
+						<i class="bi bi-exclamation-circle-fill text-danger" style="font-size: 1.4em;"></i>
+
+						<div class="mt-4">
+							<span ng-bind="vm.utils.error_handler.error_message"></span>
+						</div>
+					</div>
+
+					<div class="mt-2">
+						<button class="btn btn-sm btn-primary" ng-click="vm.utils.video.retry();">Retry</button>
+					</div>
+				</div>
+				<!-- END ERROR INDICATOR -->
+				
+				<div id="VideoPlayer"  class="img-thumbnail" ng-show="!vm.utils.error_handler.error">
+		
+					<vjs-video-container vjs-media="mediaToggle">
+						<video id="IsolatedVideo" class="video-js vjs-default-skin vjs-fluid" controls preload="auto">
+						</video>
+					</vjs-video-container>
+
+				</div>
+
+				<div class="mt-2">
+					<div ng-repeat="vid_timestamp in vm.utils.video_record.Timestamps">
+						<span ng-bind="vid_timestamp.seconds | secondsToDateTime | date: 'mm:ss'"></span> - 
+						<a href="javascript: void(0);" ng-click="vm.utils.player.player.currentTime(vid_timestamp.seconds)">
+							<span ng-bind="vid_timestamp.title || 'n/a'"></span>
+						</a>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>

@@ -1,0 +1,12 @@
+<div ng-show="vm.utils.display_sw_status" class="p-1" style="border-bottom: 1px solid whitesmoke;">
+	<span ng-bind="vm.utils.sw.status_message || 'No status given'"></span>
+	<img src="../images/loading-icon.gif" class="ms-1" style="width: 20px; height: auto;" ng-show="vm.utils.sw.status == 'sw_installing'" >
+	<i class="bi bi-check-lg text-success ms-1" ng-show="vm.utils.sw.status == 'sw_activated'"></i>
+	<i class="bi bi-x-lg text-danger ms-1" ng-show="vm.utils.sw.isErrored();"></i>
+
+	<button ng-show="vm.utils.sw.status == 'no_sw'" class="btn btn-sm btn-primary ms-1" ng-click="vm.utils.goToInstall();">Install</button>
+
+	<!-- <button ng-show="vm.utils.sw.status == 'no_sw'" class="btn btn-sm btn-warning ms-1" ng-click="vm.utils.sw.registerSw();">Register</button> -->
+
+	<button ng-show="vm.utils.sw.isErrored();" class="btn btn-sm btn-primary ms-1" ng-click="vm.utils.goToInstall();">Re-attempt</button>
+</div>

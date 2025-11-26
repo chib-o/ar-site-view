@@ -1,0 +1,929 @@
+<div style="width: 100%; color: #000;">
+	
+	<!-- START INSPECTION COVER -->
+	<div class="px-2">
+		<div class="row mb-2 px-2 py-2" style="background-color: #bdbdbd;">
+			
+			<div class="col-12">
+				
+				<!-- INSPECTION REPORT HEADER -->
+				<div class="row">
+					<div class="col-12">
+						<span style="font-size: 18pt; font-weight: bold; color: #fff;">
+							Inspection Report
+						</span>
+					</div>
+				</div>
+				<!-- END INSPECTION REPORT HEADER -->
+
+				<!-- INSPECTION REPORT INFO -->
+				<div class="row" style="background-color: #fff; padding-top: 5px; padding-bottom: 5px; height: 95pt;">
+					<div class="col-6">
+						<div class="row">
+							<div class="col-12">
+								<table style="width: 100%; font-size: 8pt;" cellpadding="2">
+									<!-- ASSETS INFO -->
+									<tr style="font-weight: bold;">
+										<td class="text-start" style="color: #6d6e71;">Subject</td>
+										<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.asset_record.asset_ref || 'N/A'" style="color: #00a0e3; font-size: 12pt;"></td>
+									</tr>
+									<tr style="font-weight: bold;">
+										<td class="text-start" style="color: #6d6e71;">Core</td>
+										<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.core_asset_record.asset_ref" style="color: #00a0e3;"></td>
+									</tr>
+									<!-- END ASSETS INFO -->
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<div class="row">
+							<div class="col-12">
+								<table style="width: 100%; font-size: 8pt;" cellpadding="2">
+									<!-- REPORT INFO -->
+									<tr style="font-weight: bold;">
+										<td class="text-start" style="color: #6d6e71;">Compliance</td>
+										<td class="text-start" style="color: #000; font-size: 6pt;">
+											<span ng-bind="vm.utils.pdf_gen.data.project_record.pp_name"></span>, <span ng-bind="vm.utils.pdf_gen.data.project_record.type_name"></span>
+										</td>
+									</tr>
+									<tr style="font-weight: bold;">
+										<td class="text-start" style="color: #6d6e71;">Date</td>
+										<td class="text-start" ng-bind="vm.utils.pdf_gen.meta.date_created | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+									</tr>
+									<!-- END REPORT INFO -->
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END INSPECTION REPORT INFO -->
+
+			</div>
+
+		</div>
+	</div>
+	<!-- END INSPECTION COVER -->
+
+
+
+	<!-- START RISK PDFs -->
+	<div ng-repeat="risk in vm.utils.pdf_gen.data.assessments track by risk._id" class="px-2" style="position: relative;">
+		<!-- EACH RISK TO START ON NEW PAGE -->
+		<div class="break-before"></div>
+
+		<!-- START DATE GENERATED -->
+		<div class="row">
+			<div class="col-12">
+				<span style="font-size: 8pt; font-weight: bold; color: #6d6e71;">Generated on <span ng-bind="vm.utils.pdf_gen.meta.date_created | date: 'dd-MM-yyyy'"></span></span>
+			</div>
+		</div>
+		<!-- END DATE GENERATED -->
+
+		<!-- START DEFECT RISK ASSESSMENT INFO -->
+		<div class="row mb-2 px-2 py-2" style="background-color: #bdbdbd;">
+			
+			<div class="col-12">
+				
+				<!-- DEFECT RISK HEADER -->
+				<div class="row">
+					<div class="col-9">
+						<span style="font-size: 18pt; font-weight: bold; color: #fff;">Defect Risk Assessment</span>
+					</div>
+					<div class="col-3 py-1 px-1" style="background-color: #fff;">
+						<div class="p-2 text-center" style="width: 100%; background-color: #C24E4F;">
+							<span style="font-size: 12pt; font-weight: bold; color: #fff;">Open Issue</span>
+						</div>
+					</div>
+				</div>
+				<!-- END DEFECT RISK HEADER -->
+
+				<!-- DEFECT RISK INFO -->
+				<div class="row" style="background-color: #fff; padding-top: 5px; padding-bottom: 5px; height: 95pt;">
+					<div class="col-8">
+						<div class="row">
+							<div class="col-12">
+								<table style="width: 100%; font-size: 8pt;" cellpadding="2">
+									<!-- ASSETS INFO -->
+									<tr style="font-weight: bold;">
+										<td class="text-end" style="color: #6d6e71;">Subject</td>
+										<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.asset_record.asset_ref || 'N/A'" style="color: #00a0e3; font-size: 12pt;"></td>
+									</tr>
+									<tr style="font-weight: bold;">
+										<td class="text-end" style="color: #6d6e71;">Core</td>
+										<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.core_asset_record.asset_ref" style="color: #00a0e3;"></td>
+									</tr>
+									<!-- END ASSETS INFO -->
+
+									<!-- RISK INFO -->
+									<tr style="font-weight: bold;">
+										<td class="text-end" style="color: #6d6e71;">Compliance</td>
+										<td class="text-start" style="color: #000; font-size: 6pt;">
+											<span ng-bind="vm.utils.pdf_gen.data.project_record.pp_name"></span>, <span ng-bind="vm.utils.pdf_gen.data.project_record.type_name"></span>
+										</td>
+
+										<td class="text-end" style="color: #6d6e71;">Last Modified</td>
+										<td class="text-start" ng-bind="risk.date_modified | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+									</tr>
+									<tr style="font-weight: bold;">
+										<td class="text-end" style="color: #6d6e71;">1st Issued</td>
+										<td class="text-start" ng-bind="risk.date_added | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+
+										<td class="text-end" style="color: #6d6e71;">History</td>
+										<td class="text-start" style="color: #000;"></td>
+									</tr>
+									<tr style="font-weight: bold;">
+										<td class="text-end" style="color: #6d6e71;">Assigned</td>
+										<td class="text-start" style="color: #000;"></td>
+
+										<td class="text-end" style="color: #6d6e71;">Author</td>
+										<td class="text-start" style="color: #000;"></td>
+									</tr>
+									<!-- END RISK INFO -->
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-4">
+						<div id="ra-qrcode-{{ risk._id }}-cover" style="width: 50%; height: auto;"></div>
+					</div>
+				</div>
+				<!-- END DEFECT RISK INFO -->
+
+			</div>
+
+		</div>
+		<!-- END DEFECT RISK ASSESSMENT INFO -->
+
+
+		<!-- DOWN ARROW TO HAZARD INFO -->
+		<!-- START COLOURED FILL OF ARROW -->
+		<div style="width: 0; height: 0; border-left: 40pt solid transparent; border-right: 40pt solid transparent; border-top: 12pt solid #bdbdbd; position: absolute; top: 158pt; left: 20pt; z-index: 20;">
+				
+		</div>
+		<!-- END COLOURED FILL OF ARROW -->
+
+		<!-- START WHITE OUTLINE OF ARROW -->
+		<div style="width: 0; height: 0; border-left: 40pt solid transparent; border-right: 40pt solid transparent; border-top: 12pt solid #fff; position: absolute; top: 160pt; left: 20pt; z-index: 19;">
+				
+		</div>
+		<!-- END WHITE OUTLINE OF ARROW -->
+		<!-- END DOWN ARROW TO HAZARD INFO -->
+
+
+		<!-- START HAZARD INFO -->
+		<div class="row mb-2 px-2 py-2" style="background-color: #bf8686;">
+			
+			<div class="col-12">
+				
+				<!-- HAZARD HEADER -->
+				<div class="row">
+					<div class="col-12">
+						<span style="font-size: 18pt; font-weight: bold; color: #fff;">Hazard and Situation<span>
+					</div>
+				</div>
+				<!-- END HAZARD HEADER -->
+
+				<!-- HAZARD INFO -->
+				<div class="row" style="background-color: #fff; height: 60pt;">
+					<div class="col-4">
+						<table style="width: 100%; font-size: 6pt;" cellpadding="2">
+							<!-- HAZARD TYPE INFO -->
+							<tr style="font-weight: bold;">
+								<td class="text-end" style="color: #6d6e71; width: 20%;">Type</td>
+								<td class="text-start" ng-bind="risk.hazard_type_name" style="color: #000; width: 80%;"></td>
+							</tr>
+
+							<tr style="font-weight: bold;">
+								<td class="text-end" style="color: #6d6e71; width: 20%;">Origin</td>
+								<td class="text-start" ng-bind="risk.hazard_origin_name" style="color: #000; width: 80%;"></td>
+							</tr>
+
+							<tr style="font-weight: bold;">
+								<td class="text-end" style="color: #6d6e71; width: 20%;">Result</td>
+								<td class="text-start" ng-bind="risk.hazard_consequence_name" style="color: #000; width: 80%;"></td>
+							</tr>
+							<!-- END HAZARD TYPE INFO -->
+						</table>
+					</div>
+
+					<div class="col-8">
+						<table style="width: 100%; font-size: 8pt;" cellpadding="0">
+							<!-- HAZARD DESCRIPTION -->
+							<tr>
+								<td class="text-start" style="color: #000; width: 100%;">
+									<span ng-bind="risk.hazard_description | limitTo: 400 || 'N/A'"></span><span ng-show="risk.hazard_description.length > 400">... (see next page for full details)</span>
+								</td>
+							</tr>
+							<!-- END HAZARD DESCRIPTION -->
+						</table>
+					</div>
+				</div>
+				<!-- END HAZARD INFO -->
+
+				<!-- START HAZARD SCORE -->
+				<div class="row" style="height: 33pt;">
+					<div class="col-9 pt-2 pb-1" style="background-color: #fff;">
+						<div class="row">
+							<div class="col-6">
+								<div class="row">
+									<div class="col-2 px-0 text-center" ng-hide="risk.assessment_method == 5">
+										<span style="font-weight: bold; font-size: 8pt; color: #6d6e71;">Before</span>
+									</div>
+									<div class="col-6 py-2 text-center" style="background-color: {{ risk.risk_initial_colour }}; color: #fff; font-weight: bold; font-size: {{ risk.risk_before_fs  }}; line-height: 12pt;">
+										<span ng-bind="risk.display_before_phrase"></span>
+									</div>
+									<div class="col-4">
+										<!-- PHA -->
+										<div style="font-weight: bold; display: inline-block; line-height: 10pt;" ng-show="risk.assessment_method == 1">
+											<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">HRN</span>
+											<span ng-bind="risk.hrn_initial | number: 2" style="color: #000; font-size: 10pt;"></span>
+										</div>
+										<!-- END PHA -->
+
+										<!-- MATRIX -->
+										<div style="font-weight: bold; display: inline-block; line-height: 10pt;" ng-show="risk.assessment_method == 2">
+											<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">HR</span>
+											<span ng-bind="risk.matrix_score_initial" style="color: #000; font-size: 10pt;"></span>
+										</div>
+										<!-- END MATRIX -->
+
+										<!-- RIA -->
+										<div style="font-weight: bold; display: inline-block; line-height: 10pt;" ng-show="risk.assessment_method == 4">
+											<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">Score</span>
+											<span ng-bind="risk.ria_risk_score_initial" style="color: #000; font-size: 10pt;"></span>
+										</div>
+										<!-- END RIA -->
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<!-- PHA -->
+								<div style="display: flex; justify-content: space-between;" ng-show="risk.assessment_method == 1">
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">LO</span>
+										<span ng-bind="risk.lo_initial" style="color: #000; font-size: 10pt;"></span>
+									</div>
+
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">FE</span>
+										<span ng-bind="risk.fe_initial" style="color: #000; font-size: 10pt;"></span>
+									</div>
+
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">DPH</span>
+										<span ng-bind="risk.dph_initial" style="color: #000; font-size: 10pt;"></span>
+									</div>
+
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">NP</span>
+										<span ng-bind="risk.np_initial" style="color: #000; font-size: 10pt;"></span>
+									</div>
+								</div>
+								<!-- END PHA -->
+
+								<!-- MATRIX -->
+								<div style="display: flex; justify-content: space-between;" ng-show="risk.assessment_method == 2">
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">LO</span>
+										<span style="color: #000; font-size: 10pt;">
+											<span ng-bind="risk.matrix_likelihood_phrase_initial"></span> (<span ng-bind="risk.matrix_likelihood_initial"></span>)
+										</span>
+									</div>
+
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">SE</span>
+										<span style="color: #000; font-size: 10pt;">
+											<span ng-bind="risk.matrix_consequence_phrase_initial"></span> (<span ng-bind="risk.matrix_consequence_initial"></span>)
+										</span>
+									</div>
+								</div>
+								<!-- END MATRIX -->
+
+								<!-- RIA -->
+								<div style="display: flex; justify-content: space-between;" ng-show="risk.assessment_method == 4">
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">S</span>
+										<span style="color: #000; font-size: 6pt;">
+											<span ng-bind="risk.ria_severity_initial"></span>
+										</span>
+									</div>
+
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">E</span>
+										<span style="color: #000; font-size: 6pt;">
+											<span ng-bind="risk.ria_exposure_initial"></span>
+										</span>
+									</div>
+
+									<div style="font-weight: bold; display: inline-block; line-height: 10pt;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">A</span>
+										<span style="color: #000; font-size: 6pt;">
+											<span ng-bind="risk.ria_avoidance_initial"></span>
+										</span>
+									</div>
+								</div>
+								<!-- END RIA -->
+
+								<!-- DETERIORATION -->
+								<div ng-show="risk.assessment_method == 6">
+									<span style="color: #6d6e71; font-size: 10pt; vertical-align: top;" ng-bind="risk.additional_before_text"></span>
+								</div>
+								<!-- END DETERIORATION -->
+
+							</div>
+						</div>
+					</div>
+					<div class="col-3 pt-2">
+						
+					</div>
+				</div>
+				<!-- END HAZARD SCORE -->
+
+			</div>
+
+		</div>
+		<!-- END HAZARD INFO -->
+
+
+		<!-- DOWN ARROW TO CONTROL INFO -->
+		<!-- START COLOUR FILL OF ARROW -->
+		<div style="width: 0; height: 0; border-left: 40pt solid transparent; border-right: 40pt solid transparent; border-top: 12pt solid #bf8686; position: absolute; top: 296pt; left: 20pt; z-index: 20;">
+				
+		</div>
+		<!-- END COLOUR FILL OF ARROW -->
+
+		<!-- START WHITE OUTLINE OF ARROW -->
+		<div style="width: 0; height: 0; border-left: 40pt solid transparent; border-right: 40pt solid transparent; border-top: 12pt solid #fff; position: absolute; top: 298pt; left: 20pt; z-index: 19;">
+				
+		</div>
+		<!-- END WHITE OUTLINE OF ARROW -->
+		<!-- END DOWN ARROW TO CONTROL INFO -->
+
+
+		<!-- START CONTROL MEASURE INFO -->
+		<div class="row mb-2 px-2 py-2" style="background-color: #bbe9fc;">
+			
+			<div class="col-12">
+				
+				<!-- CONTROL HEADER -->
+				<div class="row">
+					<div class="col-12">
+						<span style="font-size: 18pt; font-weight: bold; color: grey;">Corrective Action<span>
+					</div>
+				</div>
+				<!-- END CONTROL HEADER -->
+
+				<!-- CONTROL INFO -->
+				<div class="row" style="background-color: #fff; height: 60pt;">
+					<div class="col-12">
+						<table style="width: 100%; font-size: 8pt;" cellpadding="0">
+							<!-- CONTROL DESCRIPTION -->
+							<tr>
+								<td class="text-start" style="color: #000; width: 100%;">
+									[<span ng-show="risk.statutory == 'Yes'">Statutory</span><span ng-show="risk.statutory == 'No'">Advisory</span>] <span ng-bind="risk.control_description | limitTo: 620 || 'N/A'"></span><span ng-show="risk.control_description.length > 620">... (see next page for full details)</span>
+								</td>
+							</tr>
+							<!-- END CONTROL DESCRIPTION -->
+						</table>
+					</div>
+				</div>
+				<!-- END CONTROL INFO -->
+
+				<!-- START CONTROL SCORE -->
+				<div class="row" style="height: 33pt;">
+					<div class="col-9 pt-2 pb-1" style="background-color: #fff;">
+						<div class="row" ng-hide="risk.assessment_method == 5">
+							<div class="col-6">
+								<div class="row">
+									<div class="col-2 px-0 text-center">
+										<span style="font-weight: bold; font-size: 8pt; color: #6d6e71;">After</span>
+									</div>
+									<div class="col-6 py-2 text-center" style="background-color: {{ risk.risk_after_colour }}; color: #fff; font-weight: bold; font-size: {{ risk.risk_after_fs }}; line-height: 12pt;">
+										<span ng-bind="risk.display_after_phrase"></span>
+									</div>
+									<div class="col-4">
+										<!-- PHA -->
+										<div style="font-weight: bold; display: inline-block; line-height: 10pt;" ng-show="risk.assessment_method == 1">
+											<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">HRN</span>
+											<span ng-bind="risk.hrn_after | number: 2" style="color: #000; font-size: 10pt;"></span>
+										</div>
+										<!-- END PHA -->
+
+										<!-- MATRIX -->
+										<div style="font-weight: bold; display: inline-block; line-height: 10pt;" ng-show="risk.assessment_method == 2">
+											<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">RN</span>
+											<span ng-bind="risk.matrix_score_after" style="color: #000; font-size: 10pt;"></span>
+										</div>
+										<!-- END MATRIX -->
+
+										<!-- RIA -->
+										<div style="font-weight: bold; display: inline-block; line-height: 10pt;" ng-show="risk.assessment_method == 4">
+											<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">Score</span>
+											<span ng-bind="risk.ria_risk_score_after" style="color: #000; font-size: 10pt;"></span>
+										</div>
+										<!-- END RIA -->
+
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<!-- PHA -->
+								<div style="display: flex; justify-content: space-between;" ng-show="risk.assessment_method == 1">
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">LO</span>
+										<span ng-bind="risk.lo_after" style="color: #000; font-size: 10pt;"></span>
+									</span>
+
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">FE</span>
+										<span ng-bind="risk.fe_after" style="color: #000; font-size: 10pt;"></span>
+									</span>
+
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">DPH</span>
+										<span ng-bind="risk.dph_after" style="color: #000; font-size: 10pt;"></span>
+									</span>
+
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">NP</span>
+										<span ng-bind="risk.np_after" style="color: #000; font-size: 10pt;"></span>
+									</span>
+								</div>
+								<!-- END PHA -->
+
+								<!-- MATRIX -->
+								<div style="display: flex; justify-content: space-between;" ng-show="risk.assessment_method == 2">
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">LO</span>
+										<span style="color: #000; font-size: 10pt;">
+											<span ng-bind="risk.matrix_likelihood_phrase_after"></span> (<span ng-bind="risk.matrix_likelihood_after"></span>)
+										</span>
+									</span>
+
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">SE</span>
+										<span style="color: #000; font-size: 10pt;">
+											<span ng-bind="risk.matrix_consequence_phrase_after"></span> (<span ng-bind="risk.matrix_consequence_after"></span>)
+										</span>
+									</span>
+								</div>
+								<!-- END MATRIX -->
+
+								<!-- RIA -->
+								<div style="display: flex; justify-content: space-between;" ng-show="risk.assessment_method == 4">
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">S</span>
+										<span style="color: #000; font-size: 6pt;">
+											<span ng-bind="risk.ria_severity_after"></span>
+										</span>
+									</span>
+
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">E</span>
+										<span style="color: #000; font-size: 6pt;">
+											<span ng-bind="risk.ria_exposure_after"></span>
+										</span>
+									</span>
+
+									<span style="font-weight: bold;">
+										<span style="color: #6d6e71; font-size: 6pt; vertical-align: top;">A</span>
+										<span style="color: #000; font-size: 6pt;">
+											<span ng-bind="risk.ria_avoidance_after"></span>
+										</span>
+									</span>
+								</div>
+								<!-- END RIA -->
+
+								<!-- DETERIORATION -->
+								<div ng-show="risk.assessment_method == 6">
+									<span style="color: #6d6e71; font-weight: bold; font-size: 6pt; vertical-align: top;" ng-bind="risk.additional_after_text"></span>
+								</div>
+								<!-- END DETERIORATION -->
+
+							</div>
+						</div>
+					</div>
+					<div class="col-3 pt-2">
+
+					</div>
+				</div>
+				<!-- END CONTROL SCORE -->
+
+			</div>
+
+		</div>
+		<!-- END CONTROL MEASURE INFO -->
+
+
+		<!-- START RISK MEDIA -->
+		<div class="row">
+			<div class="col-12 px-1">
+				<div style="display: inline-block; width: 145pt; height: 240pt; border: 2px solid #bf8686; border-radius: 10px; margin-right: 1%; vertical-align: top; text-align: center;" ng-repeat="front_page_media in risk.front_page_media" ng-show="risk.front_page_media.length > 0">
+
+					<div style="background-color: #bf8686; border-radius: 10px 0px; position: absolute; margin-top: 4px; margin-left: 4px; z-index: 1; padding: 5px 10px;">
+						<span ng-bind="front_page_media.media_number"></span>
+					</div>
+					
+					<div style="display: inline-block; height: 180pt; text-align: center; width: 90%;">
+						<div style="height: 100%; width: 0; display: inline-block; vertical-align: middle;"></div>
+
+						<img ng-show="front_page_media.file_downloaded == 'Yes'" src="{{ front_page_media.url }}" style="width: 97%; height: auto; display: inline-block; vertical-align: middle;" >
+
+						<img ng-show="front_page_media.file_downloaded == null" src="../images/custom_icons/media-file-not-downloaded.png" style="width: 97%; height: auto; display: inline-block; vertical-align: middle;" >
+					</div>
+
+					<div style="height: 60pt; line-height: 8pt; font-size: 8pt;">
+						<span ng-bind="front_page_media.description | limitTo: 220"></span>
+					</div>
+
+				</div>
+
+
+				<!-- START OVERFLOW MEDIA INDICATOR -->
+				<div style="display: inline-block; height: 240pt; vertical-align: middle;" ng-show="risk.overflow_media.length">
+					<div style="width: 0; height: 0; border-top: 100pt solid transparent; border-bottom: 100pt solid transparent; border-left: 40pt solid #bbe9fc; display: inline-block; margin-top: 20pt; margin-left: 40pt; position: relative;">
+						<span style="position: absolute; top: -30pt; left: -80pt; font-weight: bold; color: #000; text-align: center; vertical-align: middle;"><span ng-bind="risk.overflow_media.length || '0'"></span> more images on overflow page</span>
+					</div>
+				</div>
+				<!-- END OVERFLOW MEDIA INDICATOR -->
+
+
+				<!-- SPACER DIV IF NO MEDIA -->
+				<div style="width: 100%; height: 240pt;" ng-show="!risk.front_page_media.length"></div>
+				<!-- END SPACER DIV IF NO MEDIA -->
+
+			</div>
+		</div>
+		<!-- END RISK MEDIA -->
+
+
+		<!-- START COMMENTS BOX -->
+		<div class="row">
+			<div class="col-12 px-1 mt-5">
+				<div style="border: 4px solid lightgrey; height: 60pt; padding: 0px 4px;">
+					<span style="font-weight: 600; color: #6d6e71;">Comments</span>
+				</div>
+			</div>
+		</div>
+		<!-- END COMMENTS BOX -->
+
+		<!-- START DRAFT WATERMARK COVER PAGE -->
+
+		<!-- vm.utils.pdf_gen.meta.draft -->
+		<div class="pdf-draft-watermark-absolute" ng-show="risk.status == 4 && !vm.utils.pdf_gen.meta.preview">
+			<img class="pdf-draft-watermark-img" src="../images/custom_icons/draft.png" />
+		</div>
+		<!-- END DRAFT WATERMARK COVER PAGE -->
+
+
+		<!-- START RISK TEXT OVERFLOW -->
+		<div ng-show="risk.hazard_desc_overflow || risk.control_desc_overflow" style="position: relative;">
+			<!-- RISK MEDIA OVERFLOW TO START ON NEW PAGE -->
+			<div class="break-before"></div>
+
+			<div class="row mb-2 px-2 py-2" style="background-color: #000;">
+				<div class="col-12 text-center">
+					<span style="font-size: 18pt; font-weight: bold; color: #fff;">Text Overflow Page</span>
+				</div>
+			</div>
+
+			<!-- START DEFECT RISK ASSESSMENT INFO -->
+			<div class="row mb-2 px-2 py-2" style="background-color: #bdbdbd;">
+				
+				<div class="col-12">
+					
+					<!-- DEFECT RISK HEADER -->
+					<div class="row">
+						<div class="col-9">
+							<span style="font-size: 18pt; font-weight: bold; color: #fff;">Defect Risk Assessment</span>
+						</div>
+						<div class="col-3 py-1 px-1" style="background-color: #fff;">
+							<div class="p-2 text-center" style="width: 100%; background-color: #C24E4F;">
+								<span style="font-size: 12pt; font-weight: bold; color: #fff;">Open Issue</span>
+							</div>
+						</div>
+					</div>
+					<!-- END DEFECT RISK HEADER -->
+
+					<!-- DEFECT RISK INFO -->
+					<div class="row" style="background-color: #fff; padding-top: 5px; padding-bottom: 5px; height: 95pt;">
+						<div class="col-8">
+							<div class="row">
+								<div class="col-12">
+									<table style="width: 100%; font-size: 8pt;" cellpadding="2">
+										<!-- ASSETS INFO -->
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Subject</td>
+											<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.asset_record.asset_ref || 'N/A'" style="color: #00a0e3; font-size: 12pt;"></td>
+										</tr>
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Core</td>
+											<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.core_asset_record.asset_ref" style="color: #00a0e3;"></td>
+										</tr>
+										<!-- END ASSETS INFO -->
+
+										<!-- RISK INFO -->
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Compliance</td>
+											<td class="text-start" style="color: #000; font-size: 6pt;">
+												<span ng-bind="vm.utils.pdf_gen.data.project_record.pp_name"></span>, <span ng-bind="vm.utils.pdf_gen.data.project_record.type_name"></span>
+											</td>
+
+											<td class="text-end" style="color: #6d6e71;">Last Modified</td>
+											<td class="text-start" ng-bind="risk.date_modified | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+										</tr>
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">1st Issued</td>
+											<td class="text-start" ng-bind="risk.date_added | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+
+											<td class="text-end" style="color: #6d6e71;">History</td>
+											<td class="text-start" style="color: #000;"></td>
+										</tr>
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Assigned</td>
+											<td class="text-start" style="color: #000;"></td>
+
+											<td class="text-end" style="color: #6d6e71;">Author</td>
+											<td class="text-start" style="color: #000;"></td>
+										</tr>
+										<!-- END RISK INFO -->
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-4">
+							<div id="ra-qrcode-{{ risk._id }}-text-overflow" style="width: 50%; height: auto;"></div>	
+						</div>
+					</div>
+					<!-- END DEFECT RISK INFO -->
+
+				</div>
+
+			</div>
+			<!-- END DEFECT RISK ASSESSMENT INFO -->
+
+			<!-- START HAZARD INFO -->
+			<div class="row mb-2 px-2 py-2" style="background-color: #bf8686;">
+				
+				<div class="col-12">
+					
+					<!-- HAZARD HEADER -->
+					<div class="row">
+						<div class="col-12">
+							<span style="font-size: 18pt; font-weight: bold; color: #fff;">Hazard and Situation<span>
+						</div>
+					</div>
+					<!-- END HAZARD HEADER -->
+
+					<!-- HAZARD INFO -->
+					<div class="row" style="background-color: #fff; min-height: 60pt;">
+						<div class="col-4">
+							<table style="width: 100%; font-size: 6pt;" cellpadding="2">
+								<!-- HAZARD TYPE INFO -->
+								<tr style="font-weight: bold;">
+									<td class="text-end" style="color: #6d6e71; width: 20%;">Type</td>
+									<td class="text-start" ng-bind="risk.hazard_type_name" style="color: #000; width: 80%;"></td>
+								</tr>
+
+								<tr style="font-weight: bold;">
+									<td class="text-end" style="color: #6d6e71; width: 20%;">Origin</td>
+									<td class="text-start" ng-bind="risk.hazard_origin_name" style="color: #000; width: 80%;"></td>
+								</tr>
+
+								<tr style="font-weight: bold;">
+									<td class="text-end" style="color: #6d6e71; width: 20%;">Result</td>
+									<td class="text-start" ng-bind="risk.hazard_consequence_name" style="color: #000; width: 80%;"></td>
+								</tr>
+								<!-- END HAZARD TYPE INFO -->
+							</table>
+						</div>
+
+						<div class="col-8">
+							<table style="width: 100%; font-size: 8pt;" cellpadding="0">
+								<!-- HAZARD DESCRIPTION -->
+								<tr>
+									<td class="text-start" style="color: #000; width: 100%;">
+										<span>...</span><span ng-bind="risk.hazard_desc_overflow"></span>
+									</td>
+								</tr>
+								<!-- END HAZARD DESCRIPTION -->
+							</table>
+						</div>
+					</div>
+					<!-- END HAZARD INFO -->
+
+				</div>
+
+			</div>
+			<!-- END HAZARD INFO -->
+
+
+			<!-- START CONTROL MEASURE INFO -->
+			<div class="row mb-2 px-2 py-2" style="background-color: #bbe9fc;">
+				
+				<div class="col-12">
+					
+					<!-- CONTROL HEADER -->
+					<div class="row">
+						<div class="col-12">
+							<span style="font-size: 18pt; font-weight: bold; color: grey;">Corrective Action<span>
+						</div>
+					</div>
+					<!-- END CONTROL HEADER -->
+
+					<!-- CONTROL INFO -->
+					<div class="row" style="background-color: #fff; min-height: 60pt;">
+						<div class="col-12">
+							<table style="width: 100%; font-size: 8pt;" cellpadding="0">
+								<!-- CONTROL DESCRIPTION -->
+								<tr>
+									<td class="text-start" style="color: #000; width: 100%;">
+										<span>...</span><span ng-bind="risk.control_desc_overflow"></span>
+									</td>
+								</tr>
+								<!-- END CONTROL DESCRIPTION -->
+							</table>
+						</div>
+					</div>
+					<!-- END CONTROL INFO -->
+
+				</div>
+
+			</div>
+			<!-- END CONTROL MEASURE INFO -->
+
+			<!-- START DRAFT WATERMARK TEXT OVERFLOW PAGE -->
+			<!-- vm.utils.pdf_gen.meta.draft -->
+			<div class="pdf-draft-watermark-absolute" ng-show="risk.status == 4 && !vm.utils.pdf_gen.meta.preview">
+				<img class="pdf-draft-watermark-img" src="../images/custom_icons/draft.png" />
+			</div>
+			<!-- END DRAFT WATERMARK TEXT OVERFLOW PAGE -->
+
+		</div>
+		<!-- END RISK TEXT OVERFLOW -->
+
+
+		<!-- START RISK MEDIA OVERFLOW -->
+		<div ng-show="risk.overflow_media.length > 0" style="position: relative;">
+
+			<!-- RISK MEDIA OVERFLOW TO START ON NEW PAGE -->
+			<div class="break-before"></div>
+
+			<div class="row mb-2 px-2 py-2" style="background-color: #000;">
+				<div class="col-12 text-center">
+					<span style="font-size: 18pt; font-weight: bold; color: #fff;">Hazard Image Overflow Page</span>
+				</div>
+			</div>
+
+			<!-- START DEFECT RISK ASSESSMENT INFO -->
+			<div class="row mb-2 px-2 py-2" style="background-color: #bdbdbd;">
+				
+				<div class="col-12">
+					
+					<!-- DEFECT RISK HEADER -->
+					<div class="row">
+						<div class="col-9">
+							<span style="font-size: 18pt; font-weight: bold; color: #fff;">Defect Risk Assessment</span>
+						</div>
+						<div class="col-3 py-1 px-1" style="background-color: #fff;">
+							<div class="p-2 text-center" style="width: 100%; background-color: #C24E4F;">
+								<span style="font-size: 12pt; font-weight: bold; color: #fff;">Open Issue</span>
+							</div>
+						</div>
+					</div>
+					<!-- END DEFECT RISK HEADER -->
+
+					<!-- DEFECT RISK INFO -->
+					<div class="row" style="background-color: #fff; padding-top: 5px; padding-bottom: 5px; height: 95pt;">
+						<div class="col-8">
+							<div class="row">
+								<div class="col-12">
+									<table style="width: 100%; font-size: 8pt;" cellpadding="2">
+										<!-- ASSETS INFO -->
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Subject</td>
+											<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.asset_record.asset_ref || 'N/A'" style="color: #00a0e3; font-size: 12pt;"></td>
+										</tr>
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Core</td>
+											<td colspan="3" class="text-start" ng-bind="vm.utils.pdf_gen.data.core_asset_record.asset_ref" style="color: #00a0e3;"></td>
+										</tr>
+										<!-- END ASSETS INFO -->
+
+										<!-- RISK INFO -->
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Compliance</td>
+											<td class="text-start" style="color: #000; font-size: 6pt;">
+												<span ng-bind="vm.utils.pdf_gen.data.project_record.pp_name"></span>, <span ng-bind="vm.utils.pdf_gen.data.project_record.type_name"></span>
+											</td>
+
+											<td class="text-end" style="color: #6d6e71;">Last Modified</td>
+											<td class="text-start" ng-bind="risk.date_modified | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+										</tr>
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">1st Issued</td>
+											<td class="text-start" ng-bind="risk.date_added | date: 'dd-MM-yyyy'" style="color: #000;"></td>
+
+											<td class="text-end" style="color: #6d6e71;">History</td>
+											<td class="text-start" style="color: #000;"></td>
+										</tr>
+										<tr style="font-weight: bold;">
+											<td class="text-end" style="color: #6d6e71;">Assigned</td>
+											<td class="text-start" style="color: #000;"></td>
+
+											<td class="text-end" style="color: #6d6e71;">Author</td>
+											<td class="text-start" style="color: #000;"></td>
+										</tr>
+										<!-- END RISK INFO -->
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-4">
+							<div id="ra-qrcode-{{ risk._id }}-image-overflow" style="width: 50%; height: auto;"></div>	
+						</div>
+					</div>
+					<!-- END DEFECT RISK INFO -->
+
+				</div>
+
+			</div>
+			<!-- END DEFECT RISK ASSESSMENT INFO -->
+
+
+			<!-- START OVERFLOW MEDIA LIST -->
+			<div class="row">
+				<div class="col-12" style="padding-left: 9%; padding-right: 9%;">
+					<div style="display: inline-block; width: 145pt; height: 240pt; border: 2px solid #bf8686; border-radius: 10px; margin-right: 1%; vertical-align: top; text-align: center; margin-top: 5%; margin-bottom: 5%;" ng-repeat="overflow_media in risk.overflow_media">
+
+						<div style="background-color: #bf8686; border-radius: 10px 0px; position: absolute; margin-top: 4px; margin-left: 4px; z-index: 1; padding: 5px 10px;">
+							<span ng-bind="overflow_media.media_number"></span>
+						</div>
+						
+						<div style="display: inline-block; height: 180pt; text-align: center; width: 90%; vertical-align: middle;">
+							<img ng-show="overflow_media.file_downloaded == 'Yes'" src="{{ overflow_media.url }}" style="width: 100%; height: auto; display: inline-block; vertical-align: middle;" >
+
+							<img ng-show="overflow_media.file_downloaded == null" src="../images/custom_icons/media-file-not-downloaded.png" style="width: 100%; height: auto; display: inline-block;" >
+						</div>
+
+						<div style="height: 60pt; line-height: 8pt; font-size: 8pt;">
+							<span ng-bind="overflow_media.description | limitTo: 220"></span>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!-- END OVERFLOW MEDIA LIST -->
+
+			<!-- START DRAFT WATERMARK IMAGE OVERFLOW PAGE -->
+			<!-- vm.utils.pdf_gen.meta.draft -->
+			<div class="pdf-draft-watermark-absolute" ng-show="risk.status == 4 && !vm.utils.pdf_gen.meta.preview">
+				<img class="pdf-draft-watermark-img" src="../images/custom_icons/draft.png" />
+			</div>
+			<!-- END DRAFT WATERMARK IMAGE OVERFLOW PAGE -->
+
+		</div>
+
+	</div>
+	<!-- END RISK PDFs -->
+
+
+	<!-- START PDF META -->
+	<div class="break-before"></div>
+
+	<div class="row mt-5" ng-show="!vm.utils.pdf_gen.meta.preview">
+		<div class="col-12">
+			<p><span class="fw-bold">App Version:</span> <span ng-bind="vm.utils.pdf_gen.meta.app_version || 'N/A'"></span></p>
+
+			<p><span class="fw-bold">Content Modified:</span> <span ng-bind="vm.utils.pdf_gen.meta.date_content_modified | date: 'dd/MM/yyyy h:mm a'"></span></p>
+
+			<p><span class="fw-bold">Generated:</span> <span ng-bind="vm.utils.pdf_gen.meta.date_created | date: 'dd/MM/yyyy h:mm a'"></span></p>
+
+			<p><span class="fw-bold">User ID:</span> <span ng-bind="vm.utils.pdf_gen.meta.rm_user_id || 'N/A'"></span></p>
+
+			<p><span class="fw-bold">Licensed:</span> <span ng-show="vm.utils.pdf_gen.meta.licensed">Yes</span><span ng-show="!vm.utils.pdf_gen.meta.licensed">No</span></p>
+		</div>
+	</div>
+	<!-- END PDF META -->
+
+
+	<!-- START PREVIEW WATERMARK -->
+	<div class="pdf-preview-watermark" ng-show="vm.utils.pdf_gen.meta.preview">
+		<img src="../images/custom_icons/draft-from-preview.png" />
+	</div>
+	<!-- END PREVIEW WATERMARK -->
+
+
+
+	<!-- START APP VERSION WATERMARK -->
+	<div class="pdf-webapp-watermark">
+		<span>RiskMach WebApp {{ vm.utils.pdf_gen.meta.app_version }}</span>
+	</div>
+	<!-- END APP VERSION WATERMARK -->
+
+</div>

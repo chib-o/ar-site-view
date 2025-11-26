@@ -1,0 +1,7 @@
+<div style="display: inline-block;">
+	<!-- <div style="display: inline-block; width: 10px; height: 10px; border-radius: 50%;" ng-style="vm.utils.iconStyle();"></div> <div style="display: inline-block; font-size: 0.8em; font-weight: bold; text-transform: uppercase;" ng-bind="vm.utils.statusText();" ng-style="vm.utils.textStyle();"></div> -->
+
+	<div class="badge" ng-class="{'badge-success-soft': vm.utils.online, 'badge-danger-soft': !vm.utils.online}" style="font-size: 0.8em;">
+		<div style="display: inline-block; width: 10px; height: 10px; border-radius: 50%;" ng-style="vm.utils.iconStyle();"></div> <span class="fw-bold" style="text-transform: uppercase;" ng-bind="vm.utils.statusText();"></span>
+	</div>
+</div>

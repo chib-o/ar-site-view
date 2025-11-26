@@ -1,0 +1,56 @@
+<!-- START RIA SCORE -->
+<div>
+		
+	<div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">
+		Risk Before 
+		[<span style="font-size: 0.8em;" class="text-danger" ng-show="vm.utils.ra_record.ria_risk_score_initial == null">
+			--
+		</span>
+		<span style="font-size: 0.8em;" ng-show="vm.utils.ra_record.ria_risk_score_initial != null">
+			<span ng-bind="vm.utils.ra_record.ria_risk_level_initial"></span> <small>(<span ng-bind="vm.utils.ra_record.ria_risk_score_initial | number: 1"></span>)</small>
+		</span>]
+	</div>
+
+	<div class="form-group">
+		<label ng-class="{ 'text-danger': !vm.utils.ra_record.ria_severity_initial_score }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.ria_severity_initial_score"></i> Severity of Injury</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.ria_severity_initial_score" ng-options="option.Value as option.Label for option in vm.utils.ria.severity_initial" ng-change="vm.utils.ria.severityChanged('initial'); vm.utils.notSaved();"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label ng-class="{ 'text-danger': !vm.utils.ra_record.ria_exposure_initial_score }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.ria_exposure_initial_score"></i> Exposure to the Hazard</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.ria_exposure_initial_score" ng-options="option.Value as option.Label for option in vm.utils.ria.exposure_initial" ng-change="vm.utils.ria.exposureChanged('initial'); vm.utils.notSaved();"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label ng-class="{ 'text-danger': !vm.utils.ra_record.ria_avoidance_initial_score }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.ria_avoidance_initial_score"></i> Avoidance of the Hazard</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.ria_avoidance_initial_score" ng-disabled="!vm.utils.ra_record.ria_severity_initial_score || !vm.utils.ra_record.ria_exposure_initial_score || vm.utils.ria.avoidance_initial.length == 0" ng-options="option.Value as option.Label for option in vm.utils.ria.avoidance_initial" ng-change="vm.utils.ria.avoidanceChanged('initial'); vm.utils.notSaved();"></select>
+	</div>
+
+
+	<div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;" class="pt-5">
+		Risk After 
+		[<span style="font-size: 0.8em;" class="text-danger" ng-show="vm.utils.ra_record.ria_risk_score_after == null">
+			--
+		</span>
+		<span style="font-size: 0.8em;" ng-show="vm.utils.ra_record.ria_risk_score_after != null">
+			<span ng-bind="vm.utils.ra_record.ria_risk_level_after"></span> <small>(<span ng-bind="vm.utils.ra_record.ria_risk_score_after | number: 1"></span>)</small>
+		</span>]
+	</div>
+
+	<div class="form-group">
+		<label ng-class="{ 'text-danger': !vm.utils.ra_record.ria_severity_after_score }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.ria_severity_after_score"></i> Severity of Injury</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.ria_severity_after_score" ng-options="option.Value as option.Label for option in vm.utils.ria.severity_after" ng-change="vm.utils.ria.severityChanged('after'); vm.utils.notSaved();"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label ng-class="{ 'text-danger': !vm.utils.ra_record.ria_exposure_after_score }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.ria_exposure_after_score"></i> Exposure to the Hazard</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.ria_exposure_after_score" ng-options="option.Value as option.Label for option in vm.utils.ria.exposure_after" ng-change="vm.utils.ria.exposureChanged('after'); vm.utils.notSaved();"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label ng-class="{ 'text-danger': !vm.utils.ra_record.ria_avoidance_after_score }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.ria_avoidance_after_score"></i> Avoidance of the Hazard</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.ria_avoidance_after_score" ng-disabled="!vm.utils.ra_record.ria_severity_after_score || !vm.utils.ra_record.ria_exposure_after_score || vm.utils.ria.avoidance_after.length == 0" ng-options="option.Value as option.Label for option in vm.utils.ria.avoidance_after" ng-change="vm.utils.ria.avoidanceChanged('after'); vm.utils.notSaved();"></select>
+	</div>
+
+</div>
+<!-- END RIA SCORE -->

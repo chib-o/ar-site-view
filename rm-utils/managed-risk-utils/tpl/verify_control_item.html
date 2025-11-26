@@ -1,0 +1,298 @@
+
+<!-- START VERIFY CONTROL TAB -->
+<div ng-show="vm.utils.tabs.tabActive('verify_control')">
+
+    <div style="margin-bottom: 15px;">
+
+    	<div style="font-weight: bold; font-size: 1.2em; margin-bottom: 15px;">Verify Control</div>
+
+        <div class="card">
+            <div class="card-header">
+                <div style="display: inline-block; vertical-align: top;">
+                    <img src="../images/custom_icons/Control Item Grey.png" style="width: 1.075rem;" />
+                </div>
+
+                <div class="ps-4" style="display: inline-block;">
+                    <div style="font-weight: bold;" ng-bind="vm.utils.verify_control.record.rrm1_name || 'Undefined Control'"></div>
+                    <div style="font-size: 0.8em;" class="text-muted"><span ng-bind="vm.utils.verify_control.record.rrm2_name || '-'"></span> | <span ng-bind="vm.utils.verify_control.record.rrm3_name || '-'"></span></div>
+                    <div style="font-size: 0.8em; font-style: italic;" class="text-muted" ng-bind="vm.utils.verify_control.record.description"></div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- START IMAGES CONTAINER -->
+                <div style="margin-top: 15px;">
+
+                    <!-- START LOADING CONTROL MEDIA -->
+                    <div ng-show="vm.utils.control_media.loading" class="text-center">
+                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+                        <div class="mt-4">
+                            <span class="fw-bold">Loading control media...</span>
+                        </div>
+                    </div>
+                    <!-- END LOADING CONTROL MEDIA -->
+                    
+                    <div ng-show="!vm.utils.control_media.loading">
+
+                        <div ng-show="!vm.utils.control_media.visible_media.length" class="text-center">
+                            <span>There are no images for this control</span>
+                        </div>
+                        
+                        <div class="media-grid" ng-show="vm.utils.control_media.visible_media.length">
+
+                            <div ng-repeat="(file_index, file_data) in vm.utils.control_media.visible_media | filter: { is_video: false, is_audio: false } track by file_data._id" ng-style="vm.utils.control_media.mediaStyle(file_data);" style="border-radius: 5px; padding: 5px; position: relative;">
+
+                                <div class="text-center" ng-show="file_data.downloading_file">
+                                    <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+                                </div>
+
+                                <div ng-show="file_data.file_downloaded == null && !file_data.downloading_file" class="text-center padding">
+                                    <a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.control_media.downloadMediaFile(file_data, vm.utils.verify_control.record)">
+                                        <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                                    </a>
+                                </div>
+                                
+                                <a href="javascript: void(0);" style="text-decoration: none;" ng-show="file_data.file_downloaded == 'Yes'">
+                                    <img ng-src="{{ file_data.url }}" class="img-fluid" />
+                                </a>
+
+                                <!-- <div style="position: absolute; top: -10px; right: -10px;">
+                                    <ul class="menu-list-inline" ng-hide="file_data.file_downloaded == null">
+                                        <li>
+                                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.drawing_pad.start(file_data, 'control');" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript: void(0);" ng-click="vm.utils.control_media.deleteMediaRecord(file_data);" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                <i class="bi bi-trash-fill text-danger"></i>
+                                            </a>
+                                            <a href="javascript: void(0);" ng-click="vm.utils.control_media.recoverMediaRecord(file_data);" ng-show="file_data.status == '3'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div> -->
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- END IMAGES CONTAINER -->
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+    	<label class="form-label">Is this control item in place?</label>
+    	<select class="form-select" ng-model="vm.utils.verify_control.record.control_in_place">
+    		<option value="Yes">Yes</option>
+    		<option value="No">No</option>
+    	</select>
+    </div>
+
+    <div class="form-group mt-4">
+    	<label class="form-label">Is this control item suitable?</label>
+    	<select class="form-select" ng-model="vm.utils.verify_control.record.verification_status">
+    		<option value="Suitable">Yes</option>
+    		<option value="Unsuitable">No</option>
+    	</select>
+    </div>
+
+    <div class="form-group mt-4">
+    	<label class="form-label">Comments</label>
+    	<textarea class="form-control" style="height: 200px;" ng-model="vm.utils.verify_control.record.verification_comments"></textarea>
+    </div>
+
+
+    <div style="margin-top: 15px;">
+    	<div style="font-weight: bold;">Verification Images</div>
+    	<div class="text-muted">Take some images as proof of verification</div>
+
+    	<!-- START CONTROL MEDIA TAB -->
+        <div style="margin-top: 15px;">
+
+            <div ng-show="!vm.utils.control_verification_media.loading">
+                
+                <div class="btn-group dropdown">
+                    <!-- DEVICE CAMERA -->
+                    <button ng-show="vm.utils.is_mobile" type="button" class="btn btn-success btn-sm">
+                        <label for="controlVerificationPhotoInput" style="padding: none; margin-bottom: 0px;"><i class="bi bi-camera-fill"></i> Take Photo</label>
+                    </button>
+                    <!-- DESKTOP CAMERA -->
+                    <button ng-show="!vm.utils.is_mobile" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.control_verification_media.takePhotoDesktop();">
+                        <i class="bi bi-camera-fill"></i> Take Photo
+                    </button>
+                    <!-- DROPDOWN BUTTON -->
+                    <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="controlVerificationMediaDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="controlVerificationMediaDropdownMenu">
+                        <li>
+                            <label class="dropdown-item" for="controlVerificationInputFile">Choose File</label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="text-align: right; margin-bottom: 20px;">
+                    <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.control_verification_media.toggleMediaStatusView('live')" ng-show="vm.utils.control_verification_media.filters.status == 3" style="text-decoration: none;">
+                        <i class="bi bi-chevron-left" style="font-size: 1.4em;"></i> <span style="font-weight: bold;">View Live Images</span>
+                    </a>
+                    <a class="text-danger" href="javascript: void(0);" ng-click="vm.utils.control_verification_media.toggleMediaStatusView('deleted')" ng-show="vm.utils.control_verification_media.filters.status == 1" style="text-decoration: none;">
+                        <span class="glyphicon glyphicon-trash"></span> <span style="font-weight: bold;">View Deleted Images</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- START IMAGES CONTAINER -->
+            <div style="margin-top: 15px;">
+
+                <!-- LOADING CONTROL VERIFICATION MEDIA -->
+                <div ng-show="vm.utils.control_verification_media.loading" class="text-center">
+                    
+                    <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+                    <div class="mt-4">
+                        <span class="fw-bold">Loading control verification media...</span>
+                    </div>
+
+                </div>
+                <!-- END LOADING CONTROL VERIFICATION MEDIA -->
+
+                <div ng-show="!vm.utils.control_verification_media.loading">
+
+                    <div ng-show="!vm.utils.control_verification_media.visible_media.length" class="text-center">
+                        <span ng-show="vm.utils.control_verification_media.filters.status == 1" class="fw-bold">There are no control verification images for this control</span>
+
+                        <span ng-show="vm.utils.control_verification_media.filters.status == 3" class="fw-bold">There are no deleted control verification images for this control</span>
+                    </div>
+                    
+                    <div class="media-grid" ng-show="vm.utils.control_verification_media.visible_media.length">
+
+                        <div ng-repeat="(file_index, file_data) in vm.utils.control_verification_media.visible_media | filter: { is_video: false, is_audio: false } track by file_data._id" ng-style="vm.utils.control_verification_media.mediaStyle(file_data);" style="border-radius: 5px; padding: 5px; position: relative;">
+
+                            <div class="text-center" ng-show="file_data.downloading_file">
+                                <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+                            </div>
+
+                            <div ng-show="file_data.file_downloaded == null && !file_data.downloading_file" class="text-center padding">
+                                <a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.control_verification_media.downloadMediaFile(file_data, vm.utils.control_verification_media.record)">
+                                    <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                                </a>
+                            </div>
+                            
+                            <a href="javascript: void(0);" style="text-decoration: none;" ng-show="file_data.file_downloaded == 'Yes'">
+                                <img ng-src="{{ file_data.url }}" class="img-fluid" />
+                            </a>
+
+                            <div style="position: absolute; top: -10px; right: -10px;">
+                                <ul class="menu-list-inline" ng-hide="file_data.file_downloaded == null">
+                                    <!-- <li>
+                                        <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.drawing_pad.start(file_data, 'control_item_verification');" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    </li> -->
+                                    <!-- <li>
+                                        <div data-toggle-on-clipboard data-iteminfo="{ record_type: 'mr_control_media', record_id: file_data._id, record_ref: null, data_type: null, data: null, title: file_data.title, description: file_data.description, profile_image_id: file_data._id }"></div>
+                                    </li> -->
+                                    <li>
+                                        <a href="javascript: void(0);" ng-click="vm.utils.control_verification_media.deleteMediaRecord(file_data);" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                            <i class="bi bi-trash-fill text-danger"></i>
+                                        </a>
+                                        <a href="javascript: void(0);" ng-click="vm.utils.control_verification_media.recoverMediaRecord(file_data);" ng-show="file_data.status == '3'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- END IMAGES CONTAINER -->
+
+        </div>
+        <!-- END CONTROL MEDIA TAB -->
+
+    </div>
+
+    <div class="form-group text-center" style="margin-top: 50px;">
+    	<button type="button" class="btn btn-success" ng-click="vm.utils.verify_control.save();" ng-disabled="vm.utils.verify_control.is_loading">Save Verification</button>
+    </div>
+
+</div>
+<!-- END VERIFY CONTROL TAB -->
+
+
+<!-- START UPLOAD VERIFICATION -->
+<div ng-show="vm.utils.tabs.tabActive('upload_verification')">
+
+
+    <div ng-show="vm.utils.upload_verification.error_handler.error" class="alert alert-danger text-center">
+        <i class="bi bi-exclamation-circle-fill"></i>
+            
+        <div class="mt-2">
+            <p ng-bind="vm.utils.upload_verification.error_handler.error_message"></p>
+        </div>
+    </div>
+
+    <div ng-show="!vm.utils.upload_verification.error_handler.error">
+
+        <div ng-show="vm.utils.upload_verification.uploading">
+            <div class="text-center">
+                <img src="../images/loading-icon.gif" style="height: 55px;" />
+
+                <div class="mt-2">
+                    <span class="fw-bold">Saving control verification...</span>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="!vm.utils.upload_verification.uploading && vm.utils.upload_verification.import_complete">
+            
+            <div class="text-center">
+                <p class="fw-bold text-success">Import complete!</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div ng-show="false">
+        <div id="container">
+            <a id="pickfiles" href="javascript:;" class="hidden">[Select files]</a>
+            <a id="uploadfiles" href="javascript:;" class="hidden">[Upload files]</a>
+
+            <button type="uploadfiles" ng-click="vm.utils.uploader.start();" class="btn btn-success hidden">Start Upload</button>
+            <div id="filelist"></div>
+        </div>
+    </div>
+
+</div>
+<!-- END UPLOAD VERIFICATION -->
+
+<!-- START TOASTS -->
+<div style="position: fixed; z-index: 1000; bottom: 0px; left: 0px; margin-bottom: 15px; margin-left: 15px;" class="me-5">
+
+    <div id="VerifyControlItemNoInternetConnectionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>You need an internet connection to save your control item verification</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+</div>
+<!-- END TOASTS -->

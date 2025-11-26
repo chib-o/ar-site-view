@@ -1,0 +1,237 @@
+<div class="row" style="margin-bottom: 15px;" ng-show="!vm.utils.tabs.tabActive('gallery_view')">
+	<div class="col-6">
+		<a href="javascript: void(0)" ng-click="vm.exitClipboard();" style="text-decoration: none;">
+			<img src="../images/exit_red.png" style="width: 30px;" />
+		</a>
+	</div>
+	<div class="col-6 text-end text-muted">
+		<span style="font-size: 1.4em; font-weight: bold;">Clipboard</span>
+		<br>
+		<span ng-show="!vm.utils.is_loading" style="font-size: 0.8em;">Total items: <span ng-bind="vm.utils.clipboard.items.length || '0'"></span></span>
+
+		<button type="button" class="btn btn-danger btn-xs" style="display: inline-block;" ng-click="vm.utils.tabs.changeTab('clear_clipboard_confirmation')">Clear</button>
+	</div>
+</div>
+
+
+<div class="row" ng-show="vm.utils.tabs.tabActive('gallery_view')">
+	<div class="col-12">
+		<a href="javascript: void(0)" ng-click="vm.utils.tabs.changeTab('browse'); vm.utils.gallery_view.clear();" style="text-decoration: none;">
+			<img src="../images/exit_red.png" style="width: 30px;" />
+		</a>
+	</div>
+</div>
+
+
+<div data-ajax-loader ng-model="vm.utils.is_loading"></div>
+
+<div class="text-center" ng-show="vm.utils.clear_clipboard.loading" style="margin-top: 25px;">
+	<p class="text-muted" style="font-size: 1.2em;">Clearing clipboard...</p>
+</div>
+
+
+<div class="browse-clipboard-header" ng-show="vm.utils.select_mode.enabled && !vm.utils.tabs.tabActive('clear_clipboard_confirmation') && !vm.utils.tabs.tabActive('gallery_view')">
+	
+	<div style="font-size: 1.2em; font-weight: bold;" class="text-muted">Browse for the records you wish you to use</div>
+	<div class="text-muted">You can select a record by clicking the "icon"</div>
+
+	<div style="margin-top: 15px; font-size: 1.2em; font-weight: bold;">You have selected <span ng-bind="vm.utils.select_mode.items.length"></span> items</div>
+
+	<div style="margin-top: 15px;">
+		<button type="button" class="btn btn-success" ng-click="vm.utils.select_mode.confirmSelection()">Confirm Selection</button>
+		<button type="button" class="btn btn-danger" ng-click="vm.utils.select_mode.clearSelection(); vm.exitClipboard();">Cancel</button>
+	</div>
+
+</div>
+
+<ul class="nav nav-pills" style="margin-bottom: 15px;" ng-show="vm.utils.canBrowseRecordTypes() && !vm.utils.tabs.tabActive('clear_clipboard_confirmation')">
+	<li class="nav-item" role="presentation">
+		<a class="nav-link" href="javascript: void(0)" ng-click="vm.utils.tabs.changeTab('browse')" ng-class="{ 'active': vm.utils.tabs.tabActive('browse') }"><i class="bi bi-search"></i> Browse</a>
+	</li>
+	<li class="nav-item" role="presentation">
+		<a class="nav-link" href="javascript: void(0)" ng-click="vm.utils.tabs.changeTab('quick_add')" ng-class="{ 'active': vm.utils.tabs.tabActive('quick_add') }"><i class="bi bi-plus-lg"></i> Quick Add</a>
+	</li>
+	<li class="nav-item" role="presentation">
+		<a class="nav-link" href="javascript: void(0)" ng-click="vm.utils.tabs.changeTab('upload')" ng-class="{ 'active': vm.utils.tabs.tabActive('upload') }"><i class="bi bi-cloud-arrow-up-fill"></i> Upload</a>
+	</li>
+</ul>
+
+<div ng-show="vm.utils.tabs.tabActive('browse') && !vm.utils.is_loading">
+
+	<div style="margin-bottom: 15px;">
+		<div class="row">
+			<div class="col-4" ng-show="vm.utils.canBrowseRecordTypes()">
+				<!-- <button type="button" class="btn btn-default btn-block" ng-change="vm.utils.autoFilter()" data-placeholder="Item Types" ng-model="vm.utils.filters.record_types" data-multiple="1" data-animation="am-flip-x" ng-options="icon.value as icon.label for icon in vm.utils.record_types" bs-select>
+					Items <span class="caret"></span>
+				</button> -->
+
+				<select class="form-select" ng-model="vm.utils.filters.record_type" ng-options="icon.value as icon.label for icon in vm.utils.record_types" ng-change="vm.utils.selectRecordTypeFilter()"></select>
+			</div>
+			<div ng-class="{'col-8': vm.utils.canBrowseRecordTypes(), 'col-12': !vm.utils.canBrowseRecordTypes()}">
+				<input type="text" class="form-control" placeholder="Search Clipboard" ng-model="vm.utils.filters.local_search" ng-change="vm.utils.updateLocalFilter()" />
+			</div>
+		</div>
+
+		<div style="margin-top: 15px;">
+			<a href="javascript: void(0)" ng-click="vm.utils.toggleStatus(2)" ng-show="vm.utils.filters.status == '1'" style="text-decoration: none; color: red;"><i class="bi bi-trash-fill"></i> <span style="font-weight: bold;">View deleted items</span></a>
+			<a href="javascript: void(0)" ng-click="vm.utils.toggleStatus(1)" ng-show="vm.utils.filters.status == '2'" style="text-decoration: none; color: green;"><i class="bi bi-chevron-left"></i> <span style="font-weight: bold;">View live items</span></a>
+		</div>
+
+	</div>
+
+	<div ng-show="vm.utils.is_loading" class="text-center">
+		<img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+		<div class="text-muted" style="font-size: 1.2em; margin-top: 10px;">
+			<p>Clipboard is loading...</p>
+			<p>If you have a lot of items on your clipboard, this can take a couple of minutes</p>
+		</div>
+	</div>
+
+	<div ng-show="!vm.utils.is_loading && vm.utils.visible_data.length == 0">
+		<div class="text-center text-muted" style="font-size: 1.2em; font-weight: bold;">There are no items on your clipboard</div>
+	</div>
+
+	<div ng-show="!vm.utils.is_loading && vm.utils.visible_data.length > 0" style="margin-top: 35px;">
+
+		<div class="text-end" style="margin-bottom: 15px;">
+			<dir-pagination-controls pagination-id="clipboard"></dir-pagination-controls>
+		</div>
+
+		<div dir-paginate="item in vm.utils.visible_data | orderBy: '-date_added' | itemsPerPage: 25" pagination-id="clipboard" class="clipboard-item">
+
+			<a href="javascript: void(0)" ng-show="vm.utils.select_mode.selectable(item)" ng-click="vm.utils.select_mode.toggleSelect(item)" ng-style="vm.utils.select_mode.itemStyle(item)" style="position: absolute; display: inline-block; top: -20px; right: -10px; border: 2px solid #F3F3F4; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; text-align: center; text-decoration: none;">
+				<i class="bi bi-check2"></i>
+			</a>
+
+			<div style="position: absolute; display: inline-block; top: -21px; left: 5px;">
+				<div ng-show="item.status == '2'" style="display: inline-block; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: red; color: #fff; font-weight: bold; font-size: 0.8em; padding: 2px;">Deleted</div>
+			</div>
+			
+			<a href="javascript: void(0);" ng-click="vm.utils.gallery_view.setActiveImage(item, true);">
+				<div ng-style="vm.profileImagePath(item)" style="height: 400px; border-top-left-radius: 5px; border-top-right-radius: 5px; margin-bottom: -5px; background-repeat: no-repeat; background-position: center center; background-color: #ddd; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;"></div>
+			</a>
+
+			<div ng-show="!item.data_type" style="padding: 15px;">
+
+				<div ng-show="!vm.utils.active_edit.fieldActive('title', item)" style="max-width: 60ch;">
+					<a href="javascript: void(0)" ng-click="vm.utils.active_edit.editField('title', item)" ng-bind="item.title || 'Untitled'" style="font-weight: bold;"></a>
+				</div>
+
+				<div ng-show="vm.utils.active_edit.fieldActive('title', item)">
+					<input type="text" class="form-control" ng-model="vm.utils.active_edit.edit_record.title" ng-disabled="vm.utils.active_edit.is_loading" ng-blur="vm.utils.active_edit.saveChanges()" />
+				</div>
+
+				<div ng-show="!vm.utils.active_edit.fieldActive('description', item)" style="max-width: 60ch;">
+					<a href="javascript: void(0)" ng-click="vm.utils.active_edit.editField('description', item)" ng-bind="item.description || 'No description available'" style="font-size: 0.8em;" class="text-muted"></a>
+				</div>
+
+				<div ng-show="vm.utils.active_edit.fieldActive('description', item)">
+					<textarea class="form-control" ng-model="vm.utils.active_edit.edit_record.description" ng-disabled="vm.utils.active_edit.is_loading" ng-blur="vm.utils.active_edit.saveChanges()"></textarea>
+				</div>
+
+			</div>
+
+			<div ng-show="item.data_type == 'string'" style="padding: 15px;">
+
+				<div ng-show="!vm.utils.active_edit.fieldActive('title', item)" style="margin-bottom: 5px; max-width: 60ch;">
+					<a href="javascript: void(0)" ng-click="vm.utils.active_edit.editField('title', item)" ng-bind="item.title || 'Untitled Snippet'" style="font-weight: bold;"></a>
+				</div>
+
+				<div ng-show="vm.utils.active_edit.fieldActive('title', item)" style="margin-bottom: 5px;">
+					<input type="text" class="form-control" ng-model="vm.utils.active_edit.edit_record.title" ng-disabled="vm.utils.active_edit.is_loading" ng-blur="vm.utils.active_edit.saveChanges()" />
+				</div>
+
+				<div ng-show="!vm.utils.active_edit.fieldActive('data', item)" style="max-width: 60ch;">
+					<a href="javascript: void(0)" ng-click="vm.utils.active_edit.editField('data', item)" ng-bind="item.data || 'No text entered'" class="text-muted" style="text-decoration: none; font-size: 0.8em;"></a>
+				</div>
+
+				<div ng-show="vm.utils.active_edit.fieldActive('data', item)">
+					<textarea class="form-control" ng-model="vm.utils.active_edit.edit_record.data" ng-disabled="vm.utils.active_edit.is_loading" ng-blur="vm.utils.active_edit.saveChanges()" style="height: 200px;"></textarea>
+				</div>
+
+			</div>
+
+			<div style="font-weight: bold; font-size: 0.8em; padding: 15px; padding-top: 0px; position: relative;" class="text-muted">
+				
+				<div ng-show="item.record_id">
+					<span ng-bind="item.record_type"></span> <span ng-bind="item.record_id"></span>
+				</div>
+
+				<div ng-show="!item.record_id && item.data_type == 'string'">
+					<span>text snippet</span>
+				</div>
+
+				<div style="position: absolute; display: inline-block; right: 5px; top: 0px; padding-bottom: 5px;">
+					
+					<a href="javascript: void(0)" ng-show="!item.record_id && item.data_type == 'string'" ngclipboard data-clipboard-text="{{ item.data }}"  style="text-decoration: none; font-weight: bold; font-size: 1em;">
+						COPY
+					</a>&nbsp;&nbsp;
+
+					<a href="javascript: void(0)" ng-click="vm.utils.active_item.select(item)" style="text-decoration: none; font-size: 1.2em;" class="text-muted" data-placement="left" data-content-template="../rm-utils/clipboard/tpl/clipboard_item_popover.html" data-trigger="click" bs-popover>
+						<i class="bi bi-three-dots-vertical"></i>
+					</a>
+				</div>
+
+			</div>
+		
+		</div>
+
+		<div class="text-end" style="margin-top: 15px;">
+			<dir-pagination-controls pagination-id="clipboard"></dir-pagination-controls>
+		</div>
+
+	</div>
+
+</div>
+
+<div ng-show="vm.utils.tabs.tabActive('quick_add') && !vm.utils.is_loading">
+
+	<div data-ajax-loader ng-model="vm.utils.quick_add.is_loading"></div>
+
+	<div ng-show="!vm.utils.quick_add.is_loading">
+		
+		<div class="form-group">
+			<label>Enter Text</label>
+			<textarea class="form-control" ng-model="vm.utils.quick_add.record.data" style="height: 150px;"></textarea>
+		</div>
+
+		<div class="form-group">
+			<button type="button" ng-click="vm.utils.quick_add.save()" ng-disabled="vm.utils.quick_add.is_loading" class="btn btn-block btn-success btn-sm">Add</button>
+		</div>
+
+	</div>
+
+</div>
+
+<div ng-show="vm.utils.tabs.tabActive('upload') && !vm.utils.is_loading">
+	
+	<!-- <div data-plup-clipboard-uploader data-directiveid="vm.utils.file_uploader.directive_id" data-relations="vm.utils.file_uploader.relations"></div> -->
+
+</div>
+
+<div ng-show="vm.utils.tabs.tabActive('clear_clipboard_confirmation') && !vm.utils.is_loading" style="margin-top: 40px;">
+
+	<p class="text-muted text-center">Are you sure you want to clear all <span ng-bind="vm.utils.clipboard.items.length || '0'" style="font-weight: 600;"></span> clipboard items?</p>
+	<p class="text-muted text-center">This will delete all items of all record types</p>
+	<p class="text-danger text-center">Your clipboard will be empty</p>
+
+	<div class="text-center" style="margin-top: 40px;">
+		<button class="btn btn-sm btn-success" ng-click="vm.utils.clear_clipboard.confirm()">Confirm</button>
+
+		<div style="margin-top: 15px;">
+			<a href="javascript: void(0);" style="text-decoration: none;" class="text-danger" ng-click="vm.utils.tabs.changeTab('browse')">Cancel</a>
+		</div>
+	</div>
+
+</div>
+
+<div ng-show="vm.utils.tabs.tabActive('gallery_view')" style="margin-top: 25px;">
+
+	<div class="text-center" style="border-radius: 5px; padding: 5px; border: 1px solid #ddd;">
+        
+        <img ng-src="{{ vm.utils.gallery_view.active_url }}" style="display: inline-block; max-width: 100%; height: auto;" />
+
+    </div>
+
+</div>

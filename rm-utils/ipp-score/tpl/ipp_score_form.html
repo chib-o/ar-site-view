@@ -1,0 +1,72 @@
+<div ng-show="vm.utils.ipp_score_form.is_loading">
+	<div class="text-center text-muted">Saving Planning Score</div>
+</div>
+
+<div ng-show="!vm.utils.ipp_score_form.is_loading">
+	
+	<div class="form-group my-4">
+		<label class="form-label" ng-show="vm.utils.ipp_score_form.canChangeComplianceProfile()">What compliance profile for this asset are you giving an inspection planning & prioritisation score for?</label>
+		<select class="form-select" ng-model="vm.utils.ipp_score_form.compliance_profile.profile_point_ref" ng-options="option.ProfileRef as option.Title for option in vm.utils.ipp_score_form.profile_points" ng-change="vm.utils.ipp_score_form.updateDisplayedIppScore()" ng-disabled="!vm.utils.ipp_score_form.canChangeComplianceProfile()">
+            <option value="">No Selection</option>
+        </select>
+	</div>
+
+	<div data-risk-matrix5x5 data-directiveid="vm.utils.ipp_score_form.matrix_initial.directive_id" data-coord="vm.utils.ipp_score_form.matrix_initial.coord"></div>
+
+	<div style="padding: 20px 0px 5px 0px;">
+        <div ng-show="vm.utils.ipp_score_form.matrix_initial.score_data.y == 1 || vm.utils.ipp_score_form.matrix_initial.score_data.y == 2" class="big-button-panel-alert text-center">
+            <p class="user-information energized">Based on the selected planning score, this asset does not require inspection</p>
+
+            <div ng-show=!vm.utils.ipp_score_form.score_acknowledged>
+                <p class="user-information dark-text">Please acknowledge this before saving</p>
+                <br>
+                <button type="button" class="btn btn-primary btn-sm" ng-click="vm.utils.ipp_score_form.acknowledgeScore()">Acknowledge score</button>
+            </div>
+        </div>
+        <div class="form-group" ng-hide="vm.utils.ipp_score_form.matrix_initial.score_data.y == 1 || vm.utils.ipp_score_form.matrix_initial.score_data.y == 2">
+			<label class="form-label">Potential for significant risk due to deterioration?</label>
+			<select class="form-select" ng-model="vm.utils.ipp_score_form.ipp_score.deterioration_risk" class="select-input-field">
+				<option value="Yes">Yes</option>
+				<option value="No">No</option>
+			</select>
+		</div>
+    </div>
+
+	<div ng-show="vm.utils.ipp_score_form.active_profile.IsAgent == 'Yes'">
+		<div class="form-group mt-4">
+	        <label class="form-label">Machine size</label>
+	        <select ng-model="vm.utils.ipp_score_form.ipp_score.agent_asset_size" class="form-select" ng-options="option._id as option.name for option in vm.utils.ipp_score_form.asset_sizes">
+	            <option value="">No selection</option>
+	        </select>
+	    </div>
+
+	    <div class="form-group mt-4">
+	        <label class="form-label">Estimated time to inspect</label>
+	        <p ng-show="vm.utils.ipp_score_form.ipp_score.agent_asset_size == null || vm.utils.ipp_score_form.ipp_score.agent_asset_size == ''" class="text-danger">Please select a machine size</p>
+	        <p ng-show="vm.utils.ipp_score_form.ipp_score.agent_asset_size == 1" class="neutral-text">20 mins</p>
+	        <p ng-show="vm.utils.ipp_score_form.ipp_score.agent_asset_size == 2" class="neutral-text">45 mins</p>
+	        <p ng-show="vm.utils.ipp_score_form.ipp_score.agent_asset_size == 3" class="neutral-text">70 mins</p>
+	        <p ng-show="vm.utils.ipp_score_form.ipp_score.agent_asset_size == 4" class="neutral-text">160 mins</p>
+
+	        <input ng-show="vm.utils.ipp_score_form.ipp_score.agent_asset_size == 5" type="number" ng-model="vm.utils.ipp_score_form.ipp_score.agent_inspection_time" placeholder="Inspection time (minutes)" class="form-control">
+	    </div>
+	</div>
+
+	<div class="form-group mt-4">
+		<label class="form-label">Notes</label>
+		<textarea type="text" class="form-control" ng-model="vm.utils.ipp_score_form.ipp_score.pipp_notes"></textarea>
+	</div>
+	
+	<!-- <div class="form-group mt-4">
+		
+	</div> -->
+
+	<div class="row mt-4">
+		<div class="col-6 text-center">
+			<button type="button" class="btn btn-success" ng-click="vm.utils.ipp_score_form.save();" ng-disabled="vm.utils.ipp_score_form.is_loading || !vm.utils.ipp_score_form.ippScoreValid()" ng-class="{'disabled-button': vm.utils.ipp_score_form.is_loading || !vm.utils.ipp_score_form.ippScoreValid()}">Save risk score</button>
+		</div>
+		<div class="col-6 text-center">
+			<button type="button" class="btn btn-danger" ng-click="vm.utils.ipp_score_form.exit();">Close</button>
+		</div>
+	</div>
+</div>

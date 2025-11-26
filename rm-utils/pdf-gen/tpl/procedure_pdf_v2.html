@@ -1,0 +1,476 @@
+<div style="width: 100%; color: #000; background-color: #fff;">
+	
+	<!-- PROCEDURE INFO -->
+	<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+		<div style="width: 66.6%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<span style="color: #333; font-size: 12pt;">Standard Operating Procedure</span>
+			<br>
+			<span style="font-weight: bold; font-size: 12pt; color: #000;" ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.title || 'Not named'"></span>
+
+			<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+
+					<div ng-show="vm.utils.pdf_gen.data.structured_procedure.subject_record.media.length" ng-repeat="media in vm.utils.pdf_gen.data.structured_procedure.subject_record.media | limitTo: 1">
+						<img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="max-width: 100%; height: auto;" >
+
+						<img ng-show="media.file_downloaded == null" src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+					</div>
+
+					<div ng-show="!vm.utils.pdf_gen.data.structured_procedure.subject_record.media.length">
+						<img style="max-width: 100%;" src="../images/custom_icons/No Media.png">
+					</div>
+					
+				</div>
+				<div style="width: 66.6%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+					<span style="font-size: 8pt; color: #333;">Managed Risk</span>
+
+					<div style="width: 100%; font-weight: 600; background-color: {{ vm.utils.pdf_gen.data.structured_procedure.procedure_record.mr_initial_colour }}; color: #fff; text-align: center; margin-bottom: 5px;">
+						<span>
+							<span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.mr_matrix_score_phrase_initial"></span> [<span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.mr_matrix_score_initial"></span>]
+						</span>
+					</div>
+
+					<div style="margin-bottom: 5px;">
+						<span style="font-size: 8pt; color: #333;">Subject</span>
+						<br>
+						<span style="font-size: 10pt; font-weight: bold; color: #000;" ng-bind="vm.utils.pdf_gen.data.structured_procedure.subject_record.asset_ref || 'Not named'"></span>
+					</div>
+
+					<div>
+						<span style="font-size: 8pt; color: #333;">Location</span>
+						<br>
+						<span style="color: #000;">--/--</span>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+				<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+					<div style="margin-bottom: 5px;">
+						<span style="color: #333; font-size: 8pt;">Issued</span>
+						<br>
+						<span style="font-weight: bold; font-size: 8pt; color: #000;" ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.todays_date | date: 'dd/MM/yyyy'"></span>
+					</div>
+					<div style="margin-bottom: 5px;">
+						<span style="color: #333; font-size: 8pt;">Reviewed By</span>
+						<br />
+						<span style="font-size: 8pt; color: #000;">--/--</span>
+					</div>
+					<div style="margin-bottom: 5px;">
+						<span style="color: #333; font-size: 8pt;">Owner</span>
+						<br />
+						<span style="font-size: 8pt; color: #000;">--/--</span>
+					</div>
+				</div>
+				<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+					<div style="background-color: black; width: 100%; height: 200px; margin-bottom: 10px;"></div>
+
+					<span style="color: #333; font-size: 8pt;">
+						<span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.rm_ref || '-'"></span> <span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.revision_number || '-'"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END PROCEDURE INFO -->
+
+
+	<!-- RELEVANT HAZARD TYPES/CONTROL TYPES -->
+	<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 40px;">
+		<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<div style="font-weight: bold; color: #000; background-color: #ddd; width: 100%; padding-left: 4px;">
+				<span>Relevant Hazard Types</span>
+			</div>
+			<div>
+				<span style="font-size: 6pt; color: #333; font-style: italic;">**A hazard type may occur multiple time within the procedure</span>
+			</div>
+
+			<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+				<div ng-repeat="hazard_type in vm.utils.pdf_gen.data.unique_hazard_types" style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center; margin-bottom: 20px;">
+					<img ng-src="{{ hazard_type.hazard_type_icon_path }}" style="max-width: 40px; max-height: 40px;">
+					<br>
+					<span ng-bind="hazard_type.hazard_type_name || 'Not named'" style="font-size: 8pt; color: #000;"></span>
+				</div>
+			</div>
+		</div>
+		<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<div style="font-weight: bold; color: #000; background-color: #ddd; width: 100%; padding-left: 4px;">
+				<span>Relevant Control Types</span>
+			</div>
+			<div>
+				<span style="font-size: 6pt; color: #333; font-style: italic;">**A control type may occur multiple times within the procedure</span>
+			</div>
+
+			<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+				<div ng-repeat="control_type in vm.utils.pdf_gen.data.unique_control_types" style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center; margin-bottom: 20px;">
+
+					<img ng-src="{{ control_type.icon_url }}" style="max-width: 40px; max-height: 40px;">
+
+					<!-- <img src="../images/rrm_icons/ISO7010/ISO_7010_F001.svg.png" style="max-width: 40px; max-height: 40px;"> -->
+					<br>
+					<span ng-bind="control_type.rrm3_name || 'Not named'" style="font-size: 8pt; color: #000;"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END RELEVANT HAZARD TYPES/CONTROL TYPES -->
+
+
+	<!-- SIGNIFICANT CONCERNS -->
+	<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+		<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<div style="width: 100%; font-weight: bold; background-color: #eee; border: 1px solid #eee; padding: 6px;">
+				<span style="font-size: 10pt; color: #000;">! Significant Concerns (S.C.) <span style="font-size: 8pt; color: #333;">Where the author recognises a significant risk that could have been avoided by design or planning.</span></span>
+			</div>
+
+			<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; width: 100%; font-weight: bold; background-color: #eee; border: 1px solid #eee; font-size: 8pt; color: #000; margin-left: 0px; margin-right: 0px; padding: 6px;">
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+					<span>Step</span>
+				</div>
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+					<span>Category</span>
+				</div>
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+					<span>Concern</span>
+				</div>
+			</div>
+
+			<div ng-show="!vm.utils.pdf_gen.data.significant_concerns.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-left: 0px; margin-right: 0px;">
+				<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; border: 1px solid #eee; font-weight: bold; color: #333; font-size: 8pt; text-align: center; padding: 6px;">
+					<span>The author has not identified any significant concerns for this procedure</span>
+				</div>
+			</div>
+
+			<div ng-show="vm.utils.pdf_gen.data.significant_concerns.length" ng-repeat="concern in vm.utils.pdf_gen.data.significant_concerns" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-left: 0px; margin-right: 0px; color: #000; border: 1px solid #eee;">
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; border: 1px solid #eee;">
+					<span style="font-size: 6pt; font-weight: bold;">(<span ng-bind="concern.section_title"></span>)</span>
+					<br>
+					<span style="font-weight: bold; font-size: 8pt;">
+						<span ng-bind="concern.section_index"></span>.<span ng-bind="concern.step_index"></span>
+					</span> <span ng-bind="concern.step_name" style="font-size: 8pt;"></span>
+				</div>
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; border: 1px solid #eee;">
+					<img ng-src="{{ concern.icon_path }}" style="width: 16px; height: 16px; display: inline-block;" >
+					<span ng-bind="concern.concern_category" style="font-weight: bold; font-size: 8pt;"></span>
+				</div>
+				<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; border: 1px solid #eee;">
+					<span ng-bind="concern.concern_description" style="font-size: 8pt;"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END SIGNIFICANT CONCERNS -->
+
+
+	<!-- PROCEDURE SECTIONS -->
+	<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px; margin-bottom: 30px;">
+		<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<div style="width: 100%; font-weight: bold; background-color: #ddd; border: 1px solid #eee; padding: 6px;">
+				<span style="font-size: 10pt; color: #000;">Procedure Sections</span>
+			</div>
+
+			<div ng-repeat="section in vm.utils.pdf_gen.data.structured_procedure.sections" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-left: 0px; margin-right: 0px;">
+				<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; border-right: 2px solid #eee; border-bottom: 2px solid #eee; border-left: 2px solid #eee; font-size: 10pt; color: #000; padding-top: 4px; padding-bottom: 4px;">
+					<span ng-bind="section.section_index"></span>. <span ng-bind="section.title"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END PROCEDURE SECTIONS -->
+
+	<div class="break-before"></div>
+
+	<!-- START STRUCTURED PROCEDURE -->
+	<div class="break-before" ng-repeat="section in vm.utils.pdf_gen.data.structured_procedure.sections" style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+		<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<div style="width: 100%; font-weight: bold; background-color: #ddd; padding: 6px;">
+				<span style="color: #666; font-size: 8pt; font-weight: bold;" ng-bind="section.section_index"></span>. <span style="font-size: 10pt; color: #000;" ng-bind="section.title"></span>
+			</div>
+
+			<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-left: 0px; margin-right: 0px;" ng-repeat="step in section.steps" ng-show="section.steps.length">
+				<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding: 0px;">
+					<div style="width: 100%; background-color: #eee; padding: 6px;">
+						<div style="display: inline-block; vertical-align: top; font-weight: bold; margin-right: 10px;">
+							<span style="font-size: 8pt; color: #666;"><span ng-bind="step.section_index"></span>.<span ng-bind="step.step_index"></span></span>
+						</div>
+						<div style="display: inline-block;">
+							<span style="color: #000; font-size: 10pt;" ng-bind="step.description"></span>
+
+							<div ng-show="step.concern_category">
+								<img ng-src="{{ step.concern_icon_path }}" style="width: 16px; height: 16px; display: inline-block;" >
+								<span style="font-size: 8pt; color: #000;">
+									<span style="font-weight: bold;" ng-bind="step.concern_category"></span>: 
+									<span ng-bind="step.concern_description"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- START STEP MEDIA -->
+					<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; background-color: #fff; margin-left: 0px; margin-right: 0px; margin-top: 5px;" ng-show="step.media.length">
+						<div ng-repeat="media in step.media" style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+							<img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="width: 100%; height: auto">
+
+							<img ng-show="media.file_downloaded == null" ng-src="../images/custom_icons/No Media.png" style="width: 100%; height: auto">
+
+							<!-- START ANNOTATIONS -->
+							<div ng-repeat="annotation in media.annotations" ng-show="media.annotations.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 4px;">
+								<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+									<img style="display: inline-block; margin-right: 2px; width: 25px;" src="../images/markers/{{ annotation.file_name }}">
+									<span style="font-size: 8pt; color: #000;" ng-bind="annotation.description"></span>
+								</div>
+							</div>
+							<!-- END ANNOTATIONS -->
+						</div>
+					</div>
+					<!-- END STEP MEDIA -->
+
+
+					<!-- START STEPS HAZARDS AND CONTROLS -->
+					<div ng-repeat="hazard in step.hazards_w_controls track by $index" ng-show="step.hazards_w_controls.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+						<!-- START HAZARD INFO -->
+						<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+							<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+								<div style="width: 8.33%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+									<img ng-src="{{ hazard.index_icon_path }}" style="max-width: 100%; height: auto;" >
+								</div>
+								<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+									<img ng-src="{{ hazard.hazard_type_icon_path }}" style="max-width: 100%; height: auto;" >
+								</div>
+								<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+									<span style="font-weight: bold; font-size: 8pt; color: #000;" ng-bind="hazard.hazard_type_name"></span> <span style="font-size: 8pt; color: #666;">[<span ng-bind="hazard.rm_ref"></span>]</span>
+								</div>
+								<div style="width: 24.99%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+									<span style="font-size: 8pt; color: {{ hazard.initial_colour }};" ng-bind="hazard.matrix_score_phrase_initial"></span> <span style="font-size: 8pt; color: {{ hazard.initial_colour }}">[<span ng-bind="hazard.matrix_score_initial"></span>]</span>
+								</div>
+							</div>
+						</div>
+						<!-- END HAZARD INFO -->
+
+						<!-- START HAZARDS CONTROLS -->
+						<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+							<div ng-repeat="control in hazard.controls" ng-show="hazard.controls.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+								<div style="width: 8.33%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+									<img ng-src="{{ control.index_icon_path }}" style="max-width: 100%; height: auto;" >
+								</div>
+								<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+									<img ng-show="control.icon_url" ng-src="{{ control.icon_url }}" style="max-width: 100%; height: auto;" >
+
+									<img ng-show="!control.icon_url" src="../images/custom_icons/Control Item Grey.png" style="max-width: 100%; height: auto;" >
+								</div>
+								<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; font-size: 8pt; color: #000;">
+									<span style="font-weight: bold;" ng-bind="control.rrm3_name"></span>, <span ng-bind="control.rrm1_name"></span>, <span ng-bind="control.rrm2_name"></span>
+								</div>
+								<div style="width: 24.99%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: right;">
+									<span style="font-size: 8pt; color: #666;">[<span ng-bind="control.rm_ref"></span>]</span>
+								</div>
+							</div>
+
+							<div ng-show="!hazard.controls.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+								<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+									<span style="color: #000; font-size: 8pt; font-weight: bold;">No relevant controls recorded for this hazard</span>
+								</div>
+							</div>
+						</div>
+						<!-- END HAZARDS CONTROLS -->
+					</div>
+
+					<div ng-show="!step.hazards_w_controls.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+						<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+							<span style="color: #000; font-size: 8pt; font-weight: bold;">The author has not identified any hazards for this step</span>
+						</div>
+					</div>
+					<!-- END STEPS HAZARDS AND CONTROLS -->
+				</div>
+			</div>
+
+			<div ng-show="!section.steps.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+				<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+					<span style="font-size: 10pt; color: #000;">No steps for this section</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END STRUCTURED PROCEDURE -->
+
+
+	<!-- HAZARD/CONTROL APPENDIX -->
+	<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 40px;">
+		<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<h4 style="color: #000;">Appendix - Detailed Hazards and Controls List</h4>
+		</div>
+	</div>
+
+	<div ng-repeat="hazard in vm.utils.pdf_gen.data.hazards" ng-show="vm.utils.pdf_gen.data.hazards.length" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 6px;">
+		<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+			<!-- START HAZARD INFO -->
+			<div style="background-color: #f5f4f5; padding: 6px;">
+				<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+					<div style="width: 83.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+						<img src="{{ hazard.index_icon_path }}" style="height: 20px; width: 20px; display: inline-block;" >
+						<span style="font-weight: bold; font-size: 10pt; color: #000;" ng-bind="hazard.hazard_type_name"></span>
+					</div>
+					<div style="width: 16.7%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: right;">
+						<span style="font-size: 8pt; color: #333;">[<span ng-bind="hazard.rm_ref"></span>]</span>
+					</div>
+				</div>
+				<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+					<div style="width: 58.31%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+						<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+							<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<span style="font-size: 8pt; color: #333;">Without Controls</span>
+
+								<div style="width: 100%; padding: 4px; background-color: {{ hazard.initial_colour }}">
+									<span style="color: #fff; font-weight: bold; font-size: 12pt;">
+										<span ng-bind="hazard.matrix_score_phrase_initial"></span> [<span ng-bind="hazard.matrix_score_initial"></span>]
+									</span>
+								</div>
+							</div>
+							<div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<span style="font-size: 8pt; color: #333;">With Controls</span>
+
+								<div style="width: 100%; padding: 4px; background-color: {{ hazard.after_colour }};">
+									<span style="color: #fff; font-weight: bold; font-size: 12pt;">
+										<span ng-bind="hazard.matrix_score_phrase_after"></span> [<span ng-bind="hazard.matrix_score_after"></span>]
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+							<div style="width: 33.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<img ng-src="{{ hazard.hazard_type_icon_path }}" style="max-width: 100%; height: auto;" >
+							</div>
+							<div style="width: 66.6%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+									<div style="width: 16.7%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+										<span style="color: #333; font-size: 8pt;">ORIGIN</span>
+									</div>
+									<div style="width: 83.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; color: #000; font-size: 10pt;">
+										<span ng-show="hazard.hazard_origin_name" ng-bind="hazard.hazard_origin_name"></span>
+										<span ng-show="!hazard.hazard_origin_name">N/A</span>
+									</div>
+								</div>
+
+								<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+									<div style="width: 16.7%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+										<span style="color: #333; font-size: 8pt;">RESULT</span>
+									</div>
+									<div style="width: 83.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; color: #000; font-size: 10pt;">
+										<span ng-show="hazard.hazard_consequence_name" ng-bind="hazard.hazard_consequence_name"></span>
+										<span ng-show="!hazard.hazard_consequence_name">N/A</span>
+									</div>
+								</div>
+
+								<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+									<div style="width: 16.7%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+										<span style="color: #333; font-size: 8pt;">NOTES</span>
+									</div>
+									<div style="width: 83.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; color: #000; font-size: 10pt;">
+										<span ng-show="hazard.hazard_description" ng-bind="hazard.hazard_description"></span>
+										<span ng-show="!hazard.hazard_description">N/A</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div style="width: 41.65%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+						<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+							<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+
+								<div ng-show="hazard.media.length" ng-repeat="media in hazard.media | limitTo: 1">
+									<img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="max-width: 100%; height: auto;" >
+
+									<img ng-show="media.file_downloaded == null" src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+								</div>
+
+								<div ng-show="!hazard.media.length">
+									<img src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END HAZARD INFO -->
+
+
+			<!-- START HAZARDS CONTROLS -->
+			<div ng-repeat="control in hazard.controls" style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 6px;">
+				<div style="width: 8.33%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center; text-align: center;">
+					<img src="../images/custom_icons/Control Item Grey.png" style="height: 40px; width: 40px;" > 
+				</div>
+				<div style="width: 91.63%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+					<div style="background-color: #f5f4f5; padding: 6px;">
+						<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+							<div style="width: 83.3%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<span style="color: #333; font-size: 8pt;">WE WILL HAVE/DO/USE:</span>
+								<br>
+								<img src="{{ control.index_icon_path }}" style="height: 20px; width: 20px; display: inline-block;" >
+								<span style="font-weight: bold; font-size: 10pt; color: #000;" ng-bind="control.rrm3_name"></span>
+								<br>
+								<span style="font-size: 10pt; color: #333;">
+									<span ng-bind="control.rrm2_name"></span>, <span ng-bind="control.rrm1_name"></span>
+								</span>
+							</div>
+							<div style="width: 16.7%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: right;">
+								<span style="font-size: 8pt; color: #333;">[<span ng-bind="hazard.rm_ref"></span>]</span>
+							</div>
+						</div>
+						<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+							<div style="width: 58.31%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+									<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+										<img ng-show="control.icon_url" ng-src="{{ control.icon_url }}" style="max-width: 100%; height: auto;" >
+
+										<img ng-show="!control.icon_url" src="../images/custom_icons/Control Item Grey.png" style="max-width: 100%; height: auto;" >
+									</div>
+								</div>
+							</div>
+
+							<div style="width: 41.65%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+									<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+
+										<div ng-show="control.media.length" ng-repeat="media in control.media | limitTo: 1">
+											<img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="max-width: 100%; height: auto;" >
+
+											<img ng-show="media.file_downloaded == null" src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+										</div>
+
+										<div ng-show="!control.media.length">
+											<img src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+										</div>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+						<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;">
+							<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px;">
+								<span style="color: #333; font-size: 8pt;">DESCRIPTION</span>
+								<div style="color: #000; font-size: 10pt;">
+									<span ng-show="control.description" ng-bind="control.description"></span>
+									<span ng-show="!control.description">N/A</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END HAZARDS CONTROLS -->
+		</div>
+	</div>
+
+	<div style="display: flex; flex-wrap: nowrap; max-width: 100% !important;" ng-show="!vm.utils.pdf_gen.data.hazards.length">
+		<div style="width: 100%; flex: 0 0 auto; max-width: 100% !important; padding-left: 2px; padding-right: 2px; text-align: center;">
+			<span style="font-size: 10pt; color: #000;">No hazards recorded for this procedure</span>
+		</div>
+	</div>
+	<!-- END HAZARD/CONTROL APPENDIX -->
+
+</div>

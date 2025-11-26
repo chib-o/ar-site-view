@@ -1,0 +1,53 @@
+<!-- <button type="button" class="btn btn-danger" ng-click="vm.utils.scanner.destroyScanner();">Destroy</button> -->
+<div style="border: 2px solid #ddd; border-radius: 15px; padding: 15px;">
+
+    <!-- <h1>
+        <span ng-bind="vm.utils.directive_id || 'N/A'"></span> (<span ng-bind="vm.utils.scope_id"></span>)
+    </h1> -->
+
+    <div ng-show="vm.utils.scanner.permissions.camera.error">
+        <p class="fw-bold text-danger">Camera permission not enabled</p>
+
+        <p>Please give permission for the app to access the camera to be able to scan QR codes</p>
+    </div>
+
+    <div ng-show="!vm.utils.scanner.permissions.camera.error">
+
+        <div id="{{ vm.directive_id }}-video-container" style="position: relative;">
+            <video id="{{ vm.directive_id }}-qr-video" class="responsive-video"></video>
+        </div>
+
+        <div class="form-group mt-2">
+            <!-- <button ng-click="vm.utils.scanner.toggleFlash();" class="btn btn-sm" ng-class="{ 'btn-default': !vm.utils.scanner.flash_on, 'btn-success': vm.utils.scanner.flash_on }">📸 Flash: <span ng-show="!vm.utils.scanner.flash_on">off</span><span ng-show="vm.utils.scanner.flash_on">on</span></button> -->
+
+            <button class="btn" ng-class="{'btn-danger': !vm.utils.scanner.flash_on, 'btn-success': vm.utils.scanner.flash_on}" ng-click="vm.utils.scanner.toggleFlash();">
+                <span><i class="bi bi-lightning-charge-fill"></i> Flash: <span ng-show="vm.utils.scanner.flash_on">on</span><span ng-show="!vm.utils.scanner.flash_on">off</span></span>
+            </button>
+        </div>
+
+        <div class="form-group mt-2">
+            <label class="form-label">Scan Mode</label>
+            <select ng-model="vm.utils.scanner.inversion_mode" ng-change="vm.utils.scanner.setInversionMode();" class="form-control input-sm">
+                <option value="original">Scan original (dark QR code on bright background)</option>
+                <option value="invert">Scan with inverted colors (bright QR code on dark background)</option>
+                <option value="both">Scan both</option>
+            </select>
+        </div>
+
+        <div class="form-group mt-2">
+            <label class="form-label">Preferred Camera</label>
+            <select class="form-control input-sm" ng-model="vm.utils.scanner.active_camera_id" ng-change="vm.utils.scanner.changeCamera();" ng-options="option.id as option.label for option in vm.utils.scanner.cameras"></select>
+        </div>
+
+        <div class="form-group mt-2">
+            <label class="form-label">Scan Image</label>
+            <div class="text-muted" style="font-size: 0.8em; font-style: italic; margin-bottom: 5px;">If you have a picture of a QR code select it here to scan it</div>
+            <input type="file" id="{{ vm.directive_id }}-file-selector">
+        </div>
+
+    </div>
+
+</div>
+
+
+

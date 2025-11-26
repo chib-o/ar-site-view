@@ -1,0 +1,78 @@
+
+<!-- START LOADING INDICATOR -->
+<div class="mt-5 text-center" ng-show="vm.utils.asset_lineage.loading">
+	<img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+	<p class="mt-5 fw-bold">Loading lineage...</p>
+</div>
+<!-- END LOADING INDICATOR -->
+
+<!-- START ERROR HANDLER -->
+<div class="alert alert-danger" ng-show="vm.utils.asset_lineage.error_handler.error_message">
+	<div class="alert-text">
+		<p class="mb-0" ng-bind="vm.utils.asset_lineage.error_handler.error_message"></p>
+	</div>
+</div>
+<!-- END ERROR HANDLER -->
+	
+<div ng-show="!vm.utils.asset_lineage.loading && !vm.utils.asset_lineage.error_handler.error">
+	
+	<!-- <div class="mb-4">
+		<h4>Viewing asset lineage</h4>
+	</div> -->
+
+	<div style="border: 0; border-radius: .5rem; box-shadow: 0 2px 4px rgba(0,0,20,.08),0 1px 2px rgba(0,0,20,.08);">
+		<!-- <div style="overflow-x: scroll!important; width: 100%!important; background-color: white;">
+			<div style="white-space: nowrap!important; width: 100%!important;"> -->
+				<div ng-repeat="asset in vm.utils.asset_lineage.data.structured_list track by asset._id" ng-include="'assetLineageTemplate'"></div>
+			<!-- </div>
+		</div> -->
+	</div>
+
+</div>
+
+<script type="text/ng-template" id="assetLineageTemplate">
+
+	<div class="lineage-item-container" style="padding-left: {{ asset.asset_indent }}px;">
+		<div class="lineage-item row py-4 mx-0" ng-class="{'lineage-item-highlighted': asset.highlighted == 'Yes'}">
+	        <div class="col-10 text-nowrap oflow-x-hdn">
+	        	<span class="fw-bold" ng-class="{'text-primary': asset.highlighted == 'Yes'}" ng-bind="asset.asset_ref || 'Undefined'" ng-click="vm.utils.asset_lineage.toggleShowMoreInfo(asset._id)" style="cursor: pointer;"></span>
+	        </div>
+
+	        <div class="col-2 text-end">
+	        	<a href="javascript: void(0);" ng-click="vm.utils.asset_lineage.toggleShowSubAssets(asset)" ng-show="asset.sub_assets.length" class="text-primary">
+	        		<i class="bi bi-chevron-down" ng-show="!asset.show_sub_assets"></i>
+	        		<i class="bi bi-chevron-up" ng-show="asset.show_sub_assets"></i>
+	        	</a>
+	        </div>
+	    </div>
+	</div>
+
+	<div ng-show="asset.show_more_info" style="position: relative;">
+
+		<div style="width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-top: 15px solid #d9dde0; position: absolute; top: -20px; left: 0; right: 0; margin-left: auto; margin-right: auto;"></div>
+
+		<div style="width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-top: 15px solid #ffffff; position: absolute; top: -21px; left: 0; right: 0; margin-left: auto; margin-right: auto;" ng-show="asset.highlighted != 'Yes'"></div>
+		<div style="width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-top: 15px solid #e9e6ff; position: absolute; top: -21px; left: 0; right: 0; margin-left: auto; margin-right: auto;" ng-show="asset.highlighted == 'Yes'"></div>
+
+		<div class="mt-5 px-2">
+
+			<p>
+				<span class="fw-bold">ID: </span><span ng-bind="asset.rm_id || '-'"></span>
+			</p>
+			<p>
+				<span class="fw-bold">Asset Ref: </span><span ng-bind="asset.asset_ref || '-'"></span>
+			</p>
+			<p>
+				<span class="fw-bold">Serial: </span><span ng-bind="asset.serial || '-'"></span>
+			</p>
+
+		</div>
+
+	</div>
+
+	<div ng-show="asset.show_sub_assets">
+		<div ng-repeat="asset in asset.sub_assets track by asset._id" ng-include="'assetLineageTemplate'"></div>
+	</div>
+
+</script>

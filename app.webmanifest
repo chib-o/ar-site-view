@@ -1,0 +1,37 @@
+{
+  "short_name": "RiskMach WebApp Beta",
+  "name": "RiskMach: Online risk management platform",
+  "icons": [{
+      "src": "images/manifest/rm_logo_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/manifest/rm_logo_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots": [{
+      "src": "images/manifest/rm_logo_320.png",
+      "type": "image/png",
+      "sizes": "320x320",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "images/manifest/rm_logo_512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "form_factor": "wide"
+    }
+  ],
+  "id": "/?source=pwa",
+  "start_url": "https://riskmach.sotersoft.co.uk/browser-app/app/dashboard/?source=pwa",
+  "background_color": "#F5F5F5",
+  "display": "standalone",
+  "scope": "https://riskmach.sotersoft.co.uk/browser-app/app/",
+  "theme_color": "#179DD9",
+  "shortcuts": [],
+  "description": "Inspect survey and report on your machinery",
+  "permissions": ["unlimitedStorage"]
+}

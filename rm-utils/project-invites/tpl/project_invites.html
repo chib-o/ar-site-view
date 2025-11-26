@@ -1,0 +1,153 @@
+
+<!-- ERROR HANDLER -->
+<div ng-show="vm.utils.error_handler.error">
+	<div class="alert alert-danger text-center">
+		<i class="bi bi-exclamation-circle-fill" style="font-size: 1.4em;"></i>
+		<p class="alert-text mt-2" ng-bind="vm.utils.error_handler.error_message"></p>
+
+		<div class="text-end">
+			<button class="btn btn-sm btn-danger" ng-click="vm.utils.error_handler.clear()">Close</button>
+		</div>
+	</div>
+</div>
+<!-- END ERROR HANDLER -->
+
+<!-- LOADING INDICATOR -->
+<div ng-show="vm.utils.loading" class="text-center">
+	<img src="../images/loading-icon.gif" style="height: 50px; width: auto;" >
+
+	<p class="mt-5 fw-bold">Loading data...</p>
+</div>
+<!-- END LOADING INDICATOR -->
+
+<!-- FORM -->
+<div ng-show="!vm.utils.error_handler.error && !vm.utils.loading">
+
+	<div>
+		<h2 ng-bind="vm.utils.project.record.title || 'N/A'"></h2>
+	</div>
+
+	<div class="form-group mt-5" ng-show="!vm.utils.add_project_invite.show_form && !vm.utils.remove_project_invite.show_confirmation">
+        <label class="form-label">Project privacy</label>
+        <select class="form-select" ng-model="vm.utils.project.record.is_private" ng-disabled="!vm.utils.project.isProjectAdmin()">
+            <option value="No">Un-restricted</option>
+            <option value="Yes">Private</option>
+        </select>
+    </div>
+
+    <!-- PROJECT INVITES -->
+    <div class="mt-5">
+
+        <div ng-show="!vm.utils.add_project_invite.show_form && !vm.utils.remove_project_invite.show_confirmation">
+	        <div class="form-group mt-4" style="margin-bottom: 0px;">
+	            <label class="form-label">Project members</label>
+
+	            <button class="btn btn-sm btn-primary" ng-click="vm.utils.add_project_invite.showForm()" ng-disabled="vm.utils.project_invites.loading || vm.utils.project_invites.refreshing" style="float: right;"><i class="bi bi-plus"></i> Invite user</button>
+	        </div>
+	        <div class="mt-5" style="padding: 0px 15px 10px 15px;">
+	            
+	        	<!-- LOADING/REFRESHING INDICATOR -->
+	        	<div ng-show="vm.utils.project_invites.loading || vm.utils.project_invites.refreshing" class="text-center">
+	        		<img src="../images/loading-icon.gif" style="height: 50px; width: auto;" >
+
+					<p class="mt-5 fw-bold" ng-show="vm.utils.project_invites.loading">Loading project members...</p>
+
+					<p class="mt-5 fw-bold" ng-show="vm.utils.project_invites.refreshing">Refreshing project members...</p>
+	        	</div>
+	        	<!-- END LOADING/REFRESHING INDICATOR -->
+
+	        	<div ng-show="!vm.utils.project_invites.loading && !vm.utils.project_invites.refreshing">
+		            <div ng-show="!vm.utils.project_invites.data.length">
+		                <span>People with project access will appear here</span>
+		            </div>
+
+		            <div ng-repeat="invite in vm.utils.project_invites.visible_data" class="row share-list-item pb-2">
+		                <div class="col-8">
+		                    <p ng-bind="invite.first_name + ' ' + invite.last_name" style="margin-bottom: 5px;"></p>
+		                </div>
+		                <div class="col-4" style="text-align: right;">
+		                    <button type="button" class="btn btn-danger btn-sm" ng-click="vm.utils.remove_project_invite.start(invite)">Remove</button>
+		                </div>
+		            </div>
+		        </div>
+	        </div>
+		</div>
+    </div>
+    <!-- END PROJECT INVITES -->
+
+
+    <!-- PROJECT INVITE FORM -->
+    <div ng-show="vm.utils.add_project_invite.show_form">
+
+    	<div class="form-group mt-4" style="margin-bottom: 0px;">
+            <label class="form-label">Invite user</label>
+        </div>
+
+        <!-- ADDING INDICATOR -->
+        <div ng-show="vm.utils.add_project_invite.loading" class="text-center">
+        	<img src="../images/loading-icon.gif" style="height: 50px; width: auto;" >
+
+			<p class="mt-5 fw-bold">Inviting user...</p>
+        </div>
+        <!-- END ADDING INDICATOR -->
+
+        <div ng-show="!vm.utils.add_project_invite.loading" class="w-100 w-md-50 w-lg-50">
+            <ui-select ng-model="vm.utils.project_invites.selected_user" on-select="vm.utils.project_invites.selectedUser()">
+                <ui-select-match placeholder="Select existing user">
+                    <span style="">
+                        <span ng-bind="$select.selected.UsersName"></span> 
+                    </span>
+                </ui-select-match>
+                <ui-select-choices repeat="user as user in (vm.utils.users.data | filter: $select.search) track by user.UserID">
+                    <span style="">
+                        <span ng-bind="user.UsersName"></span> 
+                    </span>
+                </ui-select-choices>
+            </ui-select>
+
+            <div class="mt-5">
+            	<button class="btn btn-sm btn-success" ng-disabled="!vm.utils.project_invites.selected_user" ng-click="vm.utils.add_project_invite.addProjectInvite(vm.utils.project_invites.selected_user)">Invite user</button>
+            	<button class="btn btn-sm btn-danger" ng-click="vm.utils.add_project_invite.hideForm()">Close</button>
+            </div>
+       	</div>
+
+    </div>
+    <!-- END PROJECT INVITE FORM -->
+
+
+    <!-- REMOVE PROJECT MEMBER CONFIRMATION -->
+    <div ng-show="vm.utils.remove_project_invite.show_confirmation">
+
+    	<div class="form-group mt-4" style="margin-bottom: 0px;">
+            <label class="form-label">Remove project member</label>
+        </div>
+
+        <!-- REMOVING INDICATOR -->
+        <div ng-show="vm.utils.remove_project_invite.loading" class="text-center">
+        	<img src="../images/loading-icon.gif" style="height: 50px; width: auto;" >
+
+			<p class="mt-5 fw-bold">Removing project member...</p>
+        </div>
+        <!-- END REMOVING INDICATOR -->
+
+        <div ng-show="!vm.utils.remove_project_invite.loading" class="w-100 w-md-50 w-lg-50">
+            <p>Are you sure you want to remove this user from the project? </p>
+
+            <div class="mt-5">
+            	<button class="btn btn-sm btn-success" ng-disabled="!vm.utils.remove_project_invite.selected_user" ng-click="vm.utils.remove_project_invite.removeProjectInvite(vm.utils.remove_project_invite.selected_user)">Remove user</button>
+            	<button class="btn btn-sm btn-danger" ng-click="vm.utils.remove_project_invite.hideConfirmation()">Close</button>
+            </div>
+       	</div>
+
+    </div>
+    <!-- END PROJECT MEMBER CONFIRMATION -->
+
+
+    <!-- SAVE PROJECT INVITES BUTTON -->
+    <div class="mt-5" ng-show="!vm.utils.add_project_invite.show_form && !vm.utils.remove_project_invite.show_confirmation">
+    	<button class="btn btn-sm btn-success" ng-click="vm.utils.project.saveAndClose()">Save project privacy settings</button>
+    </div>
+    <!-- END SAVE PROJECT INVITES BUTTON -->
+
+</div>
+<!-- END FORM -->

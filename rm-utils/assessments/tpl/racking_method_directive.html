@@ -1,0 +1,52 @@
+<a href="javascript: void(0)" ng-click="vm.selectScore(0, 'Relevant Observation')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(0, 'Relevant Observation')">
+
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #ddd; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">0</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold;">Relevant Observation</div>
+			<div style="font-size: 0.8em;" class="text-muted">The inspector can log observations to aid the recipient in understanding the context of the wider report.</div>
+		</div>
+	</div>
+
+</a>
+
+
+<a href="javascript: void(0)" ng-click="vm.selectScore(0, 'Surveillance')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(0, 'Surveillance')">
+
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #019847; color: #fff; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">0</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold; color: #019847;">Surveillance Only</div>
+			<div style="font-size: 0.8em;" class="text-muted">There is no immediate risk. The components are considered to be safe and servicable. The components are recorded as suitable for further service until the next inspection.  They are clearly identified (e.g highlighted by photos and / or labelling) for specific re-exanination and re-assessment at the next inspection(s)</div>
+		</div>
+	</div>
+
+</a>
+
+<a href="javascript: void(0)" ng-click="vm.selectScore(10, 'Hazardous Damage')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(10, 'Hazardous Damage')">
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #F6A13E; color: #fff; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">10</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold; color: #F6A13E;">Hazardous Damage - Action Required</div>
+			<div style="font-size: 0.8em;" class="text-muted">There is damage that exceeds the permissable limits (by a factor of less than two). The damage is sufficiently severe to warrant remedial work but not so severe as to warrant the immediate off-loading of the rack. Once the load is removed from a damaged component, the component shall not be reloaded until repairs have been carried out. The user shall isolate the affected racks to ensure that they do not come back into use until the necessary repairs have been carried out and the equipment certified as safe. This defect will automatically progress to RED damage if remedial work has not been carried out within four weeks of the original report.</div>
+		</div>
+	</div>
+</a>
+
+<a href="javascript: void(0)" ng-click="vm.selectScore(25, 'Very Serious Damage')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(25, 'Very Serious Damage')">
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #C24E4F; color: #fff; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">25</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold; color: #C24E4F;">Very Serious Damage - Immediate Action</div>
+			<div style="font-size: 0.8em;" class="text-muted">There is damage which exceeds the permissable limits (by a factor equal or greater than two).  The recipient will be automatically/immediately informed by a system generated email when the defect is saved. A critical level of damage is identified, the racking will be immediately off-loaded and isolated from future use until repair work is carried out. Typically, a particular bay will be off-loaded in the presence of the inspector and roped off to prevent further use. Where this is not feasible/appropriate then equivalent action will be taken and evidence provided to the inspector immediately.</div>
+		</div>
+	</div>
+</a>

@@ -1,0 +1,52 @@
+<a href="javascript: void(0)" ng-click="vm.selectScore(0, 'Closed')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(0, 'Closed')">
+
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #ddd; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">0</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold;">Closed</div>
+			<div style="font-size: 0.8em;" class="text-muted">Action has been taken as required and there is no further risk as a direct consequence of the defect identified.</div>
+		</div>
+	</div>
+
+</a>
+
+
+<a href="javascript: void(0)" ng-click="vm.selectScore(5, 'A')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(5, 'A')">
+
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #019847; color: #fff; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">5</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold; color: #019847;">A</div>
+			<div style="font-size: 0.8em;" class="text-muted">There is no immediate risk. The components are considered to be safe and servicable. The components are recorded as suitable for further service until the next inspection.  They are clearly identified (e.g highlighted by photos and / or labelling) for specific re-exanination and re-assessment at the next inspection(s)</div>
+		</div>
+	</div>
+
+</a>
+
+<a href="javascript: void(0)" ng-click="vm.selectScore(15, 'B')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(15, 'B')">
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #F6A13E; color: #fff; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">15</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold; color: #F6A13E;">B</div>
+			<div style="font-size: 0.8em;" class="text-muted">Identification of any other part found to be deteriorating and which requires to be rectified.</div>
+		</div>
+	</div>
+</a>
+
+<a href="javascript: void(0)" ng-click="vm.selectScore(25, 'C')" style="text-decoration: none; display: block; padding: 10px; margin-bottom: 15px;" ng-style="vm.scoreStyle(25, 'C')">
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="text-center" style="background-color: #C24E4F; color: #fff; font-size: 2em; font-weight: bold; line-height: 100px; border: 2px solid #ddd;">25</div>
+		</div>
+		<div class="col-xs-9">
+			<div style="font-size: 1.2em; font-weight: bold; color: #C24E4F;">C</div>
+			<div style="font-size: 0.8em;" class="text-muted">Description of any defect which is or could become a danger to persons. Details of the defect, any repair, renewal or alteration required to remedy, and any timescales required (immediate or within a certain timeframe).</div>
+		</div>
+	</div>
+</a>

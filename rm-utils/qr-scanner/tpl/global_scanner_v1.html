@@ -1,0 +1,1263 @@
+
+<div>
+    
+</div>
+
+<!-- START QR SCANNER -->
+<div class="row">
+    <div class="col-0 col-md-2 col-lg-3">
+        
+    </div>
+    <div class="col-12 col-md-8 col-lg-6">
+        <div data-qr-scanner data-directiveid="vm.utils.qr_scanner_global.directive_id" data-options="vm.utils.qr_scanner_global.options"></div>
+    </div>
+    <div class="col-0 col-md-2 col-lg-3">
+        
+    </div>
+</div>
+
+<!-- <div class="row">
+    <div class="col-6">
+        <div data-qr-scanner data-directiveid="'testQrScanner'" data-options="vm.utils.qr_scanner_global.options"></div>
+    </div>
+    <div class="col-6">
+        <div data-qr-scanner data-directiveid="vm.utils.qr_scanner_global.directive_id" data-options="vm.utils.qr_scanner_global.options"></div>
+    </div>
+</div> -->
+<!-- END QR SCANNER -->
+
+
+<!-- START QR SCANS LIST -->
+<div class="panel panel-white mt-10 mb-5">
+    <div class="padding">
+        <span class="fw-bold">QR scan results</span>
+    </div>
+    <div class="padding" style="padding-top: 0px;">
+        <form ng-show="!vm.utils.qr_scans_list.loading">
+            <div class="input-group">
+                <input type="text" class="form-control" ng-model="vm.utils.qr_scans_list.filters.general_search" ng-disabled="vm.utils.qr_scans_list.loading" placeholder="Search">
+            </div>
+        </form>
+    </div>
+    <div class="listing">
+
+        <div ng-show="vm.utils.qr_scans_list.loading" class="text-center">
+            <img src="../images/loading-icon.gif" style="height: 40px; width: 40px;" >
+
+            <p class="mb-0 mt-5 fw-bold">Loading scan results...</p>
+        </div>
+
+        <div ng-show="!vm.utils.qr_scans_list.loading">
+
+            <div ng-show="!vm.utils.qr_scans_list.data.length" class="text-center py-2">
+                <p>No QR scan results...</p>
+            </div>
+
+            <div ng-show="vm.utils.qr_scans_list.data.length">
+                
+                <div dir-paginate="qr_scan in vm.utils.qr_scans_list.data | filter: vm.utils.qr_scans_list.filters.general_search | itemsPerPage: 25 : 'qr_scans' track by qr_scan._id" pagination-id="qr_scans" class="listing-item">
+                    <div class="row">
+                        <div class="col-8">
+                            <span><i class="bi bi-qr-code"></i> <span class="text-primary" ng-bind="qr_scan.qr_code || '-'" style="cursor: pointer;" ng-click="vm.utils.qr_lookup.start(qr_scan);"></span></span>
+                        </div>
+                        <div class="col-4 text-end">
+                            <span ng-bind="qr_scan.date_last_scanned || '-' | date: 'dd/MM/yyyy HH:mm'"></span> 
+                            <br>
+                            <span ng-show="qr_scan.lookup_type == 'online'">Online scan</span>
+                            <span ng-show="qr_scan.lookup_type == 'offline'">Offline scan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="!vm.utils.feature_licenses.hasLicense('compliance') && vm.utils.qr_scans_list.data.length == 5" class="text-center py-2">
+                    <a href="javascript: void(0);" ng-click="vm.utils.unlicensed_feature.start('compliance')" class="fw-bold">View more</a>
+                </div>
+
+                <!-- PAGINATION CONTROLS -->
+                <div class="text-end px-4 py-2">
+                    <dir-pagination-controls pagination-id="qr_scans"></dir-pagination-controls>
+                </div>
+                <!-- END PAGINATION CONTROLS -->
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- END QR SCANS LIST -->
+
+
+
+<!-- START SLIDEOUTS -->
+
+<!-- START QR LOOKUP SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100 w-lg-50" tabindex="-1" id="QrRecordLookupSlideout" aria-labelledby="QrRecordLookupSlideoutLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="QrRecordLookupSlideoutLabel"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" ng-click="vm.utils.qr_lookup.close();"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div ng-show="vm.utils.qr_lookup.tabs.tabActive('qr_lookup')">
+
+            <!-- START QR RECORD INFO -->
+            <div class="card">
+                <!-- <div class="card-header">
+                    <h4 class="mb-0">QR Scan result</h4>
+                </div> -->
+
+                <!-- START ONLINE SCAN -->
+                <div class="p-2" style="border-radius: .5rem .5rem 0rem 0rem; border-bottom: 1px solid #e2e8f0;" ng-show="vm.utils.qr_lookup.active_scan.lookup_type == 'online'">
+                    <span>QR lookup online <i class="bi bi-circle-fill text-success"></i></span>
+                </div>
+                <!-- END ONLINE SCAN -->
+
+                <!-- START OFFLINE SCAN -->
+                <div class="p-2" style="border-radius: .5rem .5rem 0rem 0rem; border-bottom: 1px solid #e2e8f0;" ng-show="vm.utils.qr_lookup.active_scan.lookup_type == 'offline'">
+                    <span>QR lookup offline <i class="bi bi-circle-fill text-warning"></i></span>
+                </div>
+                <!-- END OFFLINE SCAN -->
+
+                <div class="card-body">
+
+                    <!-- START ERROR HANDLER -->
+                    <div ng-show="vm.utils.qr_lookup.error_handler.error" class="alert alert-danger">
+                        <p ng-bind="vm.utils.qr_lookup.error_handler.error_message"></p>
+                    </div>
+                    <!-- END ERROR HANDLER -->
+
+                    <!-- START LOOKING UP INDICATOR -->
+                    <div ng-show="vm.utils.qr_lookup.loading" class="text-center">
+                        <img src="../images/loading-icon.gif" style="height: 40px; width: 40px;" >
+
+                        <div class="mt-5">
+                            <span class="fw-bold">Finding QR information...</span>
+                        </div>
+                    </div>
+                    <!-- END LOOKING UP INDICATOR -->
+
+                    <!-- START QR LOOKUP INFORMATION -->
+                    <div ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading">
+
+                        <!-- START ONLINE LOOKUP -->
+                        <div ng-show="vm.utils.qr_lookup.active_scan.lookup_type == 'online'">
+                            
+                            <!-- SHOW NO QR DATA IF NOT LINKED -->
+                            <div ng-show="!vm.utils.qr_lookup.qr_data.qr_record.RecordID && !vm.utils.qr_lookup.qr_data.qr_record.DateLinked">
+                                <div class="row">
+                                    <div class="col-6" style="border-right: solid 1px #e2e8f0;">
+                                        
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <p class="mb-0">
+                                            <i class="bi bi-qr-code"></i> <span class="fw-bold" ng-bind="vm.utils.qr_lookup.qr_data.qr_record.ID"></span>
+                                        </p>
+                                        <p class="mb-0">
+                                            <span ng-bind="vm.utils.qr_lookup.qr_data.qr_record.DateLinked || 'Never used'"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SHOW NO QR DATA IF NOT LINKED -->
+
+                            <!-- SHOW QR DATA IF LINKED -->
+                            <div ng-show="vm.utils.qr_lookup.qr_data.qr_record.RecordID && vm.utils.qr_lookup.qr_data.qr_record.DateLinked">
+                                
+                                <!-- START ASSET INFO -->
+                                <div ng-show="vm.utils.qr_lookup.record_type == 'Asset'">
+                                    
+                                    <!-- START ASSET HEADER -->
+                                    <div class="row">
+                                        <div class="col-6" style="border-right: solid 1px #e2e8f0;">
+                                            <p class="fw-bold mb-0" ng-bind="vm.utils.qr_lookup.record.AssetRef || 'Asset not named'" style="font-size: 1.2em;"></p>
+
+                                            <p class="mb-0">
+                                                <span>Serial: <span ng-bind="vm.utils.qr_lookup.record.Serial || 'Not provided'"></span></span>
+                                            </p>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <p class="mb-0">
+                                                <i class="bi bi-qr-code"></i> <span class="fw-bold" ng-bind="vm.utils.qr_lookup.qr_data.qr_record.ID"></span>
+                                            </p>
+                                            <p class="mb-0">
+                                                <span ng-bind="vm.utils.qr_lookup.qr_data.qr_record.DateLinked || 'Never linked'"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- END ASSET HEADER -->
+
+                                    <!-- START ASSET INFO TOGGLE -->
+                                    <div class="row mt-2">
+                                        <div class="col text-center">
+                                            <i class="bi" ng-class="{'bi-chevron-down': !vm.utils.qr_lookup.show_record_info, 'bi-chevron-up': vm.utils.qr_lookup.show_record_info}" style="font-size: 2em; cursor: pointer;" ng-click="vm.utils.qr_lookup.toggleShowRecordInfo()"></i>
+                                        </div>
+                                    </div>
+                                    <!-- END ASSET INFO TOGGLE -->
+
+                                    <!-- START ASSET DETAILED INFO -->
+                                    <div class="row mt-10" ng-show="vm.utils.qr_lookup.show_record_info">
+                                        <div class="col-12 col-lg-6">
+                                            
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">RiskMach ID</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.AssetID || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Core item</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.IsRegister || 'No'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Model</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.Model || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Type</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.Type || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Manufacturer</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.Manufacturer || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p class="mb-0 fw-bold text-success" ng-show="vm.utils.qr_lookup.record.InUse == 'Yes'">Asset in use</p>
+                                                    <p class="mb-0 fw-bold text-danger" ng-show="vm.utils.qr_lookup.record.InUse != 'Yes'">Asset not in use</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Company</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.OwnerCompanyName || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Site</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.SiteName || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Building</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.BuildingName || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Area</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.AreaName || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!-- END ASSET DETAILED INFO -->
+
+
+                                    <!-- START IMAGE GALLERY -->
+                                    <div class="mt-5" ng-show="vm.utils.qr_lookup.show_record_info">
+                                        <div ng-show="!vm.utils.qr_lookup.qr_data.register_media.length">
+                                            <p class="fw-bold">No images <i class="bi bi-image-fill ms-1"></i></p>
+                                        </div>
+
+                                        <div ng-repeat="asset_image in vm.utils.qr_lookup.qr_data.register_media" ng-show="vm.utils.qr_lookup.qr_data.register_media.length" class="d-inline-block me-2 mb-2" style="display: inline-block;">
+
+                                            <div style="display: inline-block; text-decoration: none; background-color: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 2px;">
+                                                <img ng-src="{{ asset_image.file_path }}" class="img-responsive" style="max-height: 120px !important;" src="{{ asset_image.file_path }}">
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- END IMAGE GALLERY -->
+
+                                </div>
+                                <!-- END ASSET INFO -->
+
+                            </div>
+                            <!-- END QR DATA IF LINKED -->
+
+                        </div>
+                        <!-- END ONLINE LOOKUP -->
+
+                        <!-- START OFFLINE LOOKUP -->
+                        <div ng-show="vm.utils.qr_lookup.active_scan.lookup_type == 'offline'">
+                                
+                            <!-- SHOW NO QR DATA IF NOT LINKED -->
+                            <div ng-show="!vm.utils.qr_lookup.qr_data.qr_record || (!vm.utils.qr_lookup.qr_data.qr_record.record_id && !vm.utils.qr_lookup.qr_data.qr_record.date_linked)">
+                                <div class="row">
+                                    <div class="col-6" style="border-right: solid 1px #e2e8f0;">
+                                        
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <p class="mb-0">
+                                            <i class="bi bi-qr-code"></i> <span class="fw-bold" ng-bind="vm.utils.qr_lookup.qr_data.qr_record.qr_id"></span>
+                                        </p>
+                                        <p class="mb-0">
+                                            <span ng-bind="vm.utils.qr_lookup.qr_data.qr_record.date_linked | date: 'dd/MM/yyyy' || 'Never used'"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SHOW NO QR DATA IF NOT LINKED -->
+
+                            <!-- SHOW QR DATA IF LINKED -->
+                            <div ng-show="vm.utils.qr_lookup.qr_data.qr_record && vm.utils.qr_lookup.qr_data.qr_record.record_id && vm.utils.qr_lookup.qr_data.qr_record.date_linked">
+                                
+                                <!-- START ASSET INFO -->
+                                <div ng-show="vm.utils.qr_lookup.record_type == 'Asset'">
+                                    
+                                    <!-- START ASSET HEADER -->
+                                    <div class="row">
+                                        <div class="col-6" style="border-right: solid 1px #e2e8f0;">
+                                            <p class="fw-bold mb-0" ng-bind="vm.utils.qr_lookup.record.asset_ref || 'Asset not named'" style="font-size: 1.2em;"></p>
+
+                                            <p class="mb-0">
+                                                <span>Serial: <span ng-bind="vm.utils.qr_lookup.record.serial || 'Not provided'"></span></span>
+                                            </p>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <p class="mb-0">
+                                                <i class="bi bi-qr-code"></i> <span class="fw-bold" ng-bind="vm.utils.qr_lookup.qr_data.qr_record.qr_id"></span>
+                                            </p>
+                                            <p class="mb-0">
+                                                <span ng-bind="vm.utils.qr_lookup.qr_data.qr_record.date_linked | date: 'dd/MM/yyyy' || 'Never linked'"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- END ASSET HEADER -->
+
+                                    <!-- START ASSET INFO TOGGLE -->
+                                    <div class="row mt-2">
+                                        <div class="col text-center">
+                                            <i class="bi" ng-class="{'bi-chevron-down': !vm.utils.qr_lookup.show_record_info, 'bi-chevron-up': vm.utils.qr_lookup.show_record_info}" style="font-size: 2em; cursor: pointer;" ng-click="vm.utils.qr_lookup.toggleShowRecordInfo()"></i>
+                                        </div>
+                                    </div>
+                                    <!-- END ASSET INFO TOGGLE -->
+
+                                    <!-- START ASSET DETAILED INFO -->
+                                    <div class="row mt-10" ng-show="vm.utils.qr_lookup.show_record_info">
+                                        <div class="col-12 col-lg-6">
+                                            
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">RiskMach ID</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.rm_id || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Core item</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.is_register || 'No'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Model</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.model || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Type</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.type || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Manufacturer</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.manufacturer || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p class="mb-0 fw-bold text-success" ng-show="vm.utils.qr_lookup.record.in_use == 'Yes'">Asset in use</p>
+                                                    <p class="mb-0 fw-bold text-danger" ng-show="vm.utils.qr_lookup.record.in_use != 'Yes'">Asset not in use</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Company</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-show="vm.utils.qr_lookup.record.company_id == vm.utils.user_profile.CompanyID" ng-bind="vm.utils.user_profile.CompanyName || 'N/A'"></p>
+
+                                                    <p class="mb-0" ng-show="vm.utils.qr_lookup.record.company_id != vm.utils.user_profile.CompanyID">-</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Site</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.site_name || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Building</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.building_name || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p class="fw-bold mb-0">Area</p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="mb-0" ng-bind="vm.utils.qr_lookup.record.area_name || '-'"></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!-- END ASSET DETAILED INFO -->
+
+
+                                    <!-- START IMAGE GALLERY -->
+                                    <div class="mt-5" ng-show="vm.utils.qr_lookup.show_record_info">
+                                        <div ng-show="!vm.utils.qr_lookup.qr_data.register_media.length">
+                                            <p class="fw-bold">No images <i class="bi bi-image-fill ms-1"></i></p>
+                                        </div>
+
+                                        <div ng-repeat="asset_image in vm.utils.qr_lookup.qr_data.register_media" ng-show="vm.utils.qr_lookup.qr_data.register_media.length" class="d-inline-block me-2 mb-2" style="display: inline-block;">
+
+                                            <div style="display: inline-block; text-decoration: none; background-color: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 2px;">
+                                                <img ng-show="asset_image.file_downloaded == 'Yes'" ng-src="{{ asset_image.url }}" class="img-responsive" style="max-height: 120px !important;">
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- END IMAGE GALLERY -->
+
+                                </div>
+                                <!-- END ASSET INFO -->
+
+                            </div>
+                            <!-- END QR DATA IF LINKED -->
+
+                        </div>
+                        <!-- END OFFLINE LOOKUP -->
+
+                    </div>
+                    <!-- END QR LOOKUP INFORMATION -->
+
+                </div>
+
+            </div>
+            <!-- END QR RECORD INFO -->
+
+
+            <!-- START INSPECTION BUTTONS -->
+            <div class="dropdown">
+
+                <div class="card w-50 text-center p-5 mt-5" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'" style="cursor: pointer;" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="bi bi-plus-circle-fill text-success" style="font-size: 2em;"></i>
+
+                    <div class="mt-4">
+                        <span class="fw-bold">Inspection</span>
+                    </div>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                    <li>
+                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.quick_start_inspection.start();">NEW</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.start();">Re-inspect</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- <div class="card w-50 text-center p-5 mt-5" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'" ng-click="vm.utils.quick_start_inspection.start();" style="cursor: pointer;">
+                <i class="bi bi-plus-circle-fill text-success" style="font-size: 2em;"></i>
+
+                <div class="mt-4">
+                    <span class="fw-bold">Inspection</span>
+                </div>
+            </div>
+
+            <div class="card w-50 text-center p-5 mt-5" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'" ng-click="vm.utils.re_inspect_inspections.start();" style="cursor: pointer;">
+                <i class="bi bi-plus-circle-fill text-success" style="font-size: 2em;"></i>
+
+                <div class="mt-4">
+                    <span class="fw-bold">RE INSPECT TEMP</span>
+                </div>
+            </div> -->
+            <!-- END START INSPECTION BUTTONS -->
+
+
+            <!-- START ONLINE LOOKUP -->
+            <div ng-show="vm.utils.qr_lookup.active_scan.lookup_type == 'online'">
+                    
+                <!-- START ASSET REQUIREMENTS ONLINE -->
+                <div class="accordion card mt-5" id="assetRequirementsOnlineAccordion" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assetRequirementsOnline" aria-expanded="false" aria-controls="assetRequirementsOnline"><h4 class="mb-0">Compliance Requirements</h4></button>
+                        </h4>
+                        <div id="assetRequirementsOnline" class="accordion-collapse collapse" data-bs-parent="#assetRequirementsOnlineAccordion">
+                            <div class="accordion-body p-0">
+
+                                <!-- NO ASSOCIATED REQUIREMENTS -->
+                                <div ng-show="!vm.utils.qr_lookup.qr_data.register_pp_relations.length" class="text-center py-4">
+                                    <span>No compliance requirements associated to this QR</span>
+                                </div>
+                                <!-- END NO ASSOCIATED REQUIREMENTS -->
+
+                                <div class="listing">
+                                    <div ng-repeat="requirement in vm.utils.qr_lookup.qr_data.register_pp_relations" class="listing-item p-2" style="border-bottom: 1px solid #e2e8f0;">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <p ng-bind="requirement.Title || 'N/A'" class="mb-0"></p>
+
+                                                <p class="mb-0" style="font-size: 0.8em;">
+                                                    <span ng-show="requirement.Frequency && requirement.FrequencyInterval">Every <span ng-bind="requirement.Frequency"></span> <span ng-bind="requirement.FrequencyInterval"></span>(s)</span>
+
+                                                    <span ng-show="!requirement.Frequency || !requirement.FrequencyInterval">Interval not set</span>
+                                                </p>
+
+                                                <p class="mb-0">
+                                                    <span class="badge" ng-bind="requirement.MatrixScorePhraseInitial || 'Not scored'" ng-style="vm.utils.qr_lookup.riskLevelStyle(requirement.MatrixScorePhraseInitial)"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-4 text-end" style="font-size: 0.8em;">
+                                                <span ng-show="requirement.EverInspected == 'No'" class="text-danger">Never inspected</span>
+
+                                                <div ng-show="requirement.EverInspected == 'Yes'">
+                                                    <span ng-show="requirement.InspectionRequired == 'Yes'" class="text-danger">Inspection required</span>
+                                                    <span ng-show="requirement.InspectionRequired == 'No'" class="text-success">Inspection valid</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END ASSET REQUIREMENTS ONLINE -->
+
+                <!-- START ASSET INSPECTIONS ONLINE -->
+                <div class="accordion card mt-5" id="assetInspectionsOnlineAccordion" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assetInspectionsOnline" aria-expanded="false" aria-controls="assetInspectionsOnline"><h4 class="mb-0">Inspection History</h4></button>
+                        </h4>
+                        <div id="assetInspectionsOnline" class="accordion-collapse collapse" data-bs-parent="#assetInspectionsOnlineAccordion">
+                            <div class="accordion-body p-0">
+                                
+                                <!-- NO ASSOCIATED INSPECTIONS -->
+                                <div ng-show="!vm.utils.qr_lookup.qr_data.snapshot_assets.length" class="text-center py-4">
+                                    <span>No inspections associated to this QR</span>
+                                </div>
+                                <!-- END NO ASSOCIATED INSPECTIONS -->
+
+                                <div class="listing">
+                                    <div ng-repeat="snapshot in vm.utils.qr_lookup.qr_data.snapshot_assets" class="listing-item p-2" style="border-bottom: 1px solid #e2e8f0;">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <p class="mb-0" ng-bind="snapshot.AssetRef || 'N/A'"></p>
+                                                <p class="mb-0" ng-bind="snapshot.ProfilePointName || '-'" style="font-size: 0.8em;"></p>
+                                            </div>
+                                            <div class="col-4 text-end" style="font-size: 0.8em;">
+                                                <p class="mb-0" ng-bind="snapshot.ActivityStartDate || '-'"></p>
+                                                <p class="mb-0" ng-bind="snapshot.ActivityTitle || '-'"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END ASSET INSPECTIONS ONLINE -->
+
+                <!-- START CONTROL ITEMS ONLINE -->
+                <div class="accordion card mt-5" id="assetControlItemsOnlineAccordion" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assetControlItemsOnline" aria-expanded="false" aria-controls="assetControlItemsOnline"><h4 class="mb-0">Control Items</h4></button>
+                        </h4>
+                        <div id="assetControlItemsOnline" class="accordion-collapse collapse" data-bs-parent="#assetControlItemsOnlineAccordion">
+                            <div class="accordion-body p-0">
+                                
+                                <div data-core-asset-control-item-list></div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END CONTROL ITEMS ONLINE -->
+
+                <!-- START RISK LIST ONLINE -->
+                <div class="accordion card mt-5" id="assetRiskAssessmentsOnlineAccordion" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assetRiskAssessmentsOnline" aria-expanded="false" aria-controls="assetRiskAssessmentsOnline"><h4 class="mb-0">Risk Assessments</h4></button>
+                        </h4>
+                        <div id="assetRiskAssessmentsOnline" class="accordion-collapse collapse" data-bs-parent="#assetRiskAssessmentsOnlineAccordion">
+                            <div class="accordion-body p-0">
+                                
+                                <div data-report-risk-assessments></div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END RISK LIST ONLINE -->
+
+            </div>
+            <!-- END ONLINE LOOKUP -->
+
+            <!-- START OFFLINE LOOKUP -->
+            <div ng-show="vm.utils.qr_lookup.active_scan.lookup_type == 'offline'">
+                
+                <!-- START ASSET REQUIREMENTS OFFLINE -->
+                <div class="accordion card mt-5" id="assetRequirementsOfflineAccordion" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assetRequirementsOffline" aria-expanded="false" aria-controls="assetRequirementsOffline"><h4 class="mb-0">Compliance Requirements</h4></button>
+                        </h4>
+                        <div id="assetRequirementsOffline" class="accordion-collapse collapse" data-bs-parent="#assetRequirementsOfflineAccordion">
+                            <div class="accordion-body p-0">
+
+                                <!-- NO ASSOCIATED REQUIREMENTS -->
+                                <div ng-show="!vm.utils.qr_lookup.qr_data.register_pp_relations.length" class="text-center py-4">
+                                    <span>No compliance requirements associated to this QR</span>
+                                </div>
+                                <!-- END NO ASSOCIATED REQUIREMENTS -->
+
+                                <div class="listing">
+                                    <div ng-repeat="requirement in vm.utils.qr_lookup.qr_data.register_pp_relations" class="listing-item p-2" style="border-bottom: 1px solid #e2e8f0;">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <p ng-bind="requirement.profile_point_name || 'N/A'" class="mb-0"></p>
+
+                                                <p class="mb-0" style="font-size: 0.8em;">
+                                                    <span ng-show="requirement.frequency && requirement.frequency_interval">Every <span ng-bind="requirement.frequency"></span> <span ng-bind="requirement.frequency_interval"></span>(s)</span>
+
+                                                    <span ng-show="!requirement.frequency || !requirement.frequency_interval">Interval not set</span>
+                                                </p>
+
+                                                <p class="mb-0">
+                                                    <span class="badge" ng-bind="requirement.matrix_score_phrase_initial || 'Not scored'" ng-style="vm.utils.qr_lookup.riskLevelStyle(requirement.matrix_score_phrase_initial)"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-4 text-end" style="font-size: 0.8em;">
+                                                <span ng-show="requirement.ever_inspected == 'No'" class="text-danger">Never inspected</span>
+
+                                                <div ng-show="requirement.ever_inspected == 'Yes'">
+                                                    <span ng-show="requirement.inspection_required == 'Yes'" class="text-danger">Inspection required</span>
+                                                    <span ng-show="requirement.inspection_required == 'No'" class="text-success">Inspection valid</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END ASSET REQUIREMENTS OFFLINE -->
+
+                <!-- START ASSET INSPECTIONS OFFLINE -->
+                <div class="accordion card mt-5" id="assetInspectionsOfflineAccordion" ng-show="!vm.utils.qr_lookup.error_handler.error && !vm.utils.qr_lookup.loading && vm.utils.qr_lookup.record_type == 'Asset'">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#assetInspectionsOffline" aria-expanded="false" aria-controls="assetInspectionsOffline"><h4 class="mb-0">Inspection History</h4></button>
+                        </h4>
+                        <div id="assetInspectionsOffline" class="accordion-collapse collapse" data-bs-parent="#assetInspectionsOfflineAccordion">
+                            <div class="accordion-body p-0">
+                                
+                                <!-- NO ASSOCIATED INSPECTIONS -->
+                                <div ng-show="!vm.utils.qr_lookup.qr_data.snapshot_assets.length" class="text-center py-4">
+                                    <span>No inspections associated to this QR</span>
+                                </div>
+                                <!-- END NO ASSOCIATED INSPECTIONS -->
+
+                                <div class="listing">
+                                    <div ng-repeat="snapshot in vm.utils.qr_lookup.qr_data.snapshot_assets" class="listing-item p-2" style="border-bottom: 1px solid #e2e8f0;">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <p class="mb-0" ng-bind="snapshot.asset_ref || 'N/A'"></p>
+                                                <p class="mb-0" ng-bind="snapshot.pp_name || '-'" style="font-size: 0.8em;"></p>
+                                            </div>
+                                            <div class="col-4 text-end" style="font-size: 0.8em;">
+                                                <p class="mb-0" ng-bind="snapshot.project_date | date: 'dd/MM/yyyy' || '-'"></p>
+                                                <p class="mb-0" ng-bind="snapshot.project_title || '-'"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END ASSET INSPECTIONS OFFLINE -->
+
+            </div>
+            <!-- END OFFLINE LOOKUP -->
+
+        </div>
+
+        <div ng-show="vm.utils.qr_lookup.tabs.tabActive('verify_control')">
+
+            <div style="margin-bottom: 15px;">
+                <a href="javascript: void(0);" ng-click="vm.utils.qr_lookup.tabs.changeTab('qr_lookup')">
+                    <img src="../images/custom_icons/RM Exit Red.png" style="width: 30px;" />
+                </a>
+            </div>
+
+            <div data-verify-control-item></div>
+        </div>
+
+    </div>
+</div>
+<!-- END QR LOOKUP SLIDEOUT -->
+
+
+<!-- START UNLICENSED FEATURE SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100" tabindex="-1" id="UnlicensedFeatureSlideout" aria-labelledby="UnlicensedFeatureSlideout" data-bs-backdrop="static">
+    <!-- <div class="offcanvas-header">
+    </div> -->
+    <div class="offcanvas-body p-0">
+
+        <div data-unlicensed-feature data-options="vm.utils.unlicensed_feature.options" class="h-100"></div>
+
+    </div>
+</div>
+<!-- END UNLICENSED FEATURE SLIDEOUT -->
+
+<!-- QUICK START INSPECTION SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="QuickStartInspectionSlideout" aria-labelledby="QuickStartInspectionSlideoutLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="QuickStartInspectionSlideoutLabel"></h5>
+        <button type="button" class="btn-close text-reset" aria-label="Close" ng-click="vm.utils.quick_start_inspection.hide();"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <!-- QUICK START INSPECTION DIRECTIVE -->
+        <div data-quick-start-inspection-no-qr-scanner data-directiveid="vm.utils.quick_start_inspection.directive_id" data-drawingpaddirectiveid="vm.utils.drawing_pad.directive_id" class="mt-5" style="word-wrap: nowrap;"></div>
+        <!-- END QUICK START INSPECTION DIRECTIVE -->
+
+        <!-- <div class="card">
+
+            <div class="card-body">
+
+                <div data-qr-company-invite></div>
+
+            </div>
+
+        </div> -->
+
+    </div>
+</div>
+<!-- END QUICK START INSPECTION SLIDEOUT -->
+
+<!-- RE-INSPECT INSPECTIONS SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="ReInspectInspectionsSlideout" aria-labelledby="ReInspectInspectionsSlideoutLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="ReInspectInspectionsSlideoutLabel"></h5>
+        <button type="button" class="btn-close text-reset" aria-label="Close" ng-click="vm.utils.re_inspect_inspections.slideout.hide();"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                
+                <!-- OFFLINE ERROR MESSAGE -->
+                <div class="alert alert-danger" ng-show="!vm.utils.re_inspect_inspections.online" style="margin-bottom: 15px;">
+                    <div class="alert-text"><i class="bi bi-exclamation-circle-fill"></i> <span style="font-weight: bold;">No internet connection</span></div>
+                    <div class="alert-text">Please gain an internet connection to download the inspection data</div>
+                </div>
+                <!-- END OFFLINE ERROR MESSAGE -->
+
+                <!-- INSPECTION LISTING LOADING -->
+                <div ng-show="vm.utils.re_inspect_inspections.inspection_listing.loading" class="text-center mt-5">
+                    <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+                    <div class="mt-4">
+                        <p class="fw-bold">Loading inspections...</p>
+                    </div>
+
+                </div>
+                <!-- END INSPECTION LISTING LOADING -->
+
+                <div ng-show="vm.utils.re_inspect_inspections.tabs.tabActive('inspection_list') && !vm.utils.re_inspect_inspections.inspection_listing.loading">
+                    <div style="margin-bottom: 15px;" ng-hide="vm.utils.re_inspect_inspections.inspection_listing.loading || vm.utils.re_inspect_inspections.downloading_asset">
+                        <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.slideout.hide();" style="text-decoration: none;">
+                            <img src="../images/custom_icons/RM Exit Red.png" style="width: 30px;" />
+                        </a>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <div class="alert-text"><i class="bi bi-info-circle-fill"></i> <span style="font-weight: bold; font-size: 1.2em;">Select an inspection you want to re-inspect from</span></div>
+                        <div>This will download its risks and checklists into your current inspection</div>
+                    </div>
+
+                    <!-- START INSPECTION LISTING -->
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-5 mb-xl-0" ng-show="!vm.utils.re_inspect_inspections.downloading_asset">
+                        <div class="card h-100">
+                            <!-- card header -->
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">Inspections <span ng-bind="vm.utils.re_inspect_inspections.inspection_listing.data.length || '0'" style="font-size: 0.8em; font-weight: 500;"></span></h4>
+                            </div>
+                            <!-- FILTERS -->
+                            <div class="card-body">
+                                <div class="table-card">
+                                    <div class="row p-4" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+                                        <div class="col-12 align-items-center">
+                                            <input type="text" class="form-control search-bar" ng-model="vm.utils.re_inspect_inspections.inspection_listing.filters.general_search" placeholder="Search inspections..." />
+                                        </div>
+                                    </div>
+
+                                    <div ng-show="vm.utils.re_inspect_inspections.inspection_listing.loading" class="text-center padding">
+                                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" />
+                                        <div class="text-center text-muted" style="margin-top: 5px; font-weight: bold;">Please Wait - Loading Inspections</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ASSET LISTING -->
+                            <div ng-show="!vm.utils.re_inspect_inspections.inspection_listing.loading">
+                                <div ng-show="vm.utils.re_inspect_inspections.inspection_listing.data.length == '0'" class="text-center text-muted" style="padding: 15px; font-weight: bold;">We couldn't find any inspections</div>
+
+                                <div style="padding-top: 20px; padding-bottom: 20px;" ng-show="vm.utils.re_inspect_inspections.inspection_listing.data.length == '0'">
+                                    <p class="text-muted text-center" style="font-size: 1.2em;">Would you like to carry on with this inspection as new?</p>
+
+                                    <div class="text-center">
+                                        <button class="btn btn-success" ng-click="vm.utils.re_inspect_inspections.convertReInspectionToNew()">Continue as new inspection</button>
+                                    </div>
+                                </div>
+
+                                <div class="row bg-light tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;" ng-show="vm.utils.re_inspect_inspections.inspection_listing.data.length">
+                                    <div class="col-2">
+                                        <span class="tr-list-header" style="font-weight: 600;">Date</span>
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="tr-list-header" style="font-weight: 600;">Name</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <!-- EMPTY -->
+                                    </div>
+                                </div>
+
+                                <div class="tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;" dir-paginate="asset in vm.utils.re_inspect_inspections.inspection_listing.visible_data | filter: vm.utils.re_inspect_inspections.inspection_listing.filters.general_search | itemsPerPage: 15 : 'inspection_list' track by asset.rm_id" pagination-id="inspection_list">
+                                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                                        <div class="col-2">
+                                            <span ng-bind="asset.date_added | date: 'dd/MM/yyyy'" style="font-size: 0.8em;"></span>
+                                        </div>
+                                        <div class="col-8">
+                                            <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.download_inspection.confirmDownloadInspectionData(asset);" style="text-decoration: none;">
+                                                <span ng-bind="asset.asset_ref" ng-class="{ 'text-danger': asset.status == '2' }"></span>
+                                            </a>
+                                            <div class="text-muted" style="font-style: italic; font-size: 0.8em;">
+                                                <span ng-bind="asset.project_pp_name || 'Profile Not Set'"></span> | <span ng-bind="asset.project_type_name || 'Type Not Set'"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 text-end">
+                                            <ul class="menu-list-inline">
+                                                <li>
+                                                    <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.download_inspection.confirmDownloadInspectionData(asset);" style="font-size: 1.4em;">
+                                                        <i class="bi bi-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- PAGINATION CONTROLS -->
+                                <div class="text-end pt-4 px-4" style="margin-top: 15px;">
+                                    <dir-pagination-controls pagination-id="inspection_list"></dir-pagination-controls>
+                                </div>
+                                <!-- END PAGINATION CONTROLS -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END INSPECTION LISTING -->
+                </div>
+
+                <!-- INSPECTION DOWNLOAD CONFIRMATION -->
+                <div ng-show="vm.utils.re_inspect_inspections.tabs.tabActive('download_confirmation') && !vm.utils.re_inspect_inspections.downloading_asset">
+                    <div class="padding">
+                        <a href="javascript: void(0)" ng-click="vm.utils.re_inspect_inspections.tabs.changeTab('inspection_list')" style="text-decoration: none;"><img src="../images/custom_icons/RM Exit Red.png" style="width: 30px;" /> <span style="font-weight: bold; color: red;"></span></a>
+                    </div>
+
+                    <div class="text-center">
+                        <div ng-show="vm.utils.re_inspect_inspections.download_inspection.inspectionLinkedToCore(vm.utils.re_inspect_inspections.download_inspection.record)">
+                            <!-- <p class="text-muted">Core</p> -->
+                            <p style="font-weight: bold; font-size: 1.4em;" class="text-primary">
+                                <img src="../images/custom_icons/Core Blue.png" style="display: inline-block; height: 25px; width: auto;" />
+                                <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref || 'Core Asset Ref not set'"></span>
+                            </p>
+                        </div>
+
+                        <div ng-show="!vm.utils.re_inspect_inspections.download_inspection.inspectionLinkedToCore(vm.utils.re_inspect_inspections.download_inspection.record)">
+                            <p style="font-weight: bold; font-size: 1.4em;" class="text-warning">
+                                <span>Not assigned to Core</span>
+                            </p>
+                        </div>
+
+                        <div>
+                            <i class="bi bi-chevron-down" style="font-size: 2em;"></i>
+                        </div>
+
+                        <div>
+                            <!-- <p class="text-muted">Inspection</p> -->
+                            <p style="font-weight: bold; font-size: 1.4em;">
+                                <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.asset_ref"></span>
+                            </p>
+                        </div>
+                        
+                        <div class="text-muted" style="font-style: italic; font-size: 0.8em;">
+                            <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.project_pp_name || 'Profile Not Set'"></span> | <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.project_type_name || 'Type Not Set'"></span>
+                        </div>
+
+                    </div>
+
+                    <!-- START INSPECTION DETAILS -->
+                    <div>
+
+                        <div ng-show="vm.utils.re_inspect_inspections.inspection_details.confirm_details">
+
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-weight: 600; font-size: 1.2em;">Set inspection details</span>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item" ng-show="vm.utils.re_inspect_inspections.download_inspection.inspectionLinkedToCore(vm.utils.re_inspect_inspections.download_inspection.record)">
+                                        <a href="javascript: void(0);" class="nav-link" ng-class="{'active': vm.utils.re_inspect_inspections.inspection_details.detailsActive('core')}" ng-click="vm.utils.re_inspect_inspections.inspection_details.changeDetails('core')">Core</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="javascript: void(0);" class="nav-link" ng-class="{'active': vm.utils.re_inspect_inspections.inspection_details.detailsActive('inspection')}" ng-click="vm.utils.re_inspect_inspections.inspection_details.changeDetails('inspection')">Inspection</a>
+                                    </li>
+                                    <!-- <li ng-class="{'active': vm.utils.re_inspect_inspections.inspection_details.detailsActive('dest_inspection')}">
+                                        <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.inspection_details.changeDetails('dest_inspection')">Current</a>
+                                    </li> -->
+                                </ul>
+                            </div>
+
+                            <div class="table-responsive" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsActive('core')">
+                                <table class="table table-bordered table-white">
+                                    <tr>
+                                        <th>Asset Ref</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Serial</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('serial', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Model</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('model', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Type</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('type', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('description', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <td></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDestInspectionDetails('core')">Use All</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="table-responsive" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsActive('inspection')">
+                                <table class="table table-bordered table-white">
+                                    <tr>
+                                        <th>Asset Ref</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.asset_ref || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.asset_ref)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.asset_ref)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.asset_ref)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Serial</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.serial || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('serial', vm.utils.re_inspect_inspections.download_inspection.record.serial)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.serial)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.serial)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Model</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.model || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('model', vm.utils.re_inspect_inspections.download_inspection.record.model)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.model)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.model)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Type</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.type || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('type', vm.utils.re_inspect_inspections.download_inspection.record.type)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.type)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.type)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.description || 'Not set'"></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('description', vm.utils.re_inspect_inspections.download_inspection.record.description)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.description)">Use</button>
+
+                                            <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.description)">Used <i class="bi bi-check2"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <td></td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDestInspectionDetails('inspection')">Use All</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="text-center">
+                                <button class="btn btn-success" ng-click="vm.utils.re_inspect_inspections.inspection_details.toggleViewOtherInspectionDetailOptions()">Confirm details</button>
+                            </div>
+
+                        </div>
+
+                        <div ng-show="!vm.utils.re_inspect_inspections.inspection_details.confirm_details" class="mt-4">
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-weight: 600; font-size: 1.2em;">Here is your inspections details</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="text-muted">Asset Ref</label>
+                                <br>
+                                <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.asset_ref" ng-disabled="true">
+                            </div>
+                            <div class="form-group mt-4">
+                                <label class="text-muted">Serial</label>
+                                <br>
+                                <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.serial" ng-disabled="true">
+                            </div>
+                            <div class="form-group mt-4">
+                                <label class="text-muted">Model</label>
+                                <br>
+                                <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.model" ng-disabled="true">
+                            </div>
+                            <div class="form-group mt-4">
+                                <label class="text-muted">Type</label>
+                                <br>
+                                <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.type" ng-disabled="true">
+                            </div>
+                            <div class="form-group mt-4">
+                                <label class="text-muted">Description</label>
+                                <br>
+                                <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.description" ng-disabled="true">
+                            </div>
+
+                            <div class="mt-4">
+                                <a href="javascript: void(0);" class="text-primary" style="font-weight: 600;" ng-click="vm.utils.re_inspect_inspections.inspection_details.toggleViewOtherInspectionDetailOptions()">Compare inspection details to Core and past inspection <i class="bi bi-chevron-right"></i></a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- END INSPECTION DETAILS -->
+
+                    <div class="container margin-top-lg" ng-show="!vm.utils.re_inspect_inspections.inspection_details.confirm_details">
+
+                        <div class="text-center">
+                            <p class="text-muted">Are you sure you want to use the data from this inspection in your current inspection?</p>
+                        </div>
+
+                        <div class="row margin-top">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-success" ng-click="vm.utils.re_inspect_inspections.download_inspection.downloadInspectionData()" style="font-size: 1.4em;">Download</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="container margin-top-lg">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.tabs.changeTab('inspection_list')" class="text-primary">Cancel</a>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <!-- END INSPECTION DOWNLOAD CONFIRMATION -->
+
+                <!-- ASSET DOWNLOADING -->
+                <div ng-show="vm.utils.re_inspect_inspections.downloading_asset" class="text-center padding margin-top-lg">
+                    <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+                    <div class="mt-4">
+                        <p class="text-secondary fw-bold">Downloading inspection...</p>
+                        <p class="text-secondary fw-bold">This can take a while depending on the size of the inspection</p>
+                        <p class="text-secondary fw-bold">Please do not leave this page until it is finished</p>
+                    </div>
+
+                    <!-- ASSET DOWNLOAD STATUS -->
+                    <div class="margin-top-lg" style="padding-left: 10%; padding-right: 10%;">
+                        <div class="alert alert-primary padding">
+                            <p class="text-primary" ng-bind="vm.utils.project_download.display_message || 'Initialising'"></p>
+                            <p ng-show="vm.utils.project_download.active_fetch_item.record.status == 'Installing'">
+                                <span ng-bind="vm.utils.project_download.active_fetch_item.record.total_items_installed"></span> / <span ng-bind="vm.utils.project_download.active_fetch_item.record.total_items"></span> installed
+                            </p>
+                        </div>
+                    </div>
+                    <!-- END ASSET DOWNLOAD STATUS -->
+
+                </div>
+                <!-- END ASSET DOWNLOADING -->
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- END RE-INSPECT INSPECTIONS SLIDEOUT -->
+
+<!-- START RISK CLOSEOUT BIO SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="ReportRiskBioSlideout" aria-labelledby="ReportRiskBioSlideoutLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="ReportRiskBioSlideoutLabel"></h5>
+        <button type="button" class="btn-close text-reset" aria-label="Close" ng-click="vm.utils.risk_bio.slideout.hide();"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+
+        <!-- QUICK START INSPECTION DIRECTIVE -->
+        <div data-report-risk-assessment-bio class="mt-5" style="word-wrap: nowrap;"></div>
+        <!-- END QUICK START INSPECTION DIRECTIVE -->
+
+        <!-- <div class="card">
+
+            <div class="card-body">
+
+                <div data-qr-company-invite></div>
+
+            </div>
+
+        </div> -->
+
+    </div>
+</div>
+<!-- END RISK CLOSEOUT BIO SLIDEOUT -->
+
+<!-- START ASSET PROFILE SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100 w-lg-50" tabindex="-1" id="AssetProfileSlideout" aria-labelledby="AssetProfileSlideoutLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="AssetProfileSlideoutLabel"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" ng-click="vm.utils.asset_profile.close();"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div data-asset-profile data-directiveid="vm.utils.asset_profile.directive_id" data-assetrecord="vm.utils.asset_profile.record" data-recordtype="vm.utils.asset_profile.record_type" data-fetchtype="vm.utils.asset_profile.fetch_type" data-assetmedia="vm.utils.asset_profile.media" data-requirements="vm.utils.asset_profile.register_pp_relations" data-inspectionhistory="vm.utils.asset_profile.snapshot_assets" data-qrscandata="vm.utils.asset_profile.qr_data"></div>
+
+    </div>
+</div>
+<!-- END ASSET PROFILE SLIDEOUT -->
+    
+<!-- END SLIDEOUTS -->

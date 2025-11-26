@@ -1,0 +1,116 @@
+
+<div ng-show="vm.utils.control_listing.error_handler.error" class="text-center py-4">
+    <i class="bi bi-exclamation-circle-fill text-danger"></i>
+
+    <div class="mt-2">
+        <span ng-bind="vm.utils.control_listing.error_handler.error_message"></span>
+    </div>
+</div>
+
+<div ng-show="!vm.utils.control_listing.error_handler.error">
+
+    <!-- REFRESHING LIST INDICATOR -->
+    <div ng-show="vm.utils.control_listing.refreshing" class="text-center py-4">
+        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+        <div class="mt-4">
+            <span class="fw-bold">Loading control items...</span>
+        </div>
+    </div>
+    <!-- END REFRESHING LIST INDICATOR -->
+
+    <!-- CREATING DRAFT CONTROL ITEM VERIFICATION INDICATOR -->
+    <div ng-show="vm.utils.control_listing.loading_control_verification" class="text-center py-4">
+        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+        <div class="mt-4">
+            <span class="fw-bold">Loading control verification...</span>
+        </div>
+    </div>
+    <!-- END CREATING DRAFT CONTROL ITEM VERIFICATION INDICATOR -->
+
+
+    <div ng-show="!vm.utils.control_listing.refreshing && !vm.utils.control_listing.loading_control_verification">
+
+        <div class="row p-4" style="max-width: 100%; margin-left: 0px; margin-right: 0px; border-bottom: solid 1px lightgrey;">
+            <div class="col align-items-center">
+                <input type="text" class="form-control search-bar" ng-model="vm.utils.control_listing.general_search" placeholder="Search controls..." />
+            </div>
+        </div>
+            
+        <!-- NO CONTROL ITEMS -->
+        <div ng-show="!vm.utils.control_listing.data.length" class="text-center py-4">
+            <span>No control items</span>
+        </div>
+        <!-- END CONTROL ITEMS -->
+
+        <div class="listing">
+            <!-- ng-repeat="control in vm.utils.control_listing.data | filter: vm.utils.control_listing.general_search" -->
+            <div dir-paginate="control in vm.utils.control_listing.data | filter: vm.utils.control_listing.general_search | itemsPerPage: vm.utils.control_listing.pagination.items_per_page : 'controls' track by control.rm_id" pagination-id="controls" current-page="vm.utils.control_listing.filters.page_num" total-items="vm.utils.control_listing.filters.total_items" class="listing-item p-2" style="border-bottom: 1px solid #e2e8f0;">
+                <div class="row">
+                    <div class="col-8">
+                        <a href="javascript: void(0);" ng-click="vm.utils.verify_control.start(control)">
+                            <p class="mb-0 fw-bold" ng-bind="control.rrm1_name || 'Undefined Control'"></p>
+                        </a>
+                        <p style="font-size: 0.8em;" class="text-secondary mb-0">
+                            <span ng-bind="control.rrm2_name || '-'"></span> | <span ng-bind="control.rrm3_name || '-'"></span> <span ng-show="control.nature">(<span ng-bind="control.nature"></span>)</span>
+                        </p>
+                        <p style="font-size: 0.8em;" class="text-secondary mb-0 mt-1">
+                            <span ng-bind="control.description || 'No description provided'"></span>
+                        </p>
+                    </div>
+                    <div class="col-4 text-end" style="font-size: 0.8em;">
+                        
+                        <div ng-show="control.date_verified">
+                            <span ng-bind="control.date_verified | date: 'dd/MM/yyyy'" ng-class="{'text-danger': control.verification_required == 'Yes'}"></span> <div style="display: inline-block; width: 20px; height: 20px; line-height: 20px; border-radius: 50%; text-align: center; font-size: 0.8em;" class="bg-primary text-white"><span ng-bind="control.verified_by_name | initials"></span></div>
+                        </div>
+
+                        <div style="font-size: 0.8em;" class="mt-2">
+                            next: <span ng-bind="control.date_verification_expires | date: 'dd/MM/yyyy' || 'ASAP'" ng-class="{'text-danger': control.verification_required == 'Yes'}"></span>
+                        </div>
+
+                        <div style="font-size: 0.8em;" class="mt-2">
+                            <p class="mb-0">In place 
+                                <i class="bi bi-check-circle-fill text-success" ng-show="control.control_in_place == 'Yes'"></i>
+                                <i class="bi bi-x-circle-fill text-danger" ng-show="control.control_in_place != 'Yes'"></i>
+                            </p>
+                            <p class="mb-0">Suitable 
+                                <i class="bi bi-check-circle-fill text-success" ng-show="control.verification_status == 'Suitable'"></i>
+                                <i class="bi bi-x-circle-fill text-danger" ng-show="control.verification_status != 'Suitable'"></i>
+                            </p>
+                        </div>
+
+                        <div ng-show="control.db_control_item && !control.db_control_item.date_content_imported" class="mt-2">
+                            <span class="badge text-bg-primary">Draft</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- START PAGINATION CONTROLS -->
+            <div class="mt-3 ps-4 text-end">
+                <dir-pagination-controls pagination-id="controls" on-page-change="vm.utils.control_listing.pagination.pageChanged(newPageNumber)"></dir-pagination-controls>
+            </div>
+            <!-- END PAGINATION CONTROLS -->
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- START TOASTS -->
+<div style="position: fixed; z-index: 1000; bottom: 0px; left: 0px; margin-bottom: 15px; margin-left: 15px;" class="me-5">
+
+    <div id="GlobalControlListNoInternetConnectionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>This action requires an internet connection</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+</div>
+<!-- END TOASTS -->

@@ -1,0 +1,145 @@
+<div class="drawing-pad-container" ng-show="!vm.utils.hidden" style="position: absolute; top: {{elem.top || 0}}px; left: {{elem.left || 0}}px; min-width: 300px; border-radius: 5px; border: 1px solid #ddd; box-shadow: 0 7px 14px 0 rgba(60,66,87, 0.12), 0 3px 6px 0 rgba(0,0,0, 0.12); z-index: 10000;">
+	
+	<div draggable style="display: inline-block; font-weight: bold; padding: 5px; font-size: 0.8em; float: left; width: 50%;"><i class="bi bi-pencil text-muted"></i> Drawing Pad</div>
+	<div style="float: right; width: 50%; text-align: right; padding-top: 5px; padding-right: 5px;">
+		<ul style="display: inline-block; margin: 0px; padding: 0px; list-style-type: none;">
+			<li style="float: right; display: inline-block;">
+				<a href="javascript: void(0)" ng-click="vm.toggleShow()" style="text-decoration: none;">
+					<i class="bi bi-x-lg"></i>
+				</a>
+			</li>
+			<li style="float: right; display: inline-block; margin-right: 5px;">
+				<a href="javascript: void(0)" ng-click="vm.toggleMinimised()" style="text-decoration: none;">
+
+					<i class="bi bi-dash-lg" ng-show="!vm.utils.minimised"></i>
+
+					<i class="bi bi-arrows-fullscreen" ng-show="vm.utils.minimised"></i>
+
+					<!-- <span class="glyphicon glyphicon-minus" ng-show="!vm.utils.minimised"></span>
+					<span class="glyphicon glyphicon-unchecked" ng-show="vm.utils.minimised"></span> -->
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div style="clear: both;"></div>
+
+	<div ng-show="!vm.utils.minimised">
+
+		<!-- START TOOLBAR -->
+		<!-- background-color: whitesmoke; -->
+		<div style="margin-bottom: 0px; padding: 5px; padding-top: 10px;">
+
+			<div class="row">
+				<div class="col-lg-8">
+					
+					<div style="display: inline-block; float: left; margin-right: 5px;">
+						<select class="form-select form-select-sm" ng-model="vm.utils.drawing.pen.settings.mode">
+							<option value="brush">Brush</option>
+							<option value="eraser">Eraser</option>
+						</select>
+					</div>
+
+					<div style="display: inline-block; float: left; margin-right: 5px;">
+						<select class="form-select form-select-sm" ng-model="vm.utils.drawing.pen.settings.lineWidth" ng-change="vm.utils.drawing.pen.changeLineWidth(vm.utils.drawing.pen.settings.lineWidth)">
+							<option value="3">Micro</option>
+							<option value="5">Small</option>
+							<option value="10">Medium</option>
+							<option value="15">Large</option>
+							<option value="30">Massive</option>
+						</select>
+					</div>
+
+					<!-- <div style="display: inline-block">
+						<button class="btn btn-sm btn-primary" ng-click="vm.utils.drawing.addImage()">Add Image</button>
+					</div> -->
+
+					<div style="display: inline-block" ng-show="vm.utils.drawing.zoomed">
+						<button class="btn btn-sm btn-primary" ng-click="vm.utils.drawing.resetZoom()">Reset zoom <i class="bi bi-arrows-angle-expand"></i></button>
+					</div>
+
+				</div>
+
+				<div class="col-lg-2 text-start">
+					<!-- <button type="button" class="btn btn-default btn-sm" ng-click="vm.utils.drawing.download();" ng-disabled="vm.utils.drawing.is_saving" data-trigger="hover" data-title="Download" bs-tooltip><span class="glyphicon glyphicon-download"></span></button> -->
+					<button type="button" class="btn btn-danger btn-sm" ng-click="vm.utils.drawing.reset();" ng-disabled="vm.utils.drawing.is_saving"><i class="bi bi-arrow-clockwise"></i></button>
+				</div>
+				<div class="col-lg-2 text-end">
+					<button type="button" class="btn btn-success btn-sm" ng-click="vm.utils.drawing.save();" ng-disabled="vm.utils.drawing.is_saving"><i class="bi bi-save-fill"></i></button>
+				</div>
+			</div>
+
+			<!-- <div style="display: inline-block; margin-left: 10px;">
+				Line Style:
+				<select ng-model="vm.utils.drawing.pen.settings.joinStyle" ng-change="vm.utils.drawing.pen.changeLineJoin(vm.utils.drawing.pen.settings.joinStyle)">
+					<option value="round">Round</option>
+					<option value="bevel">Bevel</option>
+					<option value="miter">Miter</option>
+				</select>
+			</div> -->
+
+			<div class="clearfix"></div>
+
+			<ul style="margin: 0px; margin-left: 0px; padding: 0px; margin-top: 30px; list-style-type: none;">
+				
+				<li style="display: inline-block;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('red')" ng-style="vm.utils.drawing.pen.colourActiveStyle('red')" style="display: inline-block; background-color: red; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('black')" ng-style="vm.utils.drawing.pen.colourActiveStyle('black')" style="display: inline-block; background-color: black; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('white')" ng-style="vm.utils.drawing.pen.colourActiveStyle('white')" style="display: inline-block; background-color: white; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('blue')" ng-style="vm.utils.drawing.pen.colourActiveStyle('blue')" style="display: inline-block; background-color: blue; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('green')" ng-style="vm.utils.drawing.pen.colourActiveStyle('green')" style="display: inline-block; background-color: green; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('yellow')" ng-style="vm.utils.drawing.pen.colourActiveStyle('yellow')" style="display: inline-block; background-color: yellow; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('orange')" ng-style="vm.utils.drawing.pen.colourActiveStyle('orange')" style="display: inline-block; background-color: orange; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+				<li style="display: inline-block; margin-left: 15px;">
+					<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('purple')" ng-style="vm.utils.drawing.pen.colourActiveStyle('purple')" style="display: inline-block; background-color: purple; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+				</li>
+
+			</ul>
+
+			
+
+			<!-- <button type="button" class="btn btn-default btn-sm" ng-click="vm.utils.drawing.addImage();" style="margin-left: 10px;"><span class="glyphicon glyphicon-picture"></span></button> -->
+
+			
+
+		</div>
+
+		<!-- END TOOLBAR -->
+
+		<!-- START DRAWING PAD -->
+		<div ng-show="vm.utils.image_loading">
+			<div data-ajax-loader ng-model="vm.utils.image_loading"></div>
+			<div class="text-muted text-center" style="font-weight: bold;">Please Wait - Loading Image</div>
+		</div>
+
+		<div ng-show="vm.utils.drawing.is_saving">
+			<div data-ajax-loader ng-model="vm.utils.drawing.is_saving"></div>
+			<div class="text-muted text-center" style="font-weight: bold;">Please Wait - Saving Image</div>
+		</div>
+
+		<div id="DrawingPadContainer" ng-show="!vm.utils.image_loading && !vm.utils.drawing.is_saving" style="width: 100%; height: 600px; border: 1px solid #ddd;"></div>
+		<!-- END DRAWING PAD -->
+
+	</div>
+
+</div>

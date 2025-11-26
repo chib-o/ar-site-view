@@ -1,0 +1,93 @@
+<!-- START INITIAL RISK -->
+<div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">
+	<span ng-style="vm.utils.riskLevelStyle(vm.utils.ra_record.hrn_phrase_name_initial);">
+		Risk Before [<span ng-show="vm.utils.ra_record.hrn_phrase_name_initial"><span ng-bind="vm.utils.ra_record.hrn_phrase_name_initial"></span> - <span ng-bind="vm.utils.ra_record.hrn_initial | number: 2"></span></span><span ng-show="!vm.utils.ra_record.hrn_phrase_name_initial" class="text-danger">Not Yet Scored</span>]
+	</span>
+
+	<button class="btn btn-sm btn-primary" ng-click="vm.utils.pullPhaValues('after', 'initial')" style="margin-left: 10px;">Use Risk After</button>
+</div>
+
+<!-- USE RISK BEFORE CONFIRMATION -->
+<div ng-show="vm.utils.confirm_pull_pha_after_values">
+	<p class="text-muted text-center">The Risk Before has already been set. Are you sure you want to override it with the Risk After values?</p>
+
+	<div class="text-center">
+		<button class="btn btn-sm btn-success" ng-click="vm.utils.pullPhaValues('after', 'initial', true)">Confirm</button>
+		<br>
+		<br>
+		<a href="javascript: void(0);" style="text-decoration: none;" class="text-danger" ng-click="vm.utils.cancelPullPhaValues('after')">Cancel</a>
+	</div>
+</div>
+<!-- END USE RISK BEFORE CONFIRMATION -->
+
+<div ng-show="!vm.utils.confirm_pull_pha_after_values">
+	<div class="form-group">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': vm.utils.ra_record.lo_initial == null }"><i class="bi bi-exclamation-circle-fill" ng-show="vm.utils.ra_record.lo_initial == null"></i> LO</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.lo_initial" ng-change="vm.utils.phaChanged('lo','initial'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.lo_list"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': !vm.utils.ra_record.fe_initial }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.fe_initial"></i> FE</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.fe_initial" ng-change="vm.utils.phaChanged('fe','initial'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.fe_list"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': !vm.utils.ra_record.dph_initial }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.dph_initial"></i> DPH</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.dph_initial" ng-change="vm.utils.phaChanged('dph','initial'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.dph_list"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': !vm.utils.ra_record.np_initial }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.np_initial"></i> NP</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.np_initial" ng-change="vm.utils.phaChanged('np','initial'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.np_list"></select>
+	</div>
+</div>
+<!-- END INITIAL RISK -->
+
+<!-- START AFTER RISK -->
+<div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;" class="pt-5">
+	<span ng-style="vm.utils.riskLevelStyle(vm.utils.ra_record.hrn_phrase_name_after);">
+		Risk After [<span ng-show="vm.utils.ra_record.hrn_phrase_name_after"><span ng-bind="vm.utils.ra_record.hrn_phrase_name_after"></span> - <span ng-bind="vm.utils.ra_record.hrn_after | number: 2"></span></span><span ng-show="!vm.utils.ra_record.hrn_phrase_name_after" class="text-danger">Not Yet Scored</span>]
+	</span>
+
+	<button class="btn btn-sm btn-primary" ng-click="vm.utils.pullPhaValues('initial', 'after')" style="margin-left: 10px;">Use Risk Before</button>
+</div>
+
+<!-- USE RISK BEFORE CONFIRMATION -->
+<div ng-show="vm.utils.confirm_pull_pha_initial_values">
+	<p class="text-muted text-center">The Risk After has already been set. Are you sure you want to override it with the Risk Before values?</p>
+
+	<div class="text-center">
+		<button class="btn btn-sm btn-success" ng-click="vm.utils.pullPhaValues('initial', 'after', true)">Confirm</button>
+		<br>
+		<br>
+		<a href="javascript: void(0);" style="text-decoration: none;" class="text-danger" ng-click="vm.utils.cancelPullPhaValues('initial')">Cancel</a>
+	</div>
+</div>
+<!-- END USE RISK BEFORE CONFIRMATION -->
+
+<div ng-show="!vm.utils.confirm_pull_pha_initial_values">
+	<div class="form-group">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': vm.utils.ra_record.lo_after == null }"><i class="bi bi-exclamation-circle-fill" ng-show="vm.utils.ra_record.lo_after == null"></i> LO</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.lo_after" ng-change="vm.utils.phaChanged('lo','after'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.lo_list"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': !vm.utils.ra_record.fe_after }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.fe_after"></i> FE</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.fe_after" ng-change="vm.utils.phaChanged('fe','after'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.fe_list"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': !vm.utils.ra_record.dph_after }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.dph_after"></i> DPH</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.dph_after" ng-change="vm.utils.phaChanged('dph','after'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.dph_list"></select>
+	</div>
+
+	<div class="form-group pt-5">
+		<label style="font-size: 0.8em;" ng-class="{ 'text-danger': !vm.utils.ra_record.np_after }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.np_after"></i> NP</label>
+		<select class="form-select" ng-model="vm.utils.ra_record.np_after" ng-change="vm.utils.phaChanged('np','after'); vm.utils.notSaved();" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.np_list"></select>
+	</div>
+</div>
+<!-- END AFTER RISK -->
+
+<div class="alert alert-danger text-center" ng-show="vm.utils.ra_record.hrn_initial && vm.utils.ra_record.hrn_after && vm.utils.ra_record.hrn_after > vm.utils.ra_record.hrn_initial" style="margin-top: 15px; margin-bottom: 15px;">
+	<span class="alert-text"><i class="bi bi-exclamation-triangle-fill"></i> <span style="font-weight: bold;">The risk after the controls is higher than the risk prior to controls, is this correct?</span></span>
+</div>

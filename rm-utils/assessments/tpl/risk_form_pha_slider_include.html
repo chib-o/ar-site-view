@@ -1,0 +1,141 @@
+
+<!-- INITIAL RISK -->
+
+<!-- RISK SCORE INITIAL -->
+<div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">
+	<span ng-style="vm.utils.riskLevelStyle(vm.utils.ra_record.hrn_phrase_name_initial);">
+		Risk Before [<span ng-show="vm.utils.ra_record.hrn_phrase_name_initial"><span ng-bind="vm.utils.ra_record.hrn_phrase_name_initial"></span> - <span ng-bind="vm.utils.ra_record.hrn_initial | number: 2"></span></span><span ng-show="!vm.utils.ra_record.hrn_phrase_name_initial" class="text-danger">Not Yet Scored</span>]
+	</span>
+
+	<button class="btn btn-sm btn-primary" ng-click="vm.utils.pullPhaValues('after', 'initial', false)" style="margin-left: 10px;">Use Risk After</button>
+</div>
+<!-- END RISK SCORE INITIAL -->
+
+<!-- USE RISK BEFORE CONFIRMATION -->
+<div ng-show="vm.utils.confirm_pull_pha_after_values">
+	<p class="text-muted text-center">The Risk Before has already been set. Are you sure you want to override it with the Risk After values?</p>
+
+	<div class="text-center">
+		<button class="btn btn-sm btn-success" ng-click="vm.utils.pullPhaValues('after', 'initial', true)">Confirm</button>
+		<br>
+		<br>
+		<a href="javascript: void(0);" style="text-decoration: none;" class="text-danger" ng-click="vm.utils.cancelPullPhaValues('after')">Cancel</a>
+	</div>
+</div>
+<!-- END USE RISK BEFORE CONFIRMATION -->
+
+<div ng-show="!vm.utils.confirm_pull_pha_after_values">
+	<!-- LO INITIAL -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">LO - </span><span ng-bind="vm.utils.ra_record.lo_name_initial"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.lo_initial" rz-slider-options="vm.utils.pha_sliders.lo.options"></rzslider>
+	</div>
+	<!-- END LO INITIAL -->
+
+	<!-- FE INITIAL -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">FE - </span><span ng-bind="vm.utils.ra_record.fe_name_initial"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.fe_initial" rz-slider-options="vm.utils.pha_sliders.fe.options"></rzslider>
+	</div>
+	<!-- END FE INITIAL -->
+
+	<!-- DPH INITIAL -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">DPH - </span><span ng-bind="vm.utils.ra_record.dph_name_initial"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.dph_initial" rz-slider-options="vm.utils.pha_sliders.dph.options"></rzslider>
+	</div>
+	<!-- END DPH INITIAL -->
+
+	<!-- NP INITIAL -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">NP - </span><span ng-bind="vm.utils.ra_record.np_name_initial"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.np_initial" rz-slider-options="vm.utils.pha_sliders.np.options"></rzslider>
+	</div>
+	<!-- END NP INITIAL -->
+</div>
+
+<!-- END INITIAL RISK -->
+
+
+
+
+<!-- AFTER RISK -->
+
+<!-- RISK SCORE AFTER -->
+<div style="font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">
+	<span ng-style="vm.utils.riskLevelStyle(vm.utils.ra_record.hrn_phrase_name_after);">
+		Risk After [<span ng-show="vm.utils.ra_record.hrn_phrase_name_after"><span ng-bind="vm.utils.ra_record.hrn_phrase_name_after"></span> - <span ng-bind="vm.utils.ra_record.hrn_after | number: 2"></span></span><span ng-show="!vm.utils.ra_record.hrn_phrase_name_after" class="text-danger">Not Yet Scored</span>]
+	</span>
+
+	<button class="btn btn-sm btn-primary" ng-click="vm.utils.pullPhaValues('initial', 'after', false)" style="margin-left: 10px;">Use Risk Before</button>
+</div>
+<!-- END RISK SCORE AFTER -->
+
+<!-- USE RISK BEFORE CONFIRMATION -->
+<div ng-show="vm.utils.confirm_pull_pha_initial_values">
+	<p class="text-muted text-center">The Risk After has already been set. Are you sure you want to override it with the Risk Before values?</p>
+
+	<div class="text-center">
+		<button class="btn btn-sm btn-success" ng-click="vm.utils.pullPhaValues('initial', 'after', true)">Confirm</button>
+		<br>
+		<br>
+		<a href="javascript: void(0);" style="text-decoration: none;" class="text-danger" ng-click="vm.utils.cancelPullPhaValues('initial')">Cancel</a>
+	</div>
+</div>
+<!-- END USE RISK BEFORE CONFIRMATION -->
+
+<div ng-show="!vm.utils.confirm_pull_pha_initial_values">
+	<!-- LO AFTER -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">LO - </span><span ng-bind="vm.utils.ra_record.lo_name_after"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.lo_after" rz-slider-options="vm.utils.pha_sliders.lo.options"></rzslider>
+	</div>
+	<!-- END LO AFTER -->
+
+	<!-- FE AFTER -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">FE - </span><span ng-bind="vm.utils.ra_record.fe_name_after"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.fe_after" rz-slider-options="vm.utils.pha_sliders.fe.options"></rzslider>
+	</div>
+	<!-- END FE AFTER -->
+
+	<!-- DPH AFTER -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">DPH - </span><span ng-bind="vm.utils.ra_record.dph_name_after"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.dph_after" rz-slider-options="vm.utils.pha_sliders.dph.options"></rzslider>
+	</div>
+	<!-- END DPH AFTER -->
+
+	<!-- NP AFTER -->
+	<div style="margin-bottom: 50px;">
+		<span style="font-size: 0.9em;">
+			<span style="font-weight: 600;">NP - </span><span ng-bind="vm.utils.ra_record.np_name_after"></span>
+		</span>
+
+	    <rzslider class="pha-slider" rz-slider-model="vm.utils.ra_record.np_after" rz-slider-options="vm.utils.pha_sliders.np.options"></rzslider>
+	</div>
+	<!-- END NP AFTER -->
+</div>
+
+<!-- END AFTER RISK -->

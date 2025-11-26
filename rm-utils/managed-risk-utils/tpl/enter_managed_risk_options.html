@@ -1,0 +1,143 @@
+<div class="text-center" ng-show="vm.utils.loading || vm.utils.downloading || vm.utils.initialising_mr" style="margin-top: 20px;">
+    <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+    <div class="mt-5" ng-show="vm.utils.loading">
+    	<span class="fw-bold">Loading Managed Risk data...</span>
+    </div>
+
+    <div class="mt-5" ng-show="vm.utils.downloading">
+    	<span class="fw-bold">Downloading Managed Risk data...</span>
+    </div>
+
+    <div class="mt-5" ng-show="vm.utils.initialising_mr">
+    	<span class="fw-bold">Initialising Managed Risk...</span>
+    </div>
+</div>
+
+<div ng-show="!vm.utils.loading && !vm.utils.downloading && !vm.utils.initialising_mr && vm.utils.tabs.tabActive('enter_mr_options')">
+
+	<div style="margin-bottom: 15px;" ng-show="vm.utils.tabs.tabActive('enter_mr_options')">
+		<a href="javascript: void(0);" ng-click="vm.utils.closeManagedRiskOptions();">
+			<img src="../images/custom_icons/RM Exit Red.png" style="width: 30px;" />
+		</a>
+	</div>
+
+	<div class="alert alert-info" ng-show="vm.utils.mr_data.date_full_meta_downloaded">
+		<p class="alert-text">This subject's Managed Risk data was last downloaded on: <span ng-bind="vm.utils.mr_data.date_full_meta_downloaded | date: 'dd/MM/yyyy'" style="font-weight: 600;"></span></p>
+
+		<p style="margin-top: 10px; font-weight: bold;">
+			<a class="text-primary" href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.downloadMrData(vm.utils.relations);"><i class="bi bi-arrow-clockwise"></i> Refresh Managed Risk data</a>
+		</p>
+	</div>
+
+	<div class="alert alert-danger" ng-show="vm.utils.mr_data && !vm.utils.mr_data.date_full_meta_downloaded && (vm.utils.hasPublishedMr(vm.utils.mr_data) || vm.utils.hasCloudDraftMr(vm.utils.mr_data))">
+        <div class="alert-text"><i class="bi bi-info-circle-fill"></i> <span style="font-weight: bold; font-size: 1.2em;">There is existing Managed Risk data that has not been downloaded for this subject yet.</span></div>
+
+        <p style="margin-top: 10px; font-weight: bold;">
+			<a class="text-primary" href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.downloadMrData(vm.utils.relations);"><i class="bi bi-arrow-clockwise"></i> Download Managed Risk data</a>
+		</p>
+    </div>
+
+    <!-- SHOW IF MR DATA IS DOWNLOADED OR HAS NO MR -->
+    <div ng-hide="vm.utils.mr_data && !vm.utils.mr_data.date_full_meta_downloaded && (vm.utils.hasPublishedMr(vm.utils.mr_data) || vm.utils.hasCloudDraftMr(vm.utils.mr_data))">
+
+		<!-- ONGOING LOCAL WORK -->
+		<div style="font-weight: 600; padding-bottom: 10px;">
+			<span>Your draft Managed Risk</span>
+		</div>
+
+		<div class="list-group" ng-show="vm.utils.active_local_draft_mr != null">
+			<a href="javascript: void(0);" ng-click="vm.utils.enterManagedRisk()" class="list-group-item" style="padding: 10px;"><i class="bi bi-box-arrow-in-right text-primary"></i> Continue active draft</a>
+			<a href="javascript: void(0);" ng-click="vm.utils.discardLocalMrDraftCopy(true)" class="list-group-item" style="padding: 10px;"><span class="text-danger"><i class="bi bi-trash-fill"></i> Discard active draft</span></a>
+		</div>
+		<div class="text-muted text-center" style="padding-bottom: 20px;" ng-show="vm.utils.active_local_draft_mr == null">
+			<span>You have not got an active draft for this Managed Risk</span>
+		</div>
+		<!-- END ONGOING LOCAL WORK -->
+
+		<!-- MR EDITS -->
+		<div class="mt-5" style="font-weight: 600; padding-bottom: 10px;">
+			<span>Edit Managed Risk</span>
+		</div>
+
+		<div class="list-group">
+			<a href="javascript: void(0);" ng-show="vm.utils.mr_data.data.latest_published == null && vm.utils.mr_data.data.latest_draft == null" ng-click="vm.utils.startNewManagedRisk()" class="list-group-item" style="padding: 10px;">Start New</a>
+			<a href="javascript: void(0);" ng-show="vm.utils.mr_data != null && vm.utils.mr_data.data.latest_published != null" ng-click="vm.utils.installManagedRisk('latest_published', 'mr_edit')" class="list-group-item" style="padding: 10px;"><i class="bi bi-pencil-fill text-primary"></i> Edit published managed risk</a>
+			<a href="javascript: void(0);" ng-show="vm.utils.mr_data != null && vm.utils.mr_data.data.latest_draft != null" ng-click="vm.utils.installManagedRisk('latest_draft', 'mr_edit')" class="list-group-item" style="padding: 10px;">Continue cloud draft managed risk</a>
+		</div>
+
+		<div ng-show="vm.utils.mr_data.data.latest_published == null && vm.utils.mr_data.data.latest_draft == null" class="mt-4">
+			<p class="text-muted fw-bold">Or use another Managed Risk as a template</p>
+
+			<div class="form-group">
+				<select class="form-select" ng-model="vm.utils.clone_managed_risk.src_subject" ng-change="vm.utils.clone_managed_risk.setSrcSubject(vm.utils.clone_managed_risk.src_subject)" ng-options="subject as subject.asset_ref for subject in vm.utils.clone_managed_risk.src_subject_list"></select>
+			</div>
+
+			<div class="mt-4 text-end">
+				<button class="btn btn-success" ng-disabled="!vm.utils.clone_managed_risk.src_subject" ng-click="vm.utils.clone_managed_risk.confirm()">Start from template</button>
+			</div>
+		</div>
+		<!-- END MR EDITS -->
+
+		<!-- MR AUDITS -->
+		<div class="mt-5" style="font-weight: 600; padding-bottom: 10px;">
+			<span>Audit Managed Risk</span>
+		</div>
+
+		<div class="list-group" ng-show="vm.utils.mr_data != null && vm.utils.mr_data.data.latest_published != null">
+			<a href="javascript: void(0);" ng-click="vm.utils.enterAuditManagedRisk()" class="list-group-item" style="padding: 10px;"><i class="bi bi-clipboard2-check-fill text-primary"></i> Verify Controls</a>
+			<a href="javascript: void(0);" ng-click="vm.utils.discardLocalMrAudit(true)" ng-show="vm.utils.active_local_audit_mr != null" class="list-group-item" style="padding: 10px;"><span class="text-danger"><i class="bi bi-trash-fill"></i> Discard active audit</span></a>
+		</div>
+
+		<div class="text-muted text-center" style="padding-bottom: 20px;" ng-show="vm.utils.mr_data == null || vm.utils.mr_data.data.latest_published == null">
+			<span>There is no published Managed Risk to audit</span>
+		</div>
+		<!-- END MR AUDITS -->
+
+	</div>
+	
+</div>
+
+<div class="margin-top text-center" ng-show="vm.utils.tabs.tabActive('enter_mr_options') && !vm.utils.loading && !vm.utils.downloading && !vm.utils.initialising_mr">
+	<a href="javascript: void(0);" ng-click="vm.utils.closeManagedRiskOptions();" class="text-danger">Cancel / Close</a>
+</div>
+
+<!-- DISCARD DRAFT MANAGED RISK CONFIRMATION -->
+<div ng-show="vm.utils.tabs.tabActive('discard_mr_confirmation')" style="margin-top: 30px;">
+    <div>
+        <p class="text-center text-muted">Are you sure you want to discard your current working draft Managed Risk?</p>
+        <p class="text-center text-muted">This draft will be lost</p>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-6 text-end">
+                <button type="button" class="btn btn-success" ng-click="vm.utils.discardLocalMrDraftCopy(false); vm.utils.tabs.changeTab('enter_mr_options')">Confirm</button>
+            </div>
+            <div class="col-6">
+                <button type="button" class="btn btn-danger" ng-click="vm.utils.tabs.changeTab('enter_mr_options')">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END DISCARD DRAFT MANAGED RISK CONFIRMATION -->
+
+<!-- DISCARD MANAGED RISK AUDIT CONFIRMATION -->
+<div ng-show="vm.utils.tabs.tabActive('discard_mr_audit_confirmation')" style="margin-top: 30px;">
+    <div>
+        <p class="text-center text-muted">Are you sure you want to discard your current Managed Risk audit?</p>
+        <p class="text-center text-muted">This audit will be lost</p>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-6 text-end">
+                <button type="button" class="btn btn-success" ng-click="vm.utils.discardLocalMrAudit(false); vm.utils.tabs.changeTab('enter_mr_options')">Confirm</button>
+            </div>
+            <div class="col-6">
+                <button type="button" class="btn btn-danger" ng-click="vm.utils.tabs.changeTab('enter_mr_options')">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END DISCARD MANAGED RISK AUDIT CONFIRMATION -->

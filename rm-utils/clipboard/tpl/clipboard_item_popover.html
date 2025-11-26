@@ -1,0 +1,8 @@
+<div class="list-group">
+	<a href="javascript: void(0)" ng-show="vm.utils.active_item.record.status == '1'" ng-click="vm.removeItem(vm.utils.active_item.record); $hide();" class="list-group-item" style="padding: 10px; color: red;"><span class="glyphicon glyphicon-trash"></span> <span style="font-weight: bold;">Remove</span></a>
+	<a href="javascript: void(0)" ng-show="vm.utils.active_item.record.status == '2'" ng-click="vm.recoverItem(vm.utils.active_item.record); $hide();" class="list-group-item" style="padding: 10px; color: green;"><span class="glyphicon glyphicon-repeat"></span> <span style="font-weight: bold;">Recover</span></a>
+</div>
+
+<div style="margin-top: 15px; text-align: center;">
+	<a href="javascript: void(0)" ng-click="$hide()" style="color: red; text-decoration: none;">Close / Cancel</a>
+</div>

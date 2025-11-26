@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col-12">
+        <p class="fw-bold" style="font-size: 1.2em;">Default risk scoring method</p>
+
+        <p>Please select a default risk scoring method you'd like to use. This can be changed later!</p>
+
+        <div class="form-group">
+            <select class="form-select" ng-model="vm.utils.user_settings.data.risk_method" ng-change="vm.utils.user_settings.save();" ng-options="option.id as option.name for option in vm.utils.risk_methods" ng-disabled="vm.utils.user_settings.loading"></select>
+        </div>
+    </div>
+</div>

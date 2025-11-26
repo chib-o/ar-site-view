@@ -1,0 +1,167 @@
+<div class="desktop-camera-container" ng-show="!vm.utils.hidden" style="position: absolute; top: {{elem.top || 0}}px; left: {{elem.left || 0}}px; width: 300px; max-width: 300px; border-radius: 5px; border: 1px solid #ddd; box-shadow: 0 7px 14px 0 rgba(60,66,87, 0.12), 0 3px 6px 0 rgba(0,0,0, 0.12); z-index: 10000;">
+    
+    <div draggable style="display: inline-block; font-weight: bold; padding: 5px; font-size: 0.8em; float: left; width: 50%;"><i class="bi bi-camera-video-fill text-secondary"></i> Video Recorder</div>
+    <div style="float: right; width: 50%; text-align: right; padding-top: 5px; padding-right: 5px;">
+        <ul style="display: inline-block; margin: 0px; padding: 0px; list-style-type: none;">
+            <li style="float: right; display: inline-block;">
+                <a href="javascript: void(0)" ng-click="vm.toggleShow()" style="text-decoration: none;">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            </li>
+            <li style="float: right; display: inline-block; margin-right: 5px;">
+
+                <i class="bi bi-record-circle-fill" style="color: red; margin-right: 5px;" ng-show="vm.utils.vid_recorder.is_recording"></i>
+
+                <a href="javascript: void(0)" ng-click="vm.toggleMinimised()" style="text-decoration: none;">
+                    <i class="bi bi-dash-lg" ng-show="!vm.utils.minimised"></i>
+                    <i class="bi bi-fullscreen" ng-show="vm.utils.minimised"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div style="clear: both;"></div>
+
+    <div ng-show="!vm.utils.minimised">
+        <!-- START MAXIMISED CONTENT -->
+
+        <div style="padding: 5px;">
+
+            <section ng-show="!vm.utils.is_uploading && vm.utils.upload_complete == null" class="experiment recordrtc">
+                <div ng-show="!vm.utils.recording_finished" class="header" style="margin: 0;">
+
+                    <div class="d-none">
+                        
+                        <div class="row">
+                            <div class="col-6">
+
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <!-- <label>Recording Source</label> -->
+                                    <select ng-model="vm.utils.vid_recorder.recordingMedia" ng-change="vm.utils.vid_recorder.recordingMediaChanged();" ng-options="option.value as option.display for option in vm.utils.vid_recorder.source_options" class="form-select input-sm"></select>
+                                </div>
+                                
+                            </div>
+                            <div class="col-6">
+
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <!-- <label>Into</label> -->
+                                    <select ng-model="vm.utils.vid_recorder.mediaContainerFormat" class="form-select media-container-format input-sm">
+                                        <option>default</option>
+                                        <option>vp8</option>
+                                        <option>vp9</option>
+                                        <option>h264</option>
+                                        <option>mkv</option>
+                                        <option>opus</option>
+                                        <option>ogg</option>
+                                        <option>pcm</option>
+                                        <option>gif</option>
+                                        <option>whammy</option>
+                                        <option>WebAssembly</option>
+                                    </select> 
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <select ng-model="vm.utils.vid_recorder.selectedResolution" ng-options="option.value as option.display for option in vm.utils.vid_recorder.resolution_options" class="form-select input-sm"></select>
+                            </div>
+                            <div class="col-4">
+                                <select ng-model="vm.utils.vid_recorder.selectedFramerate" ng-options="option.value as option.display for option in vm.utils.vid_recorder.framerate_options" class="form-select input-sm"></select>
+                            </div>
+                            <div class="col-4">
+                                <select ng-model="vm.utils.vid_recorder.videoBitsPerSecond" ng-options="option.value as option.display for option in vm.utils.vid_recorder.bitrate_options" class="form-select input-sm media-bitrates"></select>
+                            </div>
+                        </div>
+
+                        <div class="row hidden" style="margin-top: 15px;">
+                            <div class="col-12 text-end">
+                                
+                                <input type="checkbox" id="chk-timeSlice" style="margin:0;width:auto;" title="Use intervals based recording">
+                                <label for="chk-timeSlice" style="font-size: 15px;margin:0;width: auto;cursor: pointer;-webkit-user-select:none;user-select:none;" title="Use intervals based recording">Use timeSlice?</label>
+                            
+                                <input type="checkbox" id="chk-fixSeeking" style="margin:0;width:auto;" title="Fix video seeking issues?">
+                                <label for="chk-fixSeeking" style="font-size: 15px;margin:0;width: auto;cursor: pointer;-webkit-user-select:none;user-select:none;" title="Fix video seeking issues?">Fix Seeking Issues?</label>
+                                
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col-12">
+                            <button id="btn-start-recording" class="btn" ng-class="{ 'btn-success': !vm.utils.vid_recorder.is_recording, 'btn-danger': vm.utils.vid_recorder.is_recording }" ng-click="vm.utils.vid_recorder.startRecording();">Start Recording</button>
+                            <button id="btn-pause-recording" class="btn btn-default" ng-click="vm.utils.vid_recorder.pauseRecording();" style="display: none; font-size: 15px;">Pause</button>
+                        
+                            <!-- <span ng-show="vm.utils.vid_recorder.is_recording" class="text-success" style="font-weight: bold;">RECORDING</span>
+                            <span ng-show="!vm.utils.vid_recorder.is_recording" class="text-danger" style="font-weight: bold;">NOT RECORDING</span> -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show="vm.utils.recording_finished" style="text-align: center; margin-top: 15px; margin-bottom: 15px;">
+                    <div class="col-4 text-center">
+                        <button ng-click="vm.utils.resetUpload();" class="btn btn-danger btn-block btn-sm"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                    <div class="col-4 text-center">
+                        <!-- <button ng-click="vm.utils.vid_recorder.saveLocal();" class="btn btn-default btn-block btn-sm" data-trigger="hover" data-title="Download" bs-tooltip><i class="bi bi-cloud-arrow-down-fill"></i></button> -->
+                    </div>
+                    <!-- <div class="col-4">
+                        <button ng-click="vm.utils.vid_recorder.openNewTab();" class="btn btn-default">Open New Tab</button>
+                    </div> -->
+                    <div class="col-4 text-center">
+                        <button ng-click="vm.utils.vid_recorder.uploadToRiskMach();" class="btn btn-success btn-block btn-sm" ng-disabled="vm.utils.is_uploading"><i class="bi bi-save-fill"></i></button>
+                    </div>
+                </div>
+
+                <div ng-show="!vm.utils.is_uploading && vm.utils.upload_complete == null && !vm.utils.recording_finished && !vm.utils.vid_recorder.is_recording" style="margin-top: 10px;">
+
+                    <div class="form-group">
+                         <label>Camera</label>
+                         <select class="form-select input-sm" ng-model="vm.utils.active_camera" ng-disabled="vm.utils.vid_recorder.is_recording" ng-options="option.deviceId as option.label for option in vm.utils.cameras"></select>
+                    </div>
+
+                    <div class="form-group">
+                         <label>Microphone</label>
+                         <select class="form-select input-sm" ng-model="vm.utils.active_microphone" ng-disabled="vm.utils.vid_recorder.is_recording" ng-options="option.deviceId as option.label for option in vm.utils.microphones"></select>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 10px;" id="recording-player"></div>
+            </section>
+
+            <div ng-show="vm.utils.is_uploading">
+                <div class="text-muted text-center" style="font-weight: bold;">Your recording is uploading, please dont navigate away until told to do so (even when 100%!).</div>
+                <div data-ajax-loader ng-model="vm.utils.is_uploading"></div>
+                <div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+            </div>
+
+            <div ng-show="vm.utils.upload_complete">
+                <div class="text-success text-center"><span style="font-weight: bold;">Your recording was uploaded successfully!</span></div>
+                
+                <div class="text-center" style="margin-top: 15px; margin-bottom: 15px; font-size: 3em;">
+                    <i class="bi bi-check2 text-success"></i>
+                </div>
+
+                <div class="text-center">
+                    <a href="javascript: void(0);" ng-click="vm.utils.resetUpload();">Start new recording</a>
+                </div>
+            </div>
+
+            <div id="container" class="d-none">
+                <a id="pickfiles" href="javascript:;">[Select files]</a>
+                <a id="uploadfiles" href="javascript:;">[Upload files]</a>
+            </div>
+             
+            <br />
+            <pre id="console" class="d-none"></pre>
+
+        </div>
+
+        <!-- END MAXIMISED CONTENT -->
+    </div>
+
+</div>

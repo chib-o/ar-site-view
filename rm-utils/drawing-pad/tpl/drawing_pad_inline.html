@@ -1,0 +1,278 @@
+<div class="drawing-pad-container" ng-show="!vm.utils.hidden">
+	<div>
+
+		<div ng-show="!vm.utils.drawing.crop_confirmation">
+
+			<!-- START TOOLBAR -->
+			<!-- background-color: whitesmoke; -->
+			<div class="mb-5">
+
+				<!-- <div class="row mb-5">
+					<div class="col">
+						<ul class="nav nav-pills" ng-show="vm.utils.drawing.mode != 'crop'">
+							<li class="nav-item">
+						    	<a class="nav-link" ng-class="{'active': vm.utils.drawing.mode == 'paint'}" href="javascript: void(0);" ng-click="vm.utils.drawing.changeMode('paint')">Sketch</a>
+							</li>
+							<li class="nav-item">
+						    	<a class="nav-link" ng-class="{'active': vm.utils.drawing.mode == 'annotate'}" href="javascript: void(0);" ng-click="vm.utils.drawing.changeMode('annotate')">Markers</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" ng-class="{'active': vm.utils.drawing.mode == 'crop'}" href="javascript: void(0);" ng-click="vm.utils.drawing.toggleCropConfirmation()">Crop</a>
+							</li>
+						</ul>
+					</div>
+				</div> -->
+
+				<div class="drawing-tool-bar" style="border: 1px solid #ddd; border-radius: 5px; background-color: whitesmoke;" class="p-2">
+					<div class="row p-3 pb-0">
+						<div class="col-6">
+							
+							<div ng-show="vm.utils.drawing.mode == 'paint'">
+								<div style="display: inline-block; float: left; margin-right: 5px;">
+									<select class="form-select form-select-sm" ng-model="vm.utils.drawing.pen.settings.mode">
+										<option value="brush">Brush</option>
+										<option value="eraser">Eraser</option>
+									</select>
+								</div>
+
+								<div style="display: inline-block; float: left; margin-right: 5px;" class="mt-2 mt-sm-0">
+									<select class="form-select form-select-sm" ng-model="vm.utils.drawing.pen.settings.lineWidth" ng-change="vm.utils.drawing.pen.changeLineWidth(vm.utils.drawing.pen.settings.lineWidth)">
+										<option value="3">Micro</option>
+										<option value="5">Small</option>
+										<option value="10">Medium</option>
+										<option value="15">Large</option>
+										<option value="30">Massive</option>
+									</select>
+								</div>
+
+							</div>
+
+							<!-- <div style="display: inline-block">
+								<button class="btn btn-sm btn-primary" ng-click="vm.utils.drawing.removeAnnotationAnchors()">Remove Anchors</button>
+							</div> -->
+
+							<div style="display: inline-block" ng-show="vm.utils.drawing.zoomed">
+								<button class="btn btn-sm btn-primary" ng-click="vm.utils.drawing.resetZoom()">Reset zoom <i class="bi bi-arrows-angle-expand"></i></button>
+							</div>
+
+							<div ng-show="vm.utils.drawing.mode == 'crop' && !vm.utils.initial_crop">
+								<button class="btn btn-sm btn-danger" ng-click="vm.utils.cropping.returnToAnnotation()">
+									<i class="bi bi-arrow-left"></i> Back to annotations
+								</button>
+							</div>
+
+						</div>
+
+						<div class="col-6 text-end">
+
+							<!-- SAVE BUTTONS FOR SKETCHING -->
+							<button ng-show="vm.utils.drawing.mode != 'crop'" type="button" class="btn btn-danger btn-sm me-10" ng-click="vm.utils.drawing.reset();" ng-disabled="vm.utils.drawing.is_saving"><i class="bi bi-arrow-clockwise"></i> Reset</button>
+							<button ng-show="vm.utils.drawing.mode != 'crop'" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.drawing.save();" ng-disabled="vm.utils.drawing.is_saving"><i class="bi bi-cloud-download"></i> Save</button>
+							<!-- END SAVE BUTTONS FOR SKETCHING -->
+
+							<!-- SAVE BUTTONS FOR CROPPING -->
+							<button ng-show="vm.utils.drawing.mode == 'crop'" type="button" class="btn btn-danger btn-sm me-10" ng-click="vm.utils.cropping.reset();" ng-disabled="vm.utils.cropping.is_saving"><i class="bi bi-arrow-clockwise"></i> Reset</button>
+							<button ng-show="vm.utils.drawing.mode == 'crop'" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.cropping.save();" ng-disabled="vm.utils.cropping.is_saving"><i class="bi bi-cloud-download"></i> Save</button>
+							<!-- END SAVE BUTTONS FOR CROPPING -->
+							
+						</div>
+
+						
+					</div>
+
+					<!-- <div style="display: inline-block; margin-left: 10px;">
+						Line Style:
+						<select ng-model="vm.utils.drawing.pen.settings.joinStyle" ng-change="vm.utils.drawing.pen.changeLineJoin(vm.utils.drawing.pen.settings.joinStyle)">
+							<option value="round">Round</option>
+							<option value="bevel">Bevel</option>
+							<option value="miter">Miter</option>
+						</select>
+					</div> -->
+
+					<div class="clearfix"></div>
+
+					<ul class="p-3 pb-2" style="margin: 0px; margin-left: 0px; list-style-type: none;" ng-show="vm.utils.drawing.mode == 'paint'">
+						
+						<li style="display: inline-block;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('red')" ng-style="vm.utils.drawing.pen.colourActiveStyle('red')" style="display: inline-block; background-color: red; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('black')" ng-style="vm.utils.drawing.pen.colourActiveStyle('black')" style="display: inline-block; background-color: black; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('white')" ng-style="vm.utils.drawing.pen.colourActiveStyle('white')" style="display: inline-block; background-color: white; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('blue')" ng-style="vm.utils.drawing.pen.colourActiveStyle('blue')" style="display: inline-block; background-color: blue; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('green')" ng-style="vm.utils.drawing.pen.colourActiveStyle('green')" style="display: inline-block; background-color: green; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('yellow')" ng-style="vm.utils.drawing.pen.colourActiveStyle('yellow')" style="display: inline-block; background-color: yellow; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('orange')" ng-style="vm.utils.drawing.pen.colourActiveStyle('orange')" style="display: inline-block; background-color: orange; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+						<li style="display: inline-block; margin-left: 15px;">
+							<a href="javascript: void(0)" ng-click="vm.utils.drawing.pen.changeColor('purple')" ng-style="vm.utils.drawing.pen.colourActiveStyle('purple')" style="display: inline-block; background-color: purple; width: 25px; height: 25px; line-height: 25px; border-radius: 50px;"></a>
+						</li>
+
+					</ul>
+
+				</div>
+
+				<!-- <button type="button" class="btn btn-default btn-sm" ng-click="vm.utils.drawing.addImage();" style="margin-left: 10px;"><span class="glyphicon glyphicon-picture"></span></button> -->
+
+			</div>
+
+			<!-- END TOOLBAR -->
+
+			<!-- START DRAWING PAD -->
+			<div ng-show="vm.utils.image_loading">
+				<div data-ajax-loader ng-model="vm.utils.image_loading"></div>
+				<div class="text-muted text-center" style="font-weight: bold;">Please Wait - Loading Image</div>
+			</div>
+
+			<div ng-show="vm.utils.drawing.is_saving">
+				<div data-ajax-loader ng-model="vm.utils.drawing.is_saving"></div>
+				<div class="text-muted text-center" style="font-weight: bold;">Please Wait - Saving Image</div>
+			</div>
+
+			<!-- SCROLL TO -->
+			<div id="annotations-scroll-to"></div>
+
+			<div ng-show="!vm.utils.image_loading && !vm.utils.drawing.is_saving && vm.utils.drawing.mode == 'crop'" class="p-2">
+				<span>Crop by zooming/moving the image to fit within the square window.</span>
+			</div>
+
+			<div class="row py-2" style="margin-left: 0px; margin-right: 0px;">
+				<div class="col col-12 col-lg-8 text-center">
+					<div id="DrawingPadInlineContainer" ng-show="!vm.utils.image_loading && !vm.utils.drawing.is_saving" style="max-width: 100%; height: auto; border: 1px solid #ddd; display: inline-block;">
+					</div>
+				</div>
+				<div class="col col-12 col-lg-4 pe-10" ng-show="vm.utils.drawing.mode == 'annotate' || vm.utils.drawing.mode == 'paint'">
+
+					<div class="d-block d-lg-none mb-10"></div>
+
+					<div style="border: 1px solid #ddd; border-radius: 5px;" class="p-5">
+						
+						<div class="row mb-2" ng-show="vm.utils.tabs.tabActive('annotation_list')">
+							<div class="col-5 col-sm-6">
+								<div class="input-group">
+									<div class="input-group-text">
+										<img src="../images/markers/{{ vm.utils.drawing.active_icon_group.example_icon }}" style="height: 25px; width: auto;">
+									</div>
+									<input type="text" class="form-control" ng-model="vm.utils.drawing.active_icon_group" ng-options="option as option.html for option in vm.utils.drawing.annotation_icon_groups" placeholder="Shape" data-html="1" bs-select>
+								</div>
+							</div>
+							<div class="col-7 col-sm-6">
+								<div class="input-group">
+									<div class="input-group-text">
+										<div style="width: 25px; height: 25px;" ng-show="!vm.utils.drawing.active_hex_code">
+											<i class="bi bi-dash-lg"></i>
+										</div>
+										<div ng-show="vm.utils.drawing.active_hex_code" style="width: 25px; height: 25px; border-radius: 360px; background-color: #{{ vm.utils.drawing.active_hex_code }}"></div>
+									</div>
+									<input type="text" class="form-control" ng-model="vm.utils.drawing.active_hex_code" ng-options="option.hex_code as option.html for option in vm.utils.drawing.annotation_hex_codes" placeholder="Colour" data-html="1" bs-select>
+									<div class="input-group-text" ng-show="vm.utils.drawing.active_hex_code" ng-click="vm.utils.drawing.clearActiveHexCode()">
+										<i class="text-danger bi bi-x-lg"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row mb-5" ng-show="vm.utils.tabs.tabActive('annotation_list')">
+							<div class="col text-center">
+
+								<button class="btn btn-success" ng-click="vm.utils.drawing.addAnnotation();">Add Marker</button>
+
+							</div>
+						</div>
+
+						<div ng-show="vm.utils.tabs.tabActive('annotation_list')" class="mt-10">
+	                    <!-- ANNOTATIONS LISTING -->
+		                  
+		                    <ul class="list-group">
+		                    	<!-- <li ng-show="!vm.utils.media_record.annotations.length" class="list-group-item text-center">
+		                    		<span class="fw-bold">No markers</span>
+		                    	</li> -->
+		                    	<li class="list-group-item" ng-repeat="annotation in vm.utils.media_record.annotations track by $index">
+		                    		<div class="row">
+		                    			<div class="col-8 col-md-10">
+			                            	<img src="../images/markers/{{ annotation.file_name }}" style="height: 20px; width: auto;" >
+			                                <a href="javascript: void(0)" ng-click="vm.utils.annotation_form.start(annotation, $index)" style="text-decoration: none;">
+			                                    <span class="fw-bold" ng-bind="annotation.description || '-'"></span>
+			                                </a>
+			                            </div>
+			                            <div class="col-4 col-md-2 text-end">
+			                            	<button class="btn btn-sm btn-danger" ng-click="vm.utils.drawing.removeAnnotation($index)" ng-disabled="!annotation.node_editable">
+			                            		<i class="bi bi-x-lg"></i>
+			                            	</button>
+			                            </div>
+		                    		</div>
+		                    	</li>
+		                    </ul>
+
+		                </div>
+
+		                <div ng-show="vm.utils.tabs.tabActive('annotation_form')">
+		                	<div class="form-group">
+								<label class="form-label">Short label <span style="font-weight: 500;"><span ng-bind="vm.utils.annotation_form.record.description.length || '0'"></span>/20</span></label>
+
+								<div class="input-group">
+									<div class="input-group-text">
+										<img src="../images/markers/{{ vm.utils.annotation_form.record.file_name }}" style="height: 20px; width: auto;" >
+									</div>
+
+									<input type="text" class="form-control" ng-model="vm.utils.annotation_form.record.description" placeholder="Please enter a short label" />
+								</div>
+							</div>
+
+							<div class="form-group mt-4 justify-content-evenly" style="display: flex; width: 100%;">
+								<button type="button" class="btn btn-danger" ng-click="vm.utils.drawing.removeAnnotation(vm.utils.annotation_form.record_index); vm.utils.tabs.changeTab('annotation_list')">Remove</button>
+								<button type="button" class="btn btn-success" ng-click="vm.utils.annotation_form.save()">Save</button>
+							</div>
+		                </div>
+
+					</div>
+
+	                <div class="d-block d-lg-none mb-10"></div>
+				</div>
+			</div>
+			<!-- END DRAWING PAD -->
+
+		</div>
+
+		<div ng-show="vm.utils.drawing.crop_confirmation" class="container" style="padding-top: 50px; padding-bottom: 50px;">
+
+		    <div class="alert alert-warning text-center" style="margin-bottom: 15px;">
+		        <div class="alert-text">Going to image crop will lose any unsaved sketches/markers. Are you sure you want to go to the image crop area?</div>
+		    </div>
+
+		    <div class="container mt-5">
+		        <div class="row">
+		           
+		        	<div class="col-6 text-center">
+		        		<button type="button" class="btn btn-danger btn-sm" ng-click="vm.utils.drawing.toggleCropConfirmation()">Cancel</button>
+		        	</div>
+
+		        	<div class="col-6 text-center">
+		                <button type="button" class="btn btn-primary btn-sm" ng-click="vm.utils.drawing.changeMode('crop')">Continue</button>
+		            </div>
+
+		        </div>
+		    </div>
+
+		</div>
+
+	</div>
+
+</div>

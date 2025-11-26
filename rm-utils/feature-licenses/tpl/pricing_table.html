@@ -1,0 +1,70 @@
+
+<!-- START PRICING TABLE CONTAINER -->
+<div class="pricing-table-container">
+
+	<!-- START ERROR MESSAGE -->
+	<div class="pricing-table-error-container" ng-show="vm.utils.error_handler.error">
+		<div class="pricing-table-error">
+			<span ng-bind="vm.utils.error_handler.error_message"></span>
+		</div>
+	</div>
+	<!-- END ERROR MESSAGE -->
+
+	<div class="pricing-table-inner-container" ng-show="!vm.utils.error_handler.error">
+		
+		<div class="package-container" ng-repeat="package in vm.utils.pricing_table.data.packages">
+
+			<div class="package-inner-container">
+
+				<div style="flex-grow: 1;">
+			
+					<div class="package-title-container"><span class="package-title" ng-bind="package.PackageName"></span></div>
+					<div class="package-duration-container"><span class="package-duration" ng-bind="package.DurationMonths + ' Months'"></span></div>
+					<div class="package-description-container"><span class="package-description" ng-bind="package.PackageDescription"></span></div>
+
+					<div class="feature-list-container">
+						
+						<ul class="feature-list">
+
+							<li class="feature-item" ng-repeat="product in package.products">
+								<i class="bi bi-arrow-return-right me-2"></i> <span ng-bind="product.ProductName"></span>
+							</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="package-controls-area">
+					
+					<div class="package-price-container">
+						<span class="package-price">£ <span ng-bind="package.PackagePrice"></span></span>
+					</div>
+
+					<div class="package-button-container">
+						<a href="javascript: void(0);" class="btn purchase-package-button" ng-click="vm.utils.pricing_table.selectPackage(package)">Pay</a>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+		
+	</div>
+	
+</div>
+<!-- END PRICING TABLE CONTAINER -->
+
+
+<ul class="feature-list mt-5">
+	<li>
+		<p class="fw-bold"><i class="bi bi-square-fill feature-list-icon"></i> All plans include our core safety management features</p>
+	</li>
+	<li>
+		<p class="fw-bold"><i class="bi bi-square-fill feature-list-icon"></i> New customers get 1 extra month free on their first subscription</p>
+	</li>
+	<li>
+		<p class="fw-bold"><i class="bi bi-square-fill feature-list-icon"></i> Standard pricing applies to single-site licenses - If multiple locations within your company require access, pricing will vary.</p>
+	</li>
+</ul>

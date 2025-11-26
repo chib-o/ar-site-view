@@ -1,0 +1,448 @@
+    
+<!-- ERROR INDICATOR -->
+<div ng-show="vm.utils.assessment_listing.error_handler.error" class="text-center py-4">
+    <i class="bi bi-exclamation-circle-fill text-danger"></i>
+
+    <div class="mt-2">
+        <span ng-bind="vm.utils.assessment_listing.error_handler.error_message"></span>
+    </div>
+</div>
+<!-- END ERROR INDICATOR -->
+
+<div ng-show="!vm.utils.assessment_listing.error_handler.error">
+
+    <!-- LOADING LIST INDICATOR -->
+    <div ng-show="vm.utils.assessment_listing.loading" class="text-center py-5">
+        <img src="../images/loading-icon.gif" style="width: 40px; height: auto;" >
+
+        <div class="mt-4">
+            <span class="fw-bold">Loading risk assessments...</span>
+        </div>
+    </div>
+    <!-- END LOADING LIST INDICATOR -->
+
+    <!-- LOADING CLOSEOUT INDICATOR -->
+    <div ng-show="vm.utils.assessment_listing.loading_closeout" class="text-center py-5">
+        <img src="../images/loading-icon.gif" style="width: 40px; height: auto;" >
+
+        <div class="mt-4">
+            <span class="fw-bold">Loading risk assessment...</span>
+        </div>
+    </div>
+    <!-- END LOADING CLOSEOUT INDICATOR -->
+        
+    <div ng-show="!vm.utils.assessment_listing.loading && !vm.utils.assessment_listing.loading_closeout">
+        <div ng-show="!vm.utils.assessment_listing.visible_data.length" class="text-center text-muted" style="padding: 15px; font-weight: bold;">No risk assessments found</div>
+
+        <div class="row mx-0">
+            <div class="col p-2">
+                <form>
+                    <input type="text" class="form-control search-bar" ng-model="vm.utils.assessment_listing.filters.general_search" placeholder="Search Assessments...">
+                    <button type="submit" style="display: none;" ng-click="vm.utils.assessment_listing.refresh();"></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row bg-light tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;" ng-show="vm.utils.assessment_listing.visible_data.length">
+
+            <div class="d-none d-md-inline-block col-md-2">
+                <!-- SPACER -->
+            </div>
+            <div class="col-12 col-md-10">
+                <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                    <div class="col-8">
+                        <span class="tr-list-header" style="font-weight: 600;">Details</span>
+                    </div>
+                    <div class="d-none d-sm-block col-2">
+                        <span class="tr-list-header" style="font-weight: 600;">Status</span>
+                    </div>
+                    <div class="col-2">
+                        <!-- EMPTY -->
+                    </div>
+                </div>
+            </div>
+                
+        </div>
+
+        <div class="tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;" dir-paginate="ra in vm.utils.assessment_listing.visible_data | itemsPerPage: vm.utils.assessment_listing.filters.per_page : 'risk_list' track by ra.rm_id" pagination-id="risk_list" current-page="vm.utils.assessment_listing.filters.page_num" total-items="vm.utils.assessment_listing.filters.total_items">
+
+            <div class="row mb-4" style="margin-left: 0px; margin-right: 0px;">
+                
+                <div class="col-6 col-md-2">
+                    <div ng-show="ra.rm_risk_profile_photo_path" style="padding-left: 0px; padding-right: 0px;">
+                        <img src="{{ ra.rm_risk_profile_photo_path }}" style="max-width: 100%; border-radius: 0.5rem!important;">
+                    </div>
+
+                    <div ng-show="!ra.rm_risk_profile_photo_path" class="text-center" style="padding-left: 0px; padding-right: 0px;">
+                        <img src="../images/custom_icons/No Media.png" style="max-width: 100%; border-radius: 0.5rem!important;">
+                    </div>
+                </div>
+                <div class="col-6 d-md-none">
+
+                    <ul class="menu-list-inline text-nowrap text-end">
+                        <!-- <li>
+                            <a href="javascript: void(0)" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('images')" style="text-decoration: none;" ng-class="{ 'text-secondary': !ra.num_files, 'text-success': ra.num_files }">
+                                <i class="bi bi-images"></i>
+                                (<span ng-bind="ra.num_files || '0'"></span>)
+                            </a>
+                        </li> -->
+                        <li>
+                            <a href="javascript: void(0);" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('control_measure'); vm.utils.active_assessment.aside.show();" style="text-decoration: none; font-size: 1.4em;">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <span class="badge mt-2 mb-2" ng-class="{'badge-danger-soft': ra.status == '7', 'badge-success-soft': ra.status == '10', 'badge-warning-soft': ra.status == '6'}" ng-bind="ra.reported_ra_status_name"></span>
+
+                    <a href="javascript: void(0);" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('control_measure')" style="text-decoration: none; display: inline-block;">
+                        <div style="margin-bottom: 5px; font-size: 0.8em;">
+                            <span ng-bind="vm.utils.assessment_listing.displayPhrase(ra, 'before') || 'Not Rated'" ng-style="vm.utils.assessment_listing.riskLevelStyle(ra, 'before');"></span> <span class="bi bi-arrow-right"></span> <span style="font-weight: 500;" ng-bind="vm.utils.assessment_listing.displayPhrase(ra, 'after') || 'Not Rated'" ng-style="vm.utils.assessment_listing.riskLevelStyle(ra, 'after');"></span>
+                        </div>
+                        <div class="text-muted" style="margin-bottom: 5px;">
+                            <span ng-bind="ra.hazard_type_name" style="font-weight: bold; font-size: 0.8em; font-style: italic;"></span><span ng-show="ra.hazard_origin_name"> | <span ng-bind="ra.hazard_origin_name" style="font-size: 0.8em; font-style: italic;"></span></span> <span ng-show="ra.hazard_consequence_name">| <span ng-bind="ra.hazard_consequence_name" style="font-size: 0.8em; font-style: italic;"></span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 col-md-10">
+
+                    <div class="row d-none d-md-flex" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="col-8">
+                            <span class="badge d-block d-sm-none mb-2" ng-class="{'badge-danger-soft': ra.status == '7', 'badge-success-soft': ra.status == '10', 'badge-warning-soft': ra.status == '6'}" ng-bind="ra.reported_ra_status_name"></span>
+
+                            <a href="javascript: void(0);" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('control_measure')" style="text-decoration: none; display: inline-block;">
+                                <div style="margin-bottom: 5px; font-size: 0.8em;">
+                                    <span ng-bind="vm.utils.assessment_listing.displayPhrase(ra, 'before') || 'Not Rated'" ng-style="vm.utils.assessment_listing.riskLevelStyle(ra, 'before');"></span> <span class="bi bi-arrow-right"></span> <span style="font-weight: 500;" ng-bind="vm.utils.assessment_listing.displayPhrase(ra, 'after') || 'Not Rated'" ng-style="vm.utils.assessment_listing.riskLevelStyle(ra, 'after');"></span>
+                                </div>
+                                <div class="text-muted" style="margin-bottom: 5px;">
+                                    <span ng-bind="ra.hazard_type_name" style="font-weight: bold; font-size: 0.8em; font-style: italic;"></span><span ng-show="ra.hazard_origin_name"> | <span ng-bind="ra.hazard_origin_name" style="font-size: 0.8em; font-style: italic;"></span></span> <span ng-show="ra.hazard_consequence_name">| <span ng-bind="ra.hazard_consequence_name" style="font-size: 0.8em; font-style: italic;"></span></span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="d-none d-sm-block col-sm-2">
+                            <span class="badge" ng-class="{'badge-danger-soft': ra.status == '7', 'badge-success-soft': ra.status == '10', 'badge-warning-soft': ra.status == '6'}" ng-bind="ra.reported_ra_status_name || 'N/A'"></span>
+                        </div>
+                        <div class="col-4 col-sm-2 text-end">
+                            <ul class="text-nowrap">
+                                <!-- <li style="display: inline-block;">
+                                    <a href="javascript: void(0)" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('images')" style="text-decoration: none;" ng-class="{ 'text-secondary': !ra.num_files, 'text-success': ra.num_files }">
+                                        <i class="bi bi-images"></i>
+                                        (<span ng-bind="ra.num_files || '0'"></span>)
+                                    </a>
+                                </li> -->
+                                <li style="display: inline-block;">
+                                    <div class="dropdown" style="display: inline-block;">
+                                        <a href="javascript: void(0);" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('control_measure');" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; font-size: 1.4em;">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <h6 class="dropdown-header">Next actions</h6>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.risk_bio.start(ra, 'submit_for_review');" ng-show="ra.status == 7">Submit for review</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.risk_bio.start(ra, 'upload_evidence');" ng-show="ra.status == 7">Upload evidence</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.risk_bio.start(ra, 'review_evidence');" ng-show="ra.status == 6">Review evidence</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.risk_bio.start(ra, 'browse_evidence');" ng-show="ra.status == 10">Browse evidence</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row mx-0" style="margin-top: 5px;">
+                        <div class="col">
+                            
+                            <div ng-show="ra.is_deviation == 'Yes'">
+                                <span class="badge badge-warning-soft">Deviation</span>
+                            </div>
+                            <div ng-show="ra.temporary_measure == 'Yes'">
+                                <span class="badge badge-warning-soft">
+                                    Control measure expires <span ng-bind="ra.temporary_measure_expiry | date: 'dd/MM/yyyy'"></span>
+                                </span>
+                            </div>
+                            <div ng-show="ra.status == '7' && ra.approved == 'No'">
+                                <span class="badge badge-danger-soft">Rejected</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row mt-4" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="col-12 mt-2 mt-md-0">
+                            <a href="javascript: void(0);" class="text-dark" ng-click="vm.utils.active_assessment.select(ra); vm.utils.active_assessment.tabs.changeTab('control_measure')">
+                                <span ng-show="!vm.utils.active_assessment.assessmentActive(ra)">
+                                    <span ng-bind="ra.hazard_description || '*No description provided*' | limitTo: 250"></span><span ng-show="ra.hazard_description.length > 250">...</span>
+                                </span>
+
+                                <span ng-show="vm.utils.active_assessment.assessmentActive(ra)">
+                                    <span ng-bind="ra.hazard_description || '*No description provided*'"></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CONTROL MEASURE -->
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;" ng-show="(vm.utils.active_assessment.assessmentActive(ra) && vm.utils.active_assessment.tabs.tabActive('control_measure') ) || vm.utils.assessment_listing.view_mode.activeViewMode('detailed')">
+                        <div class="col-12 mt-4">
+                            <div>
+                                <span class="text-dark fw-bold">Control</span>
+                            </div>
+                            <div>
+                                <span class="text-dark" ng-bind="ra.control_description || 'No control measure set'"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END CONTROL MEASURE -->
+
+                    <!-- RISK SCORES -->
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;" ng-show="vm.utils.assessment_listing.view_mode.activeViewMode('detailed')">
+                        <table class="table text-muted table-condensed" style="font-size: 0.8em; margin-top: 20px;">
+                            <tbody>
+                                <tr>
+                                    <td class="p-1 p-sm-4"></td>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">LO</td>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">FE</td>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">NP</td>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">DPH</td>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">HRN</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">Before</td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.lo_initial || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.fe_initial || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.np_initial || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.dph_initial || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.hrn_initial || '0' | limitTo: 5" class="ng-binding"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 p-sm-4" style="font-weight: bold;">After</td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.lo_after || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.fe_after || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.np_after || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.dph_after || '0'" class="ng-binding"></span>
+                                    </td>
+                                    <td class="p-1 p-sm-4">
+                                        <span ng-bind="ra.hrn_after || '0' | limitTo: 5" class="ng-binding"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <span class="badge text-bg-primary" ng-show="ra.statutory == 'Yes'">Statutory</span>
+                            <span class="badge text-bg-primary" ng-show="ra.statutory == 'No'">Advisory</span>
+                            <span class="badge text-bg-danger" ng-show="!ra.statutory">Statutory/Advisory not set</span>
+                        </div>
+                    </div>
+                    <!-- END RISK SCORES -->
+
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;" ng-show="vm.utils.active_assessment.assessmentActive(ra)">
+                        <!-- <div class="col-12 mt-4" ng-show="vm.utils.active_assessment.tabs.tabActive('control_measure')">
+                            <div>
+                                <span class="text-dark fw-bold">Control</span>
+                            </div>
+                            <div>
+                                <span class="text-dark" ng-bind="ra.control_description || 'No control measure set'"></span>
+                            </div>
+                        </div> -->
+
+                        <div class="col-12">
+                            <div ng-show="vm.utils.active_assessment.tabs.tabActive('images')">
+
+                                <div ng-show="vm.utils.risk_media.loading" class="text-center" style="margin-top: 20px;">
+                                    <img class="gears" src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+                                    <p class="text-muted" style="margin-top: 10px; font-weight: 600;">Loading media...</p>
+                                </div>
+
+                                <div ng-show="!vm.utils.risk_media.loading">
+
+                                    <div class="btn-group dropdown" style="margin-top: 15px; margin-bottom: 15px;" ng-show="!vm.utils.risk_media.re_order_media_mode">
+                                        <!-- DEVICE CAMERA -->
+                                        <button ng-show="vm.utils.is_mobile" type="button" class="btn btn-success btn-sm">
+                                            <label for="simpleRiskPhotoInput" style="padding: none; margin-bottom: 0px;"><span class="glyphicon glyphicon-camera"></span> Take Photo</label>
+                                        </button>
+                                        <!-- DESKTOP CAMERA -->
+                                        <button ng-show="!vm.utils.is_mobile" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.risk_media.takePhotoDesktop();">
+                                            <span class="glyphicon glyphicon-camera"></span> Take Photo
+                                        </button>
+                                        <!-- DROPDOWN BUTTON -->
+                                        <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="riskMediaDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="riskMediaDropdownMenu">
+                                            <li>
+                                                <label class="dropdown-item" for="simpleRiskInputFile">Choose File</label>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.clipboard.browseRecords(['image'],'risk_image', ra, 'clone');">From Clipboard</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.quick_capture.openSelectMode(ra);">From Quick Capture</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div style="text-align: right; margin-bottom: 20px;">
+
+                                        <div ng-show="!vm.utils.risk_media.re_order_media_mode">
+                                            <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.risk_media.toggleMediaStatusView('live')" ng-show="vm.utils.risk_media.filters.status == 3" style="text-decoration: none;">
+                                                <i class="bi bi-chevron-left"></i> <span style="font-weight: bold;">View Live Images</span>
+                                            </a>
+                                            <a class="text-danger" href="javascript: void(0);" ng-click="vm.utils.risk_media.toggleMediaStatusView('deleted')" ng-show="vm.utils.risk_media.filters.status == 1" style="text-decoration: none;">
+                                                <i class="bi bi-trash-fill"></i> <span style="font-weight: bold;">View Deleted Images</span>
+                                            </a>
+                                        </div>
+
+                                        <br>
+
+                                        <a href="javascript: void(0);" class="fw-bold" ng-click="vm.utils.risk_media.toggleReOrderMediaMode()" ng-show="!vm.utils.risk_media.re_order_media_mode"><i class="bi bi-arrows-move"></i> Re-order Images</a>
+
+                                        <a href="javascript: void(0);" class="fw-bold text-danger" ng-click="vm.utils.risk_media.toggleReOrderMediaMode()" ng-show="vm.utils.risk_media.re_order_media_mode">Exit Re-order Images</a>
+                                    </div>
+
+                                    <div ng-show="!vm.utils.risk_media.visible_media.length" class="text-muted text-center" style="font-weight: bold;">
+                                        <span ng-show="vm.utils.risk_media.filters.status == 1">No images have been taken for this assessment</span>
+                                        <span ng-show="vm.utils.risk_media.filters.status == 3">There are no deleted images for this assessment</span>
+                                    </div>
+
+                                    <div class="media-grid">
+
+                                        <div ng-repeat="(file_index, file_data) in vm.utils.risk_media.visible_media | filter: { is_video: false, is_audio: false } track by file_data._id" ng-style="vm.utils.risk_media.mediaStyle(file_data);" style="border-radius: 5px; padding: 5px; position: relative;">
+
+                                            <div class="text-center" ng-show="file_data.downloading_file">
+                                                <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+                                            </div>
+
+                                            <div ng-show="file_data.file_downloaded == null && !file_data.downloading_file" class="text-center padding">
+                                                <a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.risk_media.downloadMediaFile(file_data, ra)">
+                                                    <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                                                </a>
+                                            </div>
+                                            
+                                            <a href="javascript: void(0);" style="text-decoration: none;" ng-show="file_data.file_downloaded == 'Yes'">
+                                                <img ng-src="{{ file_data.url }}" class="img-fluid" />
+                                            </a>
+
+                                            <div style="padding: 10px;">
+                                                <a href="javascript: void(0);" ng-click="vm.utils.media_form.edit(file_data);" ng-show="!vm.utils.media_form.isActive(file_data) && file_data.file_downloaded == 'Yes'">
+                                                    <div ng-bind="file_data.title || 'No image title provided'" class="text-muted" style="font-size: 0.8em; font-weight: bold;"></div>
+                                                    <div ng-bind="file_data.description || 'No image description provided'" class="text-muted" style="font-size: 0.8em;"></div>
+                                                </a>
+                                                <input ng-show="vm.utils.media_form.isActive(file_data);" type="text" class="form-control" ng-model="vm.utils.media_form.record.title" ng-disabled="vm.utils.media_form.is_loading" placeholder="Image title..." style="margin-bottom: 5px;">
+                                                <div class="input-group" ng-show="vm.utils.media_form.isActive(file_data);">
+                                                    <input type="text" class="form-control" ng-model="vm.utils.media_form.record.description" ng-disabled="vm.utils.media_form.is_loading" placeholder="Image description...">
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-success" ng-click="vm.utils.media_form.save();" ng-disabled="vm.utils.media_form.is_loading"><i class="bi bi-save-fill"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div style="position: absolute; top: -10px; right: -10px;">
+                                                
+                                                <ul class="menu-list-inline">
+                                                    <li ng-hide="vm.utils.risk_media.re_order_media_mode || file_data.file_downloaded == null || file_data.status == '3'">
+                                                        <a ng-class="{'text-primary': file_data.profile_image, 'not-selected-text': !file_data.profile_image}" href="javascript: void(0);" ng-click="vm.utils.risk_media.setNewProfileImage(file_data)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                            <i class="bi bi-file-image-fill"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li ng-hide="!vm.utils.risk_media.re_order_media_mode || file_data.file_downloaded == null">
+                                                        <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaUp($index, vm.utils.risk_media.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                            <i class="bi bi-chevron-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li ng-hide="!vm.utils.risk_media.re_order_media_mode || file_data.file_downloaded == null">
+                                                        <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.moveMediaDown($index, vm.utils.risk_media.visible_media)" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li ng-hide="file_data.file_downloaded == null || vm.utils.risk_media.re_order_media_mode">
+                                                        <a class="text-primary" href="javascript: void(0);" ng-click="vm.utils.drawing_pad.start(file_data, 'assessment');" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                            <i class="bi bi-pencil-fill"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li ng-hide="file_data.file_downloaded == null || vm.utils.risk_media.re_order_media_mode">
+                                                        <div data-toggle-on-clipboard data-iteminfo="{ record_type: 'image', record_id: file_data._id, record_ref: null, data_type: null, data: null, title: file_data.title, description: file_data.description, directive_id: 'full_ra_images' }"></div>
+                                                    </li>
+                                                    <li ng-hide="vm.utils.risk_media.re_order_media_mode">
+                                                        <a href="javascript: void(0);" ng-click="vm.utils.risk_media.deleteMediaRecord(file_data, vm.utils.active_question.record);" ng-show="file_data.status == '1'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                            <i class="bi bi-trash-fill text-danger"></i>
+                                                        </a>
+                                                        <a href="javascript: void(0);" ng-click="vm.utils.risk_media.recoverMediaRecord(file_data, vm.utils.active_question.record);" ng-show="file_data.status == '3'" style="background-color: #fff; border: 1px solid #ddd; display: inline-block; border-radius: 50px; width: 30px; height: 30px; line-height: 30px; text-align: center;">
+                                                            <i class="bi bi-arrow-clockwise"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+
+            </div>
+                    
+        </div>
+
+        <!-- PAGINATION CONTROLS -->
+        <div class="text-end pt-4 px-4" style="padding-right: 15px;">
+            <dir-pagination-controls pagination-id="risk_list" on-page-change="vm.utils.assessment_listing.pagination.pageChanged(newPageNumber)"></dir-pagination-controls>
+        </div>
+        <!-- END PAGINATION CONTROLS -->
+    </div>
+
+</div>
+
+
+<!-- START SLIDEOUTS -->
+
+<!-- END SLIDEOUTS -->
+
+
+<!-- START TOASTS -->
+<div style="position: fixed; z-index: 1000; bottom: 0px; left: 0px; margin-bottom: 15px; margin-left: 15px;" class="me-5">
+
+    <div id="ReportRiskListNoInternetConnectionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>This action requires an internet connection</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+</div>
+<!-- END TOASTS -->

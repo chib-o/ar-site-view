@@ -1,0 +1,2440 @@
+
+
+<!-- START PLACE FILTERS CARD -->
+<!-- <div class="card h-100" ng-show="!vm.utils.core.downloading">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Place filters</h4>
+    </div>
+
+    <div class="card-body">
+
+        <div class="text-center" ng-show="!vm.utils.place_filters.site.id">
+            <button class="btn btn-sm btn-primary" ng-click="vm.utils.place_filters.start();">Please select a site</button>
+        </div>
+
+        <div class="mt-3 mb-5" ng-show="vm.utils.place_filters.site.id">
+
+            <span style="cursor: pointer;" ng-click="vm.utils.place_filters.start();">
+
+                <span ng-show="vm.utils.place_filters.site.record != null" ng-bind="vm.utils.place_filters.site.record.name || 'No site selected'" class="text-primary" style="line-height: 2em;"></span>
+                <img ng-show="vm.utils.place_filters.site.record == null" src="../images/custom_icons/Site Red.png" class="breadcrumb-icon">
+                /
+                <span ng-show="vm.utils.place_filters.building.record != null" ng-bind="vm.utils.place_filters.building.record.name || 'No building selected'" class="text-primary" style="line-height: 2em;"></span>
+                <img ng-show="vm.utils.place_filters.building.record == null" src="../images/custom_icons/Building Red.png" class="breadcrumb-icon">
+                /
+                <span ng-show="vm.utils.place_filters.area.record != null" ng-bind="vm.utils.place_filters.area.record.name || 'No area selected'" class="text-primary" style="line-height: 2em;"></span>
+                <img ng-show="vm.utils.place_filters.area.record == null" src="../images/custom_icons/Area Red.png" class="breadcrumb-icon">
+
+            </span>
+
+        </div>
+
+    </div>
+</div> -->
+<!-- END PLACE FILTERS CARD -->
+
+<!-- INCOMPLETE CORE DOWNLOAD NOTICE -->
+<div class="alert alert-danger text-center mt-5" style="margin-bottom: 15px;" ng-show="vm.utils.core.isIncompleteDownload() && !vm.utils.core.downloading">
+    <p style="font-weight: 500;">The last Core download you attempted on <span ng-bind="vm.utils.core.active_fetch_record.date_started | date: 'dd-MM-yyyy HH:mm:ss'"></span> was incomplete for this site</p>
+
+    <br>
+    <br>
+
+    <button class="text-primary" style="padding: 5px; text-align: center; border: none; background-color: white; font-weight: 500; border-radius: 5px; display: inline-block;" ng-click="vm.utils.core.reAttemptRefresh()">
+        <i class="bi bi-arrow-clockwise"></i> <span> Retry Refreshing Core from where you left off</span>
+    </button>
+
+    <br>
+    <br>
+
+    <button class="text-success" style="padding: 5px; text-align: center; border: none; background-color: white; font-weight: 500; border-radius: 5px; display: inline-block;" ng-click="vm.utils.core.refresh()">
+        <i class="bi bi-arrow-clockwise"></i> <span> Start New Core Refresh from the start</span>
+    </button>
+</div>
+<!-- END INCOMPLETE CORE DOWNLOAD NOTICE -->
+
+
+<!-- START SITE LATEST FETCH RECORD -->
+<div class="alert alert-warning" ng-show="!vm.utils.core.downloading && vm.utils.core.isLastSiteFetchOld()">
+
+    <p>You are working on a list that has not been updated in over 15 minutes</p>
+
+    <p class="m-0">List last updated: <span class="fw-bold" ng-bind="vm.utils.core.active_fetch_record.date_finished | date: 'dd/MM/yyyy HH:mm'"></span></p>
+
+    <div class="text-end">
+        <button class="btn btn-sm" style="background-color: white;" ng-click="vm.utils.core.download_ipp_confirmation.show();">Update list</button> 
+    </div>
+
+</div>
+<!-- END SITE LATEST FETCH RECORD -->
+
+
+<!-- START SITE NEVER DOWNLOADED -->
+<div class="alert alert-danger" ng-show="!vm.utils.core.downloading && !vm.utils.core.active_fetch_record && vm.utils.place_filters.site.record">
+    
+    <span class="fw-bold">Upcoming audits list has never been downloaded for this site</span>
+
+    <div class="text-end">
+        <button class="btn btn-sm" style="background-color: white;" ng-click="vm.utils.core.download_ipp_confirmation.show();">Download list</button> 
+    </div>
+
+</div>
+<!-- END SITE NEVER DOWNLOADED -->
+
+
+<!-- START SELECT A SITE -->
+<div class="mt-5 text-center" ng-show="!vm.utils.place_filters.site.id && !vm.utils.core.downloading">
+    <p>Please select a site to get started</p>
+
+    <button class="btn btn-sm btn-primary" ng-click="vm.utils.place_filters.start();">Select a site</button>
+</div>
+<!-- END SELECT A SITE -->
+
+<!-- START NOTE -->
+<div class="d-flex mb-5" ng-show="vm.utils.place_filters.site.id && !vm.utils.core.downloading && !vm.utils.core.isIncompleteDownload()">
+    <div class="me-2 pt-5">
+        <i class="bi bi-info-circle-fill fs-3"></i>
+    </div>
+    <div class="flex-grow-1" style="font-size: 0.8em;">
+        <div class="fw-bold">This listing only shows compliance requirements where:</div>
+        <ul class="mt-0">
+            <li>the corresponding core asset is <span class="fw-bold">in use</span></li>
+            <li>the compliance requirement has <span class="fw-bold">not been exluded from inspection</span> based on its PIPP (planning score)</li>
+        </ul>
+        <!-- <div class="ms-5">If you would like to manage your core and compliance requirements <a href="../RMAngular/#/core/" class="fw-bold">click here</a></div> -->
+    </div>
+</div>
+<!-- END NOTE -->
+
+
+<!-- START AUDITS TABS -->
+<div class="ps-2" ng-show="vm.utils.place_filters.site.id && !vm.utils.core.downloading && !vm.utils.core.isIncompleteDownload()">
+    <ul class="nav nav-tabs" style="border-bottom: none;">
+        <li class="nav-item">
+            <a class="nav-link" href="javascript: void(0);" ng-class="{'active panel-bg-white': vm.utils.tabbed_filters.tabs.today}" ng-click="vm.utils.tabbed_filters.selectAndFilter('today')">Today (<span ng-bind="vm.utils.tabbed_filters.stats.today || '0'"></span>)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="javascript: void(0);" ng-class="{'active panel-bg-white': vm.utils.tabbed_filters.tabs.overdue}" ng-click="vm.utils.tabbed_filters.selectAndFilter('overdue')">Overdue (<span ng-bind="vm.utils.tabbed_filters.stats.overdue || '0'"></span>)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="javascript: void(0);" ng-class="{'active panel-bg-white': vm.utils.tabbed_filters.tabs.in_progress}" ng-click="vm.utils.tabbed_filters.selectAndFilter('in_progress')">In Progress (<span ng-bind="vm.utils.tabbed_filters.stats.in_progress || '0'"></span>)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="javascript: void(0);" ng-class="{'active panel-bg-white': vm.utils.tabbed_filters.tabs.planned}" ng-click="vm.utils.tabbed_filters.selectAndFilter('planned')">Planned (<span ng-bind="vm.utils.tabbed_filters.stats.planned || '0'"></span>)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="javascript: void(0);" ng-class="{'active panel-bg-white': vm.utils.tabbed_filters.tabs.all_audits}" ng-click="vm.utils.tabbed_filters.selectAndFilter('all_audits')">All (<span ng-bind="vm.utils.tabbed_filters.stats.all_audits || '0'"></span>)</a>
+        </li>
+    </ul>
+</div>
+<!-- END AUDITS TABS -->
+    
+
+<!-- START AUDITS CARD -->
+<div class="card h-100" ng-show="vm.utils.place_filters.site.id && !vm.utils.core.downloading && !vm.utils.core.isIncompleteDownload()" style="margin-bottom: 100px;">
+    <!-- card header  -->
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <!-- <button class="btn btn-sm btn-primary" ng-click="vm.utils.user_filter.start();">
+                <i class="bi bi-person-fill"></i>
+            </button> -->
+            <a href="javascript: void(0);" class="text-primary" ng-click="vm.utils.user_filter.start();">
+                <i class="bi bi-person-fill"></i>
+                <span ng-show="vm.utils.user_filter.my_allocations">My</span>
+                <span ng-show="!vm.utils.user_filter.my_allocations && vm.utils.user_filter.user"> <span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span>'s</span>
+                <span ng-show="!vm.utils.user_filter.my_allocations && !vm.utils.user_filter.user">Viewing all</span>
+            </a>
+            <h4 class="mb-0">Upcoming audits <span class="badge text-bg-light" ng-bind="vm.utils.pp_audits_due_list.visible_data.length || '0'"></span></h4>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-sm" ng-click="vm.utils.core.download_ipp_confirmation.show();">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+
+        <!-- <button type="button" class="btn btn-primary btn-sm" ng-click="vm.utils.core.download_confirmation.show();">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button> -->
+    </div>
+    <!-- FILTERS -->
+    <div class="card-body">
+        <div class="table-card">
+
+            <div class="row py-4 px-1 mx-0">
+                <div class="col-7">
+                    <span class="fw-bold">Selected period</span>
+                    <br>
+                    <div ng-show="vm.utils.date_picker.filter_active">
+                        <span class="text-primary" style="cursor: pointer;" ng-click="vm.utils.date_picker.start();">
+                            <span ng-bind="vm.utils.date_picker.start_date | date: 'dd-MM-yyyy'"></span> <i class="bi bi-arrow-right text-secondary"></i> <span ng-bind="vm.utils.date_picker.end_date | date: 'dd-MM-yyyy'"></span>
+                        </span>
+                        <br>
+                        <span style="font-size: 0.8em;">
+                            (<span ng-bind="vm.utils.date_picker.selection_type"></span>)
+                        </span>
+                    </div>
+                    <div ng-show="vm.utils.tabbed_filters.active">
+                        <span>Viewing </span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.today">Today</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.overdue">Overdue</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.planned">Planned</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.in_progress">In Progress</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.all_audits">All</span>
+                        <!-- <a href="javascript: void(0);" ng-click="vm.utils.date_picker.start();" class="ms-2">
+                            <i class="bi bi-calendar-week text-primary" style="cursor: pointer;"></i>
+                        </a> -->
+                    </div>
+                </div>
+                <div class="col-5 text-end">
+
+                    <ul class="menu-list-inline">
+                        <!-- <li>
+                            <button class="btn btn-sm btn-primary" ng-click="vm.utils.date_picker.start();">
+                                <i class="bi bi-funnel-fill"></i>
+                            </button>
+                        </li> -->
+                        <!-- <li>
+                            <button class="btn btn-sm" ng-class="{'btn-primary': vm.utils.pp_audits_due_list.my_allocations, 'btn-light': !vm.utils.pp_audits_due_list.my_allocations}" ng-click="vm.utils.pp_audits_due_list.toggleAllocations()">
+                                <i class="bi bi-person-check-fill"></i>
+                            </button>
+                        </li> -->
+                        <li>
+                            <button class="btn btn-sm btn-light" ng-click="vm.utils.user_filter.start();">
+                                <i class="bi bi-person-fill"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <h6 class="dropdown-header">Defaults</h6>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.date_picker.defaults.doThisWeek();">This week</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.date_picker.defaults.doNextWeek();">Next week</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.date_picker.defaults.doLastWeek();">Last week</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.date_picker.defaults.doThisMonth();">This month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.date_picker.defaults.doNextMonth();">Next month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.date_picker.defaults.doLastMonth();">Last month</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div class="row py-4 px-1 mx-0" style="max-width: 100%;">
+                <div class="col">
+
+                    <div class="input-group">
+                        <input type="text" class="form-control search-bar" ng-model="vm.utils.pp_audits_due_list.filters.general_search" placeholder="Search Due Audits...">
+                    </div>
+
+                    <a href="javascript: void(0);" class="badge badge-danger-soft fw-bold ms-2" ng-show="vm.utils.pp_audits_due_list.filters.filter_active" ng-click="vm.utils.pp_audits_due_list.resetFilters()" style="font-size: 0.9rem;"><i class="bi bi-x-lg"></i> Filter</a>
+                    
+                </div>
+            </div>
+
+            <div ng-show="vm.utils.pp_audits_due_list.loading" class="text-center padding">
+                <img src="../images/loading-icon.gif" style="width: 50px;" />
+                <div class="text-center text-muted" style="margin-top: 5px; font-weight: bold;">Please Wait - Loading</div>
+            </div>
+        </div>
+    </div>
+    <!-- AUDIT LISTING -->
+    <div ng-show="!vm.utils.pp_audits_due_list.loading">
+        <!-- <div ng-show="!vm.utils.pp_audits_due_list.visible_data.length" class="text-center text-muted" style="padding: 15px; font-weight: bold;">
+            <p>No Audits due between these dates</p>
+        </div> -->
+
+        <div class="tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+
+            <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                <div class="d-none d-md-inline-block col-md-2">
+                    <span class="tr-list-header d-none d-sm-inline-block fw-bold">Status</span>
+                </div>
+                <div class="col-6 col-md-4">
+                    <span class="tr-list-header fw-bold">Asset</span>
+                </div>
+                <div class="col-4">
+                    <span class="tr-list-header fw-bold">Next due date</span>
+                </div>
+                <div class="col-2">
+                    <!-- EMPTY -->
+                </div>
+            </div>
+                
+        </div>
+
+
+        <!-- START PINNED AUDITS HEADER -->
+        <div class="bg-light tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+
+            <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                <div class="col">
+                    <a href="javascript: void(0);" ng-click="vm.utils.pp_audits_due_list.toggleShowPinnedAudits()">
+                        <i class="bi text-dark" ng-class="{'bi-chevron-down': !vm.utils.pp_audits_due_list.show_pinned, 'bi-chevron-up': vm.utils.pp_audits_due_list.show_pinned}"></i> <span class="tr-list-header fw-bold">Pinned audits (<span ng-bind="vm.utils.pp_audits_due_list.pinned_data.length || '0'"></span>)</span>
+                    </a>
+                </div>
+            </div>
+                
+        </div>
+        <!-- END PINNED AUDITS HEADER -->
+
+        <!-- START PINNED AUDITS LISTING -->
+        <div ng-show="vm.utils.pp_audits_due_list.show_pinned">
+
+            <div ng-show="!vm.utils.pp_audits_due_list.pinned_data.length" class="text-center text-muted" style="padding: 15px; font-weight: bold;">
+                <p>No pinned audits</p>
+            </div>
+
+            <div ng-repeat="ipp in vm.utils.pp_audits_due_list.pinned_data track by ipp._id" ng-show="vm.utils.pp_audits_due_list.pinned_data.length" ng-class="{'border border-primary-subtle': ipp.show_more_info}">
+                
+                <div ng-class="{'tr-list-item': !ipp.show_more_info, 'tr-list-item-borderless': ipp.show_more_info}" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+
+                        <div class="d-none d-md-inline-block col-md-2">
+                            <span class="badge badge-secondary-soft" ng-show="!ipp.audit_started && !ipp.report_gen_pending">Not started</span>
+
+                            <span class="badge badge-primary-soft" ng-show="ipp.audit_started == 'Yes'">In progress</span>
+
+                            <div class="mt-2" ng-show="!ipp.refreshing && ipp.requires_refresh">
+                                <span class="badge badge-warning-soft">Refresh required</span> <i class="bi bi-arrow-clockwise text-primary" ng-click="vm.utils.pp_audits_due_list.refreshIppRecord(ipp)" style="cursor: pointer;"></i>
+                            </div>
+
+                            <div class="mt-2" ng-show="ipp.refreshing">
+                                <img src="../images/loading-icon.gif" style="height: 30px; width: 30px;" >
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <span class="fw-bold" ng-bind="ipp.asset_ref || '-'"></span>
+                            <div ng-show="ipp.asset_status == 2 || ipp.asset_status == 3">
+                                <span class="badge text-bg-danger">Removed from Core</span>
+                            </div>
+                            <br>
+                            <span ng-bind="ipp.profile_point_name" style="font-size: 0.8em;"></span>
+                            <br>
+                            <span ng-show="ipp.is_lpa == 'Yes'"><span class="badge bg-primary">LPA</span> (<span ng-bind="ipp.lpa_next_layer_name || '-'" style="font-size: 0.8em;"></span>)</span>
+
+
+                            <!-- <span ng-show="ipp.is_lpa == 'Yes'" class="badge bg-primary">LPA</span> <span style="font-size: 0.8em;" ng-bind="ipp.profile_point_name"></span> -->
+                            
+                            <div class="d-block d-md-none pt-2">
+                                <span class="badge badge-secondary-soft" ng-show="!ipp.audit_started && !ipp.report_gen_pending">Not started</span>
+
+                                <span class="badge badge-primary-soft" ng-show="ipp.audit_started == 'Yes'">In progress</span>
+
+                                <div class="mt-2" ng-show="!ipp.refreshing && ipp.requires_refresh">
+                                    <span class="badge badge-warning-soft">Refresh required</span> <i class="bi bi-arrow-clockwise text-primary" ng-click="vm.utils.pp_audits_due_list.refreshIppRecord(ipp)" style="cursor: pointer;"></i>
+                                </div>
+
+                                <div class="mt-2" ng-show="ipp.refreshing">
+                                    <img src="../images/loading-icon.gif" style="height: 30px; width: 30px;" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4" style="text-wrap: nowrap;">
+                            <span class="fw-bold" ng-bind="ipp.effective_next_inspection_date_d" ng-class="{'text-danger': ipp.is_overdue == 'Yes'}" ng-hide="ipp.is_today == 'Yes'"></span>
+
+                            <span class="fw-bold text-warning" ng-show="ipp.is_today == 'Yes'">Today</span>
+
+                            <span class="fw-bold text-danger" ng-show="!ipp.effective_next_inspection_date && ipp.ever_inspected == 'No'">Never inspected</span>
+                        </div>
+                        <div class="col-2 text-end">
+                            <ul class="menu-list-inline text-nowrap">
+                                <!-- <li class="d-none d-md-inline-block">
+                                    <a href="javascript: void(0);" ng-show="!ipp.pinned" ng-click="vm.utils.pin_requirement.start(ipp);" style="font-size: 1.2em;">
+                                        <i class="bi bi-pin text-secondary"></i>
+                                    </a>
+
+                                    <a href="javascript: void(0);" ng-show="ipp.pinned == 'Yes'" ng-click="vm.utils.unpin_requirement.start(ipp);" style="font-size: 1.2em;">
+                                        <i class="bi bi-pin-fill text-success"></i>
+                                    </a>
+                                </li>
+                                <li class="d-none d-md-inline-block">
+                                    <a href="javascript: void(0);" ng-click="vm.utils.active_ipp.select(ipp); vm.utils.active_ipp.openOptions();" style="font-size: 1.2em;">
+                                        <i class="bi bi-play-fill text-primary"></i>
+                                    </a>
+                                </li> -->
+                                <li>
+                                    <a href="javascript: void(0);" ng-click="vm.utils.pp_audits_due_list.toggleIppScoreMoreInfo(ipp._id)" class="text-primary" style="font-size: 1.2em;">
+                                        <i class="bi bi-chevron-down" ng-show="!ipp.show_more_info"></i>
+                                        <i class="bi bi-chevron-up" ng-show="ipp.show_more_info"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown">
+                                        <!-- <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button> -->
+                                        <a href="javascript: void(0);" class="text-secondary" style="font-size: 1.2em;" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li style="display: block;">
+                                                <h6 class="dropdown-header">Options</h6>
+                                            </li>
+                                            <li style="display: block;">
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-show="!ipp.pinned" ng-click="vm.utils.pin_requirement.start(ipp);">
+                                                    <i class="bi bi-pin text-secondary"></i> Pin
+                                                </a>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-show="ipp.pinned == 'Yes'" ng-click="vm.utils.unpin_requirement.start(ipp);">
+                                                    <i class="bi bi-pin-fill text-success"></i> Un-pin
+                                                </a>
+                                            </li>
+                                            <li style="display: block;">
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.active_ipp.select(ipp); vm.utils.active_ipp.openOptions();">
+                                                    <i class="bi bi-play-fill text-primary"></i> Start
+                                                </a>
+                                            </li>
+                                            <li style="display: block;">
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.claim_requirement.start(ipp);" ng-show="ipp.user_has_claimed != 'Yes'">
+                                                    <i class="bi bi-person-fill text-primary"></i> Claim
+                                                </a>
+
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.unclaim_requirement.start(ipp);" ng-show="ipp.user_has_claimed == 'Yes'">
+                                                    <i class="bi bi-person-fill text-danger"></i> Unclaim
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col text-end">
+                            <!-- <span ng-show="ipp.assign_user_id" class="fw-bold" style="font-size: 0.8em;" ng-bind="ipp.assigned_user_name"></span> -->
+
+                            <!-- <span ng-show="!ipp.assign_user_id" class="badge badge-danger-soft">Not assigned</span> -->
+
+                            <span ng-show="ipp.user_has_claimed == 'Yes'" class="badge badge-success-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">Claimed by you</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations">Claimed by <span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span></span>
+                            </span>
+
+                            <span ng-show="ipp.user_is_assigned == 'Yes' && ipp.user_has_claimed != 'Yes'" class="badge badge-success-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">You are assigned</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations"><span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span> is assigned</span>
+                            </span>
+
+                            <span ng-show="ipp.user_has_claimed != 'Yes' && ipp.user_is_assigned != 'Yes' && ipp.user_is_allocated == 'Yes'" class="badge badge-primary-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">You are eligible</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations"><span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span> is eligible</span>
+                            </span>
+
+                            <span ng-show="ipp.user_has_claimed != 'Yes' && ipp.user_is_allocated != 'Yes'" class="badge badge-danger-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">You are not eligible</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations"><span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span> is not eligible</span>
+                            </span>
+                        </div>
+                    </div>
+                            
+                </div>
+
+                <div ng-show="ipp.show_more_info" class="tr-list-item bg-light" style="max-width: 100%; margin-left: 0px; margin-right: 0px; position: relative; border-top: none;">
+
+                    <!-- WHITE DOWN ARROW -->
+                    <div style="width: 0; height: 0; border-left: 40px solid transparent;border-right: 40px solid transparent; border-top: 15px solid #fff; position: absolute; top: -2px; left: 0; right: 0; margin-left: auto; margin-right: auto;"></div>
+                    <!-- END WHITE DOWN ARROW -->
+
+                    <!-- ASSIGNED USER -->
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Assigned</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.assigned_user_name || 'N/A'"></span>
+                        </div>
+                    </div>
+                    <!-- END ASSIGNED USER -->
+
+                    <!-- CLAIMED BY -->
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Claimed by</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.claimed_by_user_name || 'N/A'"></span> (<span ng-bind="ipp.claimed_date_d || '-'"></span>)
+                        </div>
+                    </div>
+                    <!-- END CLAIMED BY -->
+
+                    <!-- STARTED BY -->
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Started by</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.started_by_name || 'N/A'"></span> (<span ng-bind="ipp.date_started_d || '-'"></span>)
+                        </div>
+                    </div>
+                    <!-- END STARTED BY -->
+
+                    <div class="row mt-5">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Location</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span><span ng-bind="ipp.site_name || '-'"></span> <i class="bi bi-chevron-right"></i> <span ng-bind="ipp.building_name || '-'"></span> <i class="bi bi-chevron-right"></i> <span ng-bind="ipp.area_name || '-'"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Serial</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.serial || '-'"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Type</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.type || '-'"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Model</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.model || '-'"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">IPP Score</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <img src="{{ vm.utils.pp_audits_due_list.ippScoreIcon(ipp) }}" class="panel-icon">
+                            <span ng-bind="ipp.matrix_score_phrase_initial || 'Not scored'"></span>
+                        </div>
+                    </div>
+
+                    <div ng-show="ipp.is_lpa == 'Yes'" class="mt-5">
+                        
+                        <div class="row">
+                            <div class="col-4 text-start">
+                                <span class="fw-bold">LPA Programme</span>
+                            </div>
+                            <div class="col-6 text-start">
+                                <span ng-bind="ipp.lpa_programme_name || '-'"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-4 text-start">
+                                <span class="fw-bold">LPA Layer</span>
+                            </div>
+                            <div class="col-6 text-start">
+                                <span ng-bind="ipp.lpa_next_layer_name"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- END PINNED AUDITS LISTING -->
+
+        <!-- START DUE AUDITS HEADER -->
+        <div class="bg-light tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+
+            <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                <div class="col">
+                    <a href="javascript: void(0);" ng-click="vm.utils.pp_audits_due_list.toggleShowDueAudits()">
+                        <i class="bi text-dark" ng-class="{'bi-chevron-down': !vm.utils.pp_audits_due_list.show_due_audits, 'bi-chevron-up': vm.utils.pp_audits_due_list.show_due_audits}"></i> <span class="tr-list-header fw-bold">Upcoming audits (<span ng-bind="vm.utils.pp_audits_due_list.visible_data.length || '0'"></span>)</span>
+                    </a>
+                </div>
+            </div>
+                
+        </div>
+        <!-- END DUE AUDITS HEADER -->
+
+        <!-- START DUE AUDITS LISTING -->
+        <div ng-show="vm.utils.pp_audits_due_list.show_due_audits">
+
+            <div ng-show="!vm.utils.pp_audits_due_list.visible_data.length" class="text-center text-muted" style="padding: 15px; font-weight: bold;">
+
+                <div ng-show="vm.utils.date_picker.filter_active">
+                    <i class="bi bi-search" style="font-size: 1.4em;"></i>
+                    <p ng-show="vm.utils.date_picker.selection_type == 'Custom'">No Audits due between these dates</p>
+                    <p ng-show="vm.utils.date_picker.selection_type != 'Custom'">No Audits due <span ng-bind="vm.utils.date_picker.selection_type"></span></p>
+                </div>
+
+                <div ng-show="vm.utils.tabbed_filters.active">
+                    <i class="bi bi-search" style="font-size: 1.4em;"></i>
+                    <p>No Audits
+                        <span ng-show="vm.utils.tabbed_filters.tabs.today">due today</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.overdue">overdue</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.planned">planned</span>
+                        <span ng-show="vm.utils.tabbed_filters.tabs.in_progress">in progress</span>
+                    </p>
+                </div>
+            </div>
+
+            <div dir-paginate="ipp in vm.utils.pp_audits_due_list.visible_data | filter: vm.utils.pp_audits_due_list.filters.general_search | itemsPerPage: 50 : 'ipp_pagination' track by ipp._id" pagination-id="ipp_pagination" ng-show="vm.utils.pp_audits_due_list.visible_data.length" ng-class="{'border border-primary-subtle': ipp.show_more_info}">
+                
+                <div ng-class="{'tr-list-item': !ipp.show_more_info, 'tr-list-item-borderless': ipp.show_more_info}" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+
+                        <div class="d-none d-md-inline-block col-md-2">
+                            <span class="badge badge-secondary-soft" ng-show="!ipp.audit_started && !ipp.report_gen_pending">Not started</span>
+
+                            <span class="badge badge-primary-soft" ng-show="ipp.audit_started == 'Yes'">In progress</span>
+
+                            <div class="mt-2" ng-show="!ipp.refreshing && ipp.requires_refresh">
+                                <span class="badge badge-warning-soft">Refresh required</span> <i class="bi bi-arrow-clockwise text-primary" ng-click="vm.utils.pp_audits_due_list.refreshIppRecord(ipp)" style="cursor: pointer;"></i>
+                            </div>
+
+                            <div class="mt-2" ng-show="ipp.refreshing">
+                                <img src="../images/loading-icon.gif" style="height: 30px; width: 30px;" >
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <span class="fw-bold" ng-bind="ipp.asset_ref || '-'"></span>
+                            <div ng-show="ipp.asset_status == 2 || ipp.asset_status == 3">
+                                <span class="badge text-bg-danger">Removed from Core</span>
+                            </div>
+                            <br>
+                            <span ng-bind="ipp.profile_point_name" style="font-size: 0.8em;"></span>
+                            <br>
+                            <span ng-show="ipp.is_lpa == 'Yes'"><span class="badge bg-primary">LPA</span> (<span ng-bind="ipp.lpa_next_layer_name || '-'" style="font-size: 0.8em;"></span>)</span>
+
+
+                            <!-- <span ng-show="ipp.is_lpa == 'Yes'" class="badge bg-primary">LPA</span> <span style="font-size: 0.8em;" ng-bind="ipp.profile_point_name"></span> -->
+                            
+                            <div class="d-block d-md-none pt-2">
+                                <span class="badge badge-secondary-soft" ng-show="!ipp.audit_started && !ipp.report_gen_pending">Not started</span>
+
+                                <span class="badge badge-primary-soft" ng-show="ipp.audit_started == 'Yes'">In progress</span>
+
+                                <div class="mt-2" ng-show="!ipp.refreshing && ipp.requires_refresh">
+                                    <span class="badge badge-warning-soft">Refresh required</span> <i class="bi bi-arrow-clockwise text-primary" ng-click="vm.utils.pp_audits_due_list.refreshIppRecord(ipp)" style="cursor: pointer;"></i>
+                                </div>
+
+                                <div class="mt-2" ng-show="ipp.refreshing">
+                                    <img src="../images/loading-icon.gif" style="height: 30px; width: 30px;" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4" style="text-wrap: nowrap;">
+                            <span class="fw-bold" ng-bind="ipp.effective_next_inspection_date_d" ng-class="{'text-danger': ipp.is_overdue == 'Yes'}" ng-hide="ipp.is_today == 'Yes'"></span>
+
+                            <span class="fw-bold text-warning" ng-show="ipp.is_today == 'Yes'">Today</span>
+
+                            <span class="fw-bold text-danger" ng-show="!ipp.effective_next_inspection_date && ipp.ever_inspected == 'No'">Never inspected</span>
+                        </div>
+                        <div class="col-2 text-end">
+                            <ul class="menu-list-inline text-nowrap">
+                                <!-- <li class="d-none d-md-inline-block">
+                                    <a href="javascript: void(0);" ng-show="!ipp.pinned" ng-click="vm.utils.pin_requirement.start(ipp);" style="font-size: 1.2em;">
+                                        <i class="bi bi-pin text-secondary"></i>
+                                    </a>
+
+                                    <a href="javascript: void(0);" ng-show="ipp.pinned == 'Yes'" ng-click="vm.utils.unpin_requirement.start(ipp);" style="font-size: 1.2em;">
+                                        <i class="bi bi-pin-fill text-success"></i>
+                                    </a>
+                                </li>
+                                <li class="d-none d-md-inline-block">
+                                    <a href="javascript: void(0);" ng-click="vm.utils.active_ipp.select(ipp); vm.utils.active_ipp.openOptions();" style="font-size: 1.2em;">
+                                        <i class="bi bi-play-fill text-primary"></i>
+                                    </a>
+                                </li> -->
+                                <li>
+                                    <a href="javascript: void(0);" ng-click="vm.utils.pp_audits_due_list.toggleIppScoreMoreInfo(ipp._id)" class="text-primary" style="font-size: 1.2em;">
+                                        <i class="bi bi-chevron-down" ng-show="!ipp.show_more_info"></i>
+                                        <i class="bi bi-chevron-up" ng-show="ipp.show_more_info"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown">
+                                        <!-- <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button> -->
+                                        <a href="javascript: void(0);" class="text-secondary" style="font-size: 1.2em;" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li style="display: block;">
+                                                <h6 class="dropdown-header">Options</h6>
+                                            </li>
+                                            <li style="display: block;">
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-show="!ipp.pinned" ng-click="vm.utils.pin_requirement.start(ipp);">
+                                                    <i class="bi bi-pin text-secondary"></i> Pin
+                                                </a>
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-show="ipp.pinned == 'Yes'" ng-click="vm.utils.unpin_requirement.start(ipp);">
+                                                    <i class="bi bi-pin-fill text-success"></i> Un-pin
+                                                </a>
+                                            </li>
+                                            <li style="display: block;">
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.active_ipp.select(ipp); vm.utils.active_ipp.openOptions();">
+                                                    <i class="bi bi-play-fill text-primary"></i> Start
+                                                </a>
+                                            </li>
+                                            <li style="display: block;">
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.claim_requirement.start(ipp);" ng-show="ipp.user_has_claimed != 'Yes'">
+                                                    <i class="bi bi-person-fill text-primary"></i> Claim
+                                                </a>
+
+                                                <a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.unclaim_requirement.start(ipp);" ng-show="ipp.user_has_claimed == 'Yes'">
+                                                    <i class="bi bi-person-fill text-danger"></i> Unclaim
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col text-end">
+
+                            <span ng-show="ipp.user_has_claimed == 'Yes'" class="badge badge-success-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">Claimed by you</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations">Claimed by <span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span></span>
+                            </span>
+
+                            <span ng-show="ipp.user_has_claimed != 'Yes' && ipp.user_is_assigned == 'Yes'" class="badge badge-success-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">You are assigned</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations"><span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span> is assigned</span>
+                            </span>
+
+                            <span ng-show="ipp.user_has_claimed != 'Yes' && ipp.user_is_assigned != 'Yes' && ipp.user_is_allocated == 'Yes'" class="badge badge-primary-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">You are eligible</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations"><span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span> is eligible</span>
+                            </span>
+
+                            <span ng-show="ipp.user_has_claimed != 'Yes' && ipp.user_is_allocated != 'Yes'" class="badge badge-danger-soft">
+                                <span ng-show="vm.utils.user_filter.my_allocations">You are not eligible</span>
+                                <span ng-show="!vm.utils.user_filter.my_allocations"><span ng-bind="vm.utils.user_filter.user.UsersName || 'No name'"></span> is not eligible</span>
+                            </span>
+
+                        </div>
+                    </div>
+                            
+                </div>
+
+                <div ng-show="ipp.show_more_info" class="tr-list-item bg-light" style="max-width: 100%; margin-left: 0px; margin-right: 0px; position: relative; border-top: none;">
+
+                    <!-- WHITE DOWN ARROW -->
+                    <div style="width: 0; height: 0; border-left: 40px solid transparent;border-right: 40px solid transparent; border-top: 15px solid #fff; position: absolute; top: -2px; left: 0; right: 0; margin-left: auto; margin-right: auto;"></div>
+                    <!-- END WHITE DOWN ARROW -->
+
+                    <!-- ASSIGNED TO -->
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Assigned</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.assigned_user_name || 'N/A'"></span>
+                        </div>
+                    </div>
+                    <!-- END ASSIGNED TO -->
+
+                    <!-- CLAIMED BY -->
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Claimed by</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.claimed_by_user_name || 'N/A'"></span> (<span ng-bind="ipp.claimed_date_d || '-'"></span>)
+                        </div>
+                    </div>
+                    <!-- END CLAIMED BY -->
+
+                    <!-- STARTED BY -->
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Started by</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.started_by_name || 'N/A'"></span> (<span ng-bind="ipp.date_started_d || '-'"></span>)
+                        </div>
+                    </div>
+                    <!-- END STARTED BY -->
+
+                    <div class="row mt-5">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Location</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span><span ng-bind="ipp.site_name || '-'"></span> <i class="bi bi-chevron-right"></i> <span ng-bind="ipp.building_name || '-'"></span> <i class="bi bi-chevron-right"></i> <span ng-bind="ipp.area_name || '-'"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Serial</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.serial || '-'"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Type</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.type || '-'"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">Model</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <span ng-bind="ipp.model || '-'"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4 text-start">
+                            <span class="fw-bold">IPP Score</span>
+                        </div>
+                        <div class="col-6 text-start">
+                            <img src="{{ vm.utils.pp_audits_due_list.ippScoreIcon(ipp) }}" class="panel-icon">
+                            <span ng-bind="ipp.matrix_score_phrase_initial || 'Not scored'"></span>
+                        </div>
+                    </div>
+
+                    <div ng-show="ipp.is_lpa == 'Yes'" class="mt-5">
+                        
+                        <div class="row">
+                            <div class="col-4 text-start">
+                                <span class="fw-bold">LPA Programme</span>
+                            </div>
+                            <div class="col-6 text-start">
+                                <span ng-bind="ipp.lpa_programme_name || '-'"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-4 text-start">
+                                <span class="fw-bold">LPA Layer</span>
+                            </div>
+                            <div class="col-6 text-start">
+                                <span ng-bind="ipp.lpa_next_layer_name"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PAGINATION CONTROLS -->
+            <div class="text-end pt-4 px-4" style="padding-right: 15px;">
+                <dir-pagination-controls pagination-id="ipp_pagination"></dir-pagination-controls>
+            </div>
+            <!-- END PAGINATION CONTROLS -->            
+        </div>
+        <!-- END DUE AUDITS LISTING -->
+
+    </div>
+</div>
+<!-- END CARD -->
+
+
+<!-- START CORE DOWNLOADING NOTIFICATION -->
+<div ng-show="vm.utils.core.downloading" class="text-center">
+
+    <div>
+        <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;" >
+
+        <div style="margin-top: 2%;">
+            <!-- <p class="text-secondary fw-bold">Downloading site's Core...</p> -->
+            <p class="text-secondary fw-bold" ng-bind="vm.utils.core.downloading_message"></p>
+            <p class="text-secondary fw-bold">This can take a few minutes depending on the size of the site</p>
+        </div>
+    </div>
+    
+    <div style="padding-left: 10%; padding-right: 10%; margin-top: 5%;">
+        <div class="alert alert-primary padding">
+            <p class="text-primary" ng-bind="vm.utils.core_download.display_message || 'Initialising'"></p>
+            <p ng-show="vm.utils.core_download.active_fetch_item.record.status == 'Installing'">
+                <span ng-bind="vm.utils.core_download.active_fetch_item.record.total_items_installed"></span> / <span ng-bind="vm.utils.core_download.active_fetch_item.record.total_items"></span> installed
+            </p>
+        </div>
+    </div>
+
+</div>
+<!-- END CORE DOWNLOADING NOTIFICATION -->
+
+
+<!-- START FLOATING FOOTER TOOLBAR -->
+<div class="bg-white w-100 border-top" style="position: fixed; bottom: 0px; left: 0px;" ng-show="vm.utils.place_filters.site.id && !vm.utils.core.downloading">
+    <div class="row py-2">
+        <div class="col text-center">
+            <i class="bi bi-geo-alt-fill text-primary" style="font-size: 1.5em; cursor: pointer;" ng-click="vm.utils.place_filters.start();"></i>
+        </div>
+        <div class="col text-center">
+            <i class="bi bi-funnel-fill text-primary" style="font-size: 1.5em; cursor: pointer;" ng-click="vm.utils.ipp_filter.start();"></i>
+            <br>
+            <span class="badge badge-warning-soft" ng-show="vm.utils.ipp_filter.active">Active filter</span>
+        </div>
+        <div class="col text-center">
+            <i class="bi bi-calendar-week text-primary" style="font-size: 1.5em; cursor: pointer;" ng-click="vm.utils.date_picker.start();"></i>
+        </div>
+    </div>
+</div>
+<!-- END FLOATING FOOTER TOOLBAR -->
+
+
+<!-- START SLIDEOUTS -->
+
+<!-- START INSPECTION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="StartInspectionAside" aria-labelledby="StartInspectionAside" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.start_inspection.slideout.hide()" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+
+        <!-- ERROR HANDLER -->
+        <div ng-show="vm.utils.start_inspection.error_handler.error && !vm.utils.start_inspection.loading" class="alert alert-danger">
+            <p class="fw-bold" ng-bind="vm.utils.start_inspection.error_handler.error_message"></p>
+        </div>
+        <!-- END ERROR HANDLER -->
+
+
+        <!-- START INSPECTION DIALOG -->
+        <div ng-show="!vm.utils.start_inspection.loading && !vm.utils.start_inspection.saving && !vm.utils.start_inspection.error_handler.error">
+
+            <!-- INSPECTION ALREADY STARTED WARNING -->
+            <div class="alert alert-warning" ng-show="vm.utils.start_inspection.ipp_record.audit_started">
+        
+                <p class="fw-bold"><span ng-bind="vm.utils.start_inspection.ipp_record.started_by_name || 'Someone'"></span> started an inspection for this requirement on <span ng-bind="vm.utils.start_inspection.ipp_record.date_started | date: 'dd/MM/yyyy'"></span></p>
+
+                <p class="mb-0">Are you sure you want to start an inspection for this requirement as well? It will not overwrite the existing inspection</p>
+
+            </div>
+            <!-- END INSPECTION ALREADY STARTED WARNING -->
+        
+            <p>A <span class="fw-bold" ng-bind="vm.utils.start_inspection.ipp_record.profile_point_name"></span> inspection is due for <span class="fw-bold" ng-bind="vm.utils.start_inspection.ipp_record.asset_ref"></span> on <span class="fw-bold" ng-bind="vm.utils.start_inspection.ipp_record.effective_next_inspection_date_d"></span></p>
+
+            <p>Do you want to re-inspect with risk assessments from a past inspection or start a new empty inspection?</p>
+
+            <div class="row mt-4">
+                <div class="col-6 text-start">
+                    <button class="btn btn-sm btn-success" ng-click="vm.utils.start_inspection.saveAndEnter();">Start inspection</button>
+                </div>
+                <div class="col-6 text-end">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.utils.start_inspection.reInspect();">Re-inspect</button>
+                </div>
+            </div>
+
+        </div>
+        <!-- END START INSPECTION DIALOG -->
+
+
+        <!-- START CREATING INSPECTION -->
+        <div ng-show="vm.utils.start_inspection.saving && !vm.utils.start_inspection.error_handler.error" class="text-center">
+            
+            <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;" >
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Creating inspection...</p>
+                <p class="text-secondary">Please wait while an inspection is created for this requirement</p>
+            </div>
+
+        </div>
+        <!-- END CREATING INSPECTION -->
+
+    </div>
+
+</div>
+<!-- END START INSPECTION SLIDEOUT -->
+
+
+<!-- START LPA INSPECTION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="StartLPAInspectionAside" aria-labelledby="StartLPAInspectionAside" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.start_lpa_inspection.slideout.hide();" ng-show="!vm.utils.project_download.downloading" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+
+        <!-- START ERROR HANDLER -->
+        <div ng-show="vm.utils.start_lpa_inspection.error_handler.error" class="alert alert-danger">
+            <p class="fw-bold mb-0" ng-bind="vm.utils.start_lpa_inspection.error_handler.error_message"></p>
+        </div>
+        <!-- END ERROR HANDLER -->
+
+
+        <!-- START USER NOT ELIGIBLE -->
+        <div class="alert alert-danger" ng-show="!vm.utils.start_lpa_inspection.canStartLpaInspection(vm.utils.start_lpa_inspection.ipp_record) && !vm.utils.start_lpa_inspection.loading && !vm.utils.start_lpa_inspection.refreshing && !vm.utils.project_download.downloading">
+            <p class="fw-bold">You are not eligible to start this LPA inspection</p>
+        </div>
+        <!-- END USER NOT ELIGIBLE -->
+
+
+        <!-- SHOW IF USER IS ELIGIBLE -->
+        <div ng-show="vm.utils.start_lpa_inspection.canStartLpaInspection(vm.utils.start_lpa_inspection.ipp_record) && !vm.utils.start_lpa_inspection.error_handler.error">
+
+            <!-- LPA INSPECTION ALREADY STARTED -->
+            <div class="alert alert-warning" ng-show="vm.utils.start_lpa_inspection.ipp_record.audit_started && !vm.utils.start_lpa_inspection.loading && !vm.utils.start_lpa_inspection.refreshing && !vm.utils.project_download.downloading">
+
+                <!-- STARTED BY SOMEONE ELSE TO LOGGED IN USER -->
+                <p class="fw-bold" ng-show="vm.utils.active_profile.CloudUserID != vm.utils.start_lpa_inspection.ipp_record.started_by_rm_id">This LPA programme requirement has already been started by <span ng-bind="vm.utils.start_lpa_inspection.ipp_record.started_by_name || 'Someone'"></span> on <span ng-bind="vm.utils.start_lpa_inspection.ipp_record.date_started | date: 'dd/MM/yyyy'"></span></p>
+                <!-- END STARTED BY SOMEONE ELSE TO LOGGED IN USER -->
+
+                <!-- STARTED BY LOGGED IN USER -->
+                <p class="fw-bold" ng-show="vm.utils.active_profile.CloudUserID == vm.utils.start_lpa_inspection.ipp_record.started_by_rm_id">This LPA programme requirement has already been started by yourself on <span ng-bind="vm.utils.start_lpa_inspection.ipp_record.date_started | date: 'dd/MM/yyyy'"></span></p>
+                <!-- END STARTED BY LOGGED IN USER -->
+
+                <!-- SHOW IF STARTED BY LOGGED IN USER -->
+                <div ng-show="vm.utils.active_profile.CloudUserID == vm.utils.start_lpa_inspection.ipp_record.started_by_rm_id">
+
+                    <p class="mb-0">Would you like to download this inspection?</p>
+
+                    <div class="row mt-5">
+                        <div class="col-6 text-start">
+                            <button class="btn btn-sm btn-primary" ng-click="vm.utils.start_lpa_inspection.downloadExistingInspection();">Download</button>
+                        </div>
+                        <div class="col-6 text-end">
+                            <button class="btn btn-sm btn-danger" ng-click="vm.utils.start_lpa_inspection.slideout.hide();">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- END SHOW IF STARTED BY LOGGED IN USER -->
+
+            </div>
+            <!-- END LPA INSPECTION ALREADY STARTED -->
+
+
+            <!-- LPA INSPECTION NOT YET STARTED -->
+            <div ng-show="!vm.utils.start_lpa_inspection.ipp_record.audit_started && !vm.utils.start_lpa_inspection.loading && !vm.utils.start_lpa_inspection.refreshing && !vm.utils.project_download.downloading">
+
+                <div ng-show="vm.utils.start_lpa_inspection.ipp_record.asset_status == 2 || vm.utils.start_lpa_inspection.ipp_record.asset_status == 3" class="alert alert-danger text-center mb-10">
+                    <div class="mb-4">
+                        <i class="bi bi-exclamation-circle-fill" style="font-size: 1.4em;"></i> 
+                    </div>
+
+                    <span class="fw-bold">This Core asset has been removed from Core</span>
+                </div>
+
+                <p>A LPA is due for <span class="fw-bold" ng-bind="vm.utils.start_lpa_inspection.ipp_record.asset_ref"></span> on <span class="fw-bold" ng-bind="vm.utils.start_lpa_inspection.ipp_record.effective_next_inspection_date_d"></span></p>
+
+                <p class="mb-0">Type | <span class="fw-bold" ng-bind="vm.utils.start_lpa_inspection.ipp_record.profile_point_name"></span></p>
+                <p>LPA layer | <span class="fw-bold" ng-bind="vm.utils.start_lpa_inspection.ipp_record.lpa_next_layer_name"></span></p>
+
+                <!-- START REQUIREMENT ALREADY CLAIMED -->
+                <div ng-show="vm.utils.start_lpa_inspection.ipp_record.user_has_claimed != 'Yes' && vm.utils.start_lpa_inspection.ipp_record.rm_claimed_by_user_id">
+                    
+                    <div class="alert alert-warning">
+                        <span><span ng-bind="vm.utils.start_lpa_inspection.ipp_record.claimed_by_user_name || 'N/A'" class="fw-bold"></span> has already claimed this due audit on <span ng-bind="vm.utils.start_lpa_inspection.ipp_record.claimed_date_d" class="fw-bold"></span></span>
+                    </div>
+
+                    <div class="mt-4">
+                        <span class="fw-bold">Are you sure you want to claim this due audit off of them?</span>
+                    </div>
+                </div>
+                <!-- END REQUIREMENT ALREADY CLAIMED -->
+
+                <div ng-show="vm.utils.start_lpa_inspection.ipp_record.user_has_claimed == 'Yes' || !vm.utils.start_lpa_inspection.ipp_record.rm_claimed_by_user_id">
+                    <span>Do you want to start this inspection now?</span>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-6 text-start">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.utils.start_lpa_inspection.startLpaInspection();">Start inspection</button>
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-danger" ng-click="vm.utils.start_lpa_inspection.slideout.hide();">Close</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END LPA INSPECTION NOT YET STARTED -->
+
+        </div>
+        <!-- END SHOW IF USER IS ELIGIBLE -->
+
+
+        <!-- START REFRESHING REQUIREMENT -->
+        <div ng-show="vm.utils.start_lpa_inspection.refreshing" class="text-center">
+            <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;">
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Refreshing requirement...</p>
+            </div>
+        </div>
+        <!-- END REFRESHING REQUIREMENT -->
+
+
+        <!-- START CREATING INSPECTION -->
+        <div ng-show="vm.utils.start_lpa_inspection.loading" class="text-center">
+            
+            <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;" >
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Creating inspection...</p>
+                <p class="text-secondary">Please wait while an inspection is created for this requirement</p>
+            </div>
+
+        </div>
+        <!-- END CREATING INSPECTION -->
+
+
+        <!-- START LPA PROJECT DOWNLOADING -->
+        <div ng-show="vm.utils.project_download.downloading" class="text-center">
+            <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;" >
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Downloading inspection...</p>
+                <p class="text-secondary">This can take a while depending on the size of the inspection</p>
+                <p class="text-secondary">Please do not leave this page until it is finished</p>
+            </div>
+
+            <!-- START PROJECT DOWNLOAD STATUS -->
+            <div class="margin-top-lg" style="padding-left: 10%; padding-right: 10%;">
+                <div class="alert alert-primary padding">
+                    <p class="text-primary" ng-bind="vm.utils.project_download.display_message || 'Initialising'"></p>
+                    <p ng-show="vm.utils.project_download.active_fetch_item.record.status == 'Installing'">
+                        <span ng-bind="vm.utils.project_download.active_fetch_item.record.total_items_installed"></span> / <span ng-bind="vm.utils.project_download.active_fetch_item.record.total_items"></span> installed
+                    </p>
+                </div>
+            </div>
+            <!-- END PROJECT DOWNLOAD STATUS -->
+
+        </div>
+        <!-- END LPA PROJECT DOWNLOADING -->
+
+    </div>
+
+</div>
+<!-- END LPA INSPECTION SLIDEOUT -->
+
+
+<!-- START EXISTING INSPECTION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="ExistingInspectionAside" aria-labelledby="ExistingInspectionAside" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.existing_inspection.closeAndClear();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+        
+        <div ng-show="vm.utils.existing_inspection.loading" class="text-center py-5">
+            <img src="../images/loading-icon.gif" style="height: 40px;" > 
+        </div>
+
+        <div ng-show="vm.utils.existing_inspection.error_handler.error">
+            <p class="fw-bold text-danger" ng-bind="vm.utils.existing_inspection.error_handler.error_message"></p>
+        </div>
+                    
+        <div ng-show="!vm.utils.existing_inspection.loading">
+
+            <!-- START EXISTING INSPECTION OPTIONS -->
+            <div ng-show="vm.utils.existing_inspection.tabs.tabActive('options')">
+
+                <div ng-show="!vm.utils.existing_inspection.isIncompleteReInspection();">
+                    <p>You have an unfinished inspection for <span ng-bind="vm.utils.existing_inspection.ipp_record.asset_ref" class="fw-bold"></span> started on <span ng-bind="vm.utils.existing_inspection.asset_record.date_added | date: 'dd/MM/yyyy'" class="fw-bold"></span></p>
+
+                    <p>Would you like to continue this inspection or start a new one?</p>
+
+                    <div class="row mt-5">
+                        <div class="col-6 text-center">
+                            <button class="btn btn-sm btn-success" ng-click="vm.utils.existing_inspection.continue();">Continue</button>
+                        </div>
+                        <div class="col-6 text-center">
+                            <button class="btn btn-sm btn-primary" ng-click="vm.utils.existing_inspection.tabs.changeTab('start_new_confirmation')">Start new</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="vm.utils.existing_inspection.isIncompleteReInspection();">
+                    <p>You have an incomplete re-inspection <span ng-bind="vm.utils.existing_inspection.ipp_record.asset_ref" class="fw-bold"></span> started on <span ng-bind="vm.utils.existing_inspection.asset_record.date_added | date: 'dd/MM/yyyy'" class="fw-bold"></span></p>
+
+                    <p>Please complete setting up the re-inspection</p>
+
+                    <div class="row mt-5">
+                        <div class="col text-center">
+                            <button class="btn btn-sm btn-success" ng-click="vm.utils.existing_inspection.slideout.hide(); vm.utils.register_asset_lookup.start(vm.utils.existing_inspection.asset_record);">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+            <!-- END START EXISTING INSPECTION OPTIONS -->
+
+            <!-- START NEW INSPECTION CONFRIMATION -->
+            <div ng-show="vm.utils.existing_inspection.tabs.tabActive('start_new_confirmation')">
+                
+                <p>Your current inspection will be deleted and a new empty inspection will be created</p>
+
+                <p class="fw-bold">Are you sure you want to delete your current inspection?</p>
+
+                <div class="row mt-5">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-sm btn-danger" ng-click="vm.utils.existing_inspection.startNew();">Delete current inspection</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-sm btn-white" ng-click="vm.utils.existing_inspection.tabs.changeTab('options')">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END START NEW INSPECTION CONFIRMATION -->
+
+        </div>
+
+    </div>
+
+</div>
+<!-- END EXISTING INSPECTION SLIDEOUT -->
+
+
+<!-- START EXISTING LPA INSPECTION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="ExistingLPAInspectionAside" aria-labelledby="ExistingLPAInspectionAsideLabel" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.existing_lpa_inspection.closeAndClear();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+        
+        <div ng-show="vm.utils.existing_lpa_inspection.loading" class="text-center py-5">
+            <img src="../images/loading-icon.gif" style="height: 40px;" > 
+        </div>
+
+        <div ng-show="vm.utils.existing_lpa_inspection.error_handler.error">
+            <p class="fw-bold text-danger" ng-bind="vm.utils.existing_lpa_inspection.error_handler.error_message"></p>
+        </div>
+                    
+        <div ng-show="!vm.utils.existing_lpa_inspection.loading">
+
+            <!-- START EXISTING INSPECTION OPTIONS -->
+            <div ng-show="vm.utils.existing_lpa_inspection.tabs.tabActive('options')">
+
+                <p>You have an ongoing inspection for <span ng-bind="vm.utils.existing_lpa_inspection.ipp_record.asset_ref" class="fw-bold"></span> started on <span ng-bind="vm.utils.existing_lpa_inspection.asset_record.date_added | date: 'dd/MM/yyyy'" class="fw-bold"></span></p>
+
+                <p>Would you like to continue this inspection?</p>
+
+                <div class="row mt-5">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-sm btn-success" ng-click="vm.utils.existing_lpa_inspection.continue();">Continue</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-sm btn-danger" ng-click="vm.utils.existing_lpa_inspection.closeAndClear();">Close</button>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- END START EXISTING INSPECTION OPTIONS -->
+
+        </div>
+
+    </div>
+
+</div>
+<!-- END EXISTING LPA INSPECTION SLIDEOUT -->
+
+
+<!-- START DATE PICKER SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="DatePickerAside" aria-labelledby="DatePickerAside" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.date_picker.slideout.hide();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+
+    <div class="offcanvas-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Select period to view</h4>
+            </div>
+
+            <div class="card-body">
+
+                <!-- <h4 class="mb-5">Select period to view</h4> -->
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Start Date</label>
+                    <input type="text" class="form-control" ng-model="vm.utils.date_picker.selected_start_date" data-model-date-format="yyyy-MM-dd" data-date-format="dd-MM-yyyy" data-date-type="string" data-autoclose="1" data-icon-left="bi bi-arrow-left-circle" data-icon-right="bi bi-arrow-right-circle" bs-datepicker />
+                </div>
+
+                <div class="text-center">
+                    <i class="bi bi-arrow-down"></i>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">End Date</label>
+                    <input type="text" class="form-control" ng-model="vm.utils.date_picker.selected_end_date" data-model-date-format="yyyy-MM-dd" data-date-format="dd-MM-yyyy" data-date-type="string" data-autoclose="1" bs-datepicker />
+                </div>
+
+                <div class="mt-5">
+                    <button type="button" class="btn btn-sm btn-primary" ng-click="vm.utils.date_picker.manuallyApply(); vm.utils.date_picker.slideout.hide();">Apply Dates</button>
+                </div>
+
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
+<!-- END DATE PICKER SLIDEOUT -->
+
+<!-- START PLACE FILTERS SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="PlaceFilterAside" aria-labelledby="PlaceFilterAside" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.place_filters.slideout.hide();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+
+    <div class="offcanvas-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Filter audits due by place</h4>
+            </div>
+
+            <div class="card-body">
+
+                <div class="form-group">
+
+                    <div class="text-end mb-1">
+                        <a href="javascript: void(0);" class="text-primary" ng-click="vm.utils.core.refreshSites(); vm.utils.place_filters.slideout.hide();"><i class="bi bi-arrow-clockwise"></i> Refresh sites</a>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-text"><img src="../images/custom_icons/Site Grey.png" style="width: 0.975rem;" /></span>
+                        <select class="form-select input-sm" ng-model="vm.utils.place_filters.site.selected_record" ng-change="vm.utils.place_filters.site.select();" ng-options="site as site.name for site in vm.utils.place_filters.site.data" ng-disabled="vm.utils.place_filters.site.loading"></select>
+
+                        <!-- <button class="btn btn-sm btn-danger" ng-show="vm.utils.place_filters.site.selected_id" ng-click="vm.utils.place_filters.site.deSelect();">
+                            <i class="bi bi-x-lg"></i>
+                        </button> -->
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><img src="../images/custom_icons/Building Grey.png" style="width: 0.975rem;" /></span>
+                        <select class="form-select input-sm" ng-model="vm.utils.place_filters.building.selected_record" ng-change="vm.utils.place_filters.building.select();" ng-options="building as building.name for building in vm.utils.place_filters.building.data" ng-disabled="vm.utils.place_filters.building.loading || !vm.utils.place_filters.site.selected_id"></select>
+
+                        <button class="btn btn-sm btn-danger" ng-show="vm.utils.place_filters.building.selected_id" ng-click="vm.utils.place_filters.building.deSelect();">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><img src="../images/custom_icons/Area Grey.png" style="width: 0.975rem;" /></span>
+                        <select class="form-select input-sm" ng-model="vm.utils.place_filters.area.selected_record" ng-change="vm.utils.place_filters.area.select();" ng-options="area as area.name for area in vm.utils.place_filters.area.data" ng-disabled="vm.utils.place_filters.area.loading || !vm.utils.place_filters.building.selected_id"></select>
+
+                        <button class="btn btn-sm btn-danger" ng-show="vm.utils.place_filters.area.selected_id" ng-click="vm.utils.place_filters.area.deSelect();">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.utils.place_filters.apply(); vm.utils.place_filters.slideout.hide();" ng-disabled="!vm.utils.place_filters.site.selected_record">Apply filters</button>
+                </div>
+
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
+<!-- END PLACE FILTERS SLIDEOUT -->
+
+<!-- START IPP FILTERS SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="IppFilterAside" aria-labelledby="IppFilterAsideLabel" data-bs-backdrop="static">
+    
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.ipp_filter.slideout.hide();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+
+    <div class="offcanvas-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Filter</h4>
+            </div>
+
+            <div class="card-body">
+
+                <!-- <h4 class="mb-5">Select period to view</h4> -->
+
+                <div class="form-group">
+                    <label class="form-label">Compliance profile</label>
+
+                    <button type="button" class="form-select text-start" ng-model="vm.utils.ipp_filter.selected_pp" data-toggle="true" data-multiple="true" data-placeholder="Show All" ng-options="pp.ProfileRef as pp.Title for pp in vm.utils.ipp_filter.profile_points" data-selected-text-format="count > 1" bs-select>
+                        Action <span class="caret"></span>
+                    </button>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label class="form-label">Status</label>
+
+                    <button type="button" class="form-select text-start" ng-model="vm.utils.ipp_filter.selected_statuses" data-toggle="true" data-multiple="true" data-placeholder="Show All" ng-options="status.value as status.display for status in vm.utils.ipp_filter.statuses" data-selected-text-format="count > 1" bs-select>
+                        Action <span class="caret"></span>
+                    </button>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label class="form-label">LPA</label>
+
+                    <button type="button" class="form-select text-start" ng-model="vm.utils.ipp_filter.selected_lpa" data-toggle="true" data-multiple="true" data-placeholder="Show All" ng-options="option.value as option.display for option in vm.utils.ipp_filter.lpa_options" data-selected-text-format="count > 1" bs-select>
+                        Action <span class="caret"></span>
+                    </button>
+                </div>
+
+                <!-- <div class="form-group mt-4">
+                    <label class="form-label">Started by</label>
+
+                    <div>
+                        <a href="javascript: void(0);" ng-click="vm.utils.user_list.onlineRefresh()" ng-show="!vm.utils.user_list.downloading">Refresh users <i class="bi bi-arrow-clockwise"></i></a>
+
+                        <img src="../images/loading-icon.gif" style="height: 20px;" ng-show="vm.utils.user_list.downloading">
+                    </div>
+
+                    <button type="button" class="form-select text-start" ng-model="vm.utils.ipp_filter.selected_started_by" data-toggle="true" data-multiple="true" data-placeholder="Show All" ng-options="user.UserID as user.UsersName for user in vm.utils.user_list.data" data-selected-text-format="count > 1" bs-select ng-disabled="vm.utils.user_list.downloading"></button>
+                </div> -->
+
+                <div class="row mt-5">
+
+                    <div class="col col-6">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.utils.ipp_filter.apply(); vm.utils.ipp_filter.slideout.hide();">Apply filters</button>
+                    </div>
+
+                    <div class="col col-6 text-end">
+                        <button class="btn btn-sm btn-danger" ng-click="vm.utils.ipp_filter.clear(); vm.utils.ipp_filter.slideout.hide();">Clear filters</button>
+                    </div>
+
+                </div>
+
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
+<!-- END IPP FILTERS SLIDEOUT -->
+
+<!-- START USER FILTERS SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="UserFilterAside" aria-labelledby="UserFilterAsideLabel" data-bs-backdrop="static">
+    
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.user_filter.slideout.hide();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+
+    <div class="offcanvas-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">User selection</h4>
+            </div>
+
+            <div class="card-body">
+
+                <div ng-show="vm.utils.user_filter.tabs.tabActive('mine_or_others')">
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" ng-click="vm.utils.user_filter.apply(true); vm.utils.user_filter.slideout.hide();">My due audits</button>
+                    </div>
+
+                    <div class="text-center my-5">
+                        <span>or</span>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-sm btn-light" ng-click="vm.utils.user_filter.tabs.changeTab('select_others')">View others audits</button>
+                    </div>
+
+                </div>
+
+                <div ng-show="vm.utils.user_filter.tabs.tabActive('select_others')">
+
+                    <div>
+                        <a href="javascript: void(0);" ng-click="vm.utils.user_filter.tabs.changeTab('mine_or_others')" style="font-size: 1.8em;">
+                            <i class="bi bi-arrow-left text-danger"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <label class="form-label">Select a user to view audits for</label>
+
+                        <div>
+                            <a href="javascript: void(0);" ng-click="vm.utils.user_list.onlineRefresh()" ng-show="!vm.utils.user_list.downloading">Refresh users <i class="bi bi-arrow-clockwise"></i></a>
+
+                            <img src="../images/loading-icon.gif" style="height: 20px;" ng-show="vm.utils.user_list.downloading">
+                        </div>
+
+                        <!-- <button type="button" class="form-select text-start" ng-model="vm.utils.user_filter.selected_user_id" data-toggle="true" data-multiple="false" data-placeholder="Show All" ng-options="user.UserID as user.UsersName for user in vm.utils.user_list.data" data-selected-text-format="count > 1" bs-select ng-disabled="vm.utils.user_list.downloading"></button> -->
+
+                        <select class="form-select" ng-model="vm.utils.user_filter.user" ng-options="user as user.UsersName for user in vm.utils.user_list.data" ng-disabled="vm.utils.user_list.downloading" ng-change="vm.utils.user_filter.selectedUser();">
+                            <!-- <option value="">All users</option> -->
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="row mt-10" ng-show="vm.utils.user_filter.tabs.tabActive('select_others')">
+
+                    <div class="col text-center">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.utils.user_filter.apply(false); vm.utils.user_filter.slideout.hide();">View audits</button>
+                    </div>
+
+                </div>
+
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
+<!-- END USER FILTERS SLIDEOUT -->
+
+<!-- START CORE DOWNLOAD CONFIRMATION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="CoreDownloadConfirmationAside" aria-labelledby="CoreDownloadConfirmationAsideLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+        <!-- <h5 class="offcanvas-title" id="NewAuditAsideLabel">Download Site's Core</h5> -->
+        <!-- <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Download Site's Core</h4>
+            </div>
+
+            <div class="card-body">
+
+                <p>Are you sure you want to download this site's Core?</p>
+
+                <div class="row mt-8">
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="vm.utils.core.download_confirmation.hide();">Cancel</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.utils.core.refresh(); vm.utils.core.download_confirmation.hide();">Confirm</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- END CORE DOWNLOAD CONFIRMATION SLIDEOUT -->
+
+<!-- START IPP DOWNLOAD CONFIRMATION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="IppDownloadConfirmationAside" aria-labelledby="IppDownloadConfirmationAsideLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+        <!-- <h5 class="offcanvas-title" id="NewAuditAsideLabel">Download Site's Core</h5> -->
+        <!-- <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Download Site's upcoming audits</h4>
+            </div>
+
+            <div class="card-body">
+
+                <p>Are you sure you want to download this site's upcoming audits?</p>
+
+                <div class="row mt-8">
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="vm.utils.core.download_ipp_confirmation.hide();">Cancel</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.utils.core.refreshIppScores(); vm.utils.core.download_ipp_confirmation.hide();">Confirm</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- END IPP DOWNLOAD CONFIRMATION SLIDEOUT -->
+
+<!-- START REGISTER ASSET LOOKUP SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="RegisterAssetLookupSlideout" aria-labelledby="RegisterAssetLookupSlideout" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.register_asset_lookup.close();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <!-- OFFLINE ERROR MESSAGE -->
+        <div class="alert alert-danger" ng-show="!vm.utils.register_asset_lookup.online" style="margin-bottom: 15px;">
+            <div class="alert-text"><i class="bi bi-exclamation-circle-fill"></i> <span style="font-weight: bold;">No internet connection</span></div>
+            <div class="alert-text">Please gain an internet connection to view past inspections for this Core asset</div>
+        </div>
+        <!-- END OFFLINE ERROR MESSAGE -->
+
+        <div ng-show="!vm.utils.register_asset_lookup.loading">
+            <div class="mt-5" style="font-size: 1.4em;">
+                <p class="text-center text-muted">Lookup past inspections for this Core asset</p>
+                <p class="text-center" style="font-weight: bold;">
+                    Asset ID: <span ng-bind="vm.utils.register_asset_lookup.relations.register_asset_id"></span>
+                </p>
+            </div>
+
+            <div class="container text-center mt-5">
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-success" ng-click="vm.utils.register_asset_lookup.lookupRegisterAssetInspections();">Start</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3 text-center">
+                <a href="javascript: void(0);" ng-click="vm.utils.register_asset_lookup.close();" class="text-danger">Cancel / Close</a>
+            </div>
+        </div>
+
+        <div ng-show="vm.utils.register_asset_lookup.loading" class="text-center mt-5">
+            <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+            <div style="margin-top: 20px;">
+                <p class="text-muted">Finding Core asset data...</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- END REGISTER ASSET LOOKUP SLIDEOUT -->
+
+<!-- START RE-INSPECT INSPECTIONS SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100 w-md-50" tabindex="-1" id="ReInspectInspectionsSlideout" aria-labelledby="ReInspectInspectionsSlideout" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.exit();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <!-- OFFLINE ERROR MESSAGE -->
+        <div class="alert alert-danger" ng-show="!vm.utils.re_inspect_inspections.online" style="margin-bottom: 15px;">
+            <div class="alert-text"><i class="bi bi-exclamation-circle-fill"></i> <span style="font-weight: bold;">No internet connection</span></div>
+            <div class="alert-text">Please gain an internet connection to download the inspection data</div>
+        </div>
+        <!-- END OFFLINE ERROR MESSAGE -->
+
+        <!-- INSPECTION LISTING LOADING -->
+        <div ng-show="vm.utils.re_inspect_inspections.inspection_listing.loading" class="text-center padding margin-top-lg">
+            <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+            <div style="margin-top: 20px;">
+                <p class="fw-bold">Loading inspections...</p>
+            </div>
+
+        </div>
+        <!-- END INSPECTION LISTING LOADING -->
+
+        <div ng-show="vm.utils.re_inspect_inspections.tabs.tabActive('inspection_list')">
+
+            <div class="alert alert-info">
+                <div class="alert-text"><i class="bi bi-info-circle-fill"></i> <span style="font-weight: bold; font-size: 1.2em;">Select an inspection you want to re-inspect from</span></div>
+                <div>This will download its risks and checklists into your current inspection</div>
+            </div>
+
+            <!-- START INSPECTION LISTING -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-5 mb-xl-0" ng-show="!vm.utils.re_inspect_inspections.downloading_asset">
+                <div class="card h-100">
+                    <!-- card header -->
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Inspections <span ng-bind="vm.utils.re_inspect_inspections.inspection_listing.data.length || '0'" style="font-size: 0.8em; font-weight: 500;"></span></h4>
+                    </div>
+                    <!-- FILTERS -->
+                    <div class="card-body">
+                        <div class="table-card">
+                            <div class="row p-4" style="max-width: 100%; margin-left: 0px; margin-right: 0px;">
+                                <div class="col-12 align-items-center">
+                                    <input type="text" class="form-control search-bar" ng-model="vm.utils.re_inspect_inspections.inspection_listing.filters.general_search" placeholder="Search inspections..." />
+                                </div>
+                            </div>
+
+                            <div ng-show="vm.utils.re_inspect_inspections.inspection_listing.loading" class="text-center padding">
+                                <img src="../images/cog_loader.gif" style="width: 50px;" />
+                                <div class="text-center text-muted" style="margin-top: 5px; font-weight: bold;">Please Wait - Loading Inspections</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ASSET LISTING -->
+                    <div ng-show="!vm.utils.re_inspect_inspections.inspection_listing.loading">
+                        <div ng-show="vm.utils.re_inspect_inspections.inspection_listing.data.length == '0'" class="text-center text-muted" style="padding: 15px; font-weight: bold;">We couldn't find any inspections</div>
+
+                        <div style="padding-top: 20px; padding-bottom: 20px;" ng-show="vm.utils.re_inspect_inspections.inspection_listing.data.length == '0'">
+                            <p class="text-muted text-center" style="font-size: 1.2em;">Would you like to carry on with this inspection as new?</p>
+
+                            <div class="text-center">
+                                <button class="btn btn-success" ng-click="vm.utils.re_inspect_inspections.convertReInspectionToNew()">Continue as new inspection</button>
+                            </div>
+                        </div>
+
+                        <div class="row bg-light tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;" ng-show="vm.utils.re_inspect_inspections.inspection_listing.data.length">
+                            <div class="col-2">
+                                <span class="tr-list-header" style="font-weight: 600;">Date</span>
+                            </div>
+                            <div class="col-8">
+                                <span class="tr-list-header" style="font-weight: 600;">Name</span>
+                            </div>
+                            <div class="col-4">
+                                <!-- EMPTY -->
+                            </div>
+                        </div>
+
+                        <div class="tr-list-item" style="max-width: 100%; margin-left: 0px; margin-right: 0px;" dir-paginate="asset in vm.utils.re_inspect_inspections.inspection_listing.visible_data | filter: vm.utils.re_inspect_inspections.inspection_listing.filters.general_search | itemsPerPage: 15 : 'inspection_list' track by asset.rm_id" pagination-id="inspection_list">
+                            <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                                <div class="col-2">
+                                    <span ng-bind="asset.date_added | date: 'dd/MM/yyyy'" style="font-size: 0.8em;"></span>
+                                </div>
+                                <div class="col-8">
+                                    <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.download_inspection.confirmDownloadInspectionData(asset);" style="text-decoration: none;">
+                                        <span ng-bind="asset.asset_ref" ng-class="{ 'text-danger': asset.status == '2' }"></span>
+                                    </a>
+                                    <div class="text-muted" style="font-style: italic; font-size: 0.8em;">
+                                        <span ng-bind="asset.project_pp_name || 'Profile Not Set'"></span> | <span ng-bind="asset.project_type_name || 'Type Not Set'"></span>
+                                    </div>
+                                </div>
+                                <div class="col-2 text-end">
+                                    <ul class="menu-list-inline">
+                                        <li>
+                                            <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.download_inspection.confirmDownloadInspectionData(asset);" style="font-size: 1.4em;">
+                                                <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGINATION CONTROLS -->
+                        <div class="text-end pt-4 px-4" style="margin-top: 15px;">
+                            <dir-pagination-controls pagination-id="inspection_list"></dir-pagination-controls>
+                        </div>
+                        <!-- END PAGINATION CONTROLS -->
+                    </div>
+                </div>
+            </div>
+            <!-- END INSPECTION LISTING -->
+        </div>
+
+        <!-- INSPECTION DOWNLOAD CONFIRMATION -->
+        <div ng-show="vm.utils.re_inspect_inspections.tabs.tabActive('download_confirmation') && !vm.utils.re_inspect_inspections.downloading_asset">
+            <div class="padding">
+                <a href="javascript: void(0)" ng-click="vm.utils.re_inspect_inspections.tabs.changeTab('inspection_list')" style="text-decoration: none;"><img src="../images/custom_icons/RM Exit Red.png" style="width: 30px;" /> <span style="font-weight: bold; color: red;"></span></a>
+            </div>
+
+            <div class="text-center">
+                <div ng-show="vm.utils.re_inspect_inspections.download_inspection.inspectionLinkedToCore(vm.utils.re_inspect_inspections.download_inspection.record)">
+                    <!-- <p class="text-muted">Core</p> -->
+                    <p style="font-weight: bold; font-size: 1.4em;" class="text-primary">
+                        <img src="../images/custom_icons/Core Blue.png" style="display: inline-block; height: 25px; width: auto;" />
+                        <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref || 'Core Asset Ref not set'"></span>
+                    </p>
+                </div>
+
+                <div ng-show="!vm.utils.re_inspect_inspections.download_inspection.inspectionLinkedToCore(vm.utils.re_inspect_inspections.download_inspection.record)">
+                    <p style="font-weight: bold; font-size: 1.4em;" class="text-warning">
+                        <span>Not assigned to Core</span>
+                    </p>
+                </div>
+
+                <div>
+                    <i class="bi bi-chevron-down" style="font-size: 2em;"></i>
+                </div>
+
+                <div>
+                    <!-- <p class="text-muted">Inspection</p> -->
+                    <p style="font-weight: bold; font-size: 1.4em;">
+                        <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.asset_ref"></span>
+                    </p>
+                </div>
+                
+                <div class="text-muted" style="font-style: italic; font-size: 0.8em;">
+                    <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.project_pp_name || 'Profile Not Set'"></span> | <span ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.project_type_name || 'Type Not Set'"></span>
+                </div>
+
+            </div>
+
+            <!-- START INSPECTION DETAILS -->
+            <div>
+
+                <div ng-show="vm.utils.re_inspect_inspections.inspection_details.confirm_details">
+
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-weight: 600; font-size: 1.2em;">Set inspection details</span>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item" ng-show="vm.utils.re_inspect_inspections.download_inspection.inspectionLinkedToCore(vm.utils.re_inspect_inspections.download_inspection.record)">
+                                <a href="javascript: void(0);" class="nav-link" ng-class="{'active': vm.utils.re_inspect_inspections.inspection_details.detailsActive('core')}" ng-click="vm.utils.re_inspect_inspections.inspection_details.changeDetails('core')">Core</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="javascript: void(0);" class="nav-link" ng-class="{'active': vm.utils.re_inspect_inspections.inspection_details.detailsActive('inspection')}" ng-click="vm.utils.re_inspect_inspections.inspection_details.changeDetails('inspection')">Inspection</a>
+                            </li>
+                            <!-- <li ng-class="{'active': vm.utils.re_inspect_inspections.inspection_details.detailsActive('dest_inspection')}">
+                                <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.inspection_details.changeDetails('dest_inspection')">Current</a>
+                            </li> -->
+                        </ul>
+                    </div>
+
+                    <div class="table-responsive" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsActive('core')">
+                        <table class="table table-bordered table-white">
+                            <tr>
+                                <th>Asset Ref</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_ref)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Serial</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('serial', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_serial)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Model</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('model', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_model)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('type', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_type)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('description', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.register_asset_description)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDestInspectionDetails('core')">Use All</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="table-responsive" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsActive('inspection')">
+                        <table class="table table-bordered table-white">
+                            <tr>
+                                <th>Asset Ref</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.asset_ref || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.asset_ref)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.asset_ref)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('asset_ref', vm.utils.re_inspect_inspections.download_inspection.record.asset_ref)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Serial</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.serial || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('serial', vm.utils.re_inspect_inspections.download_inspection.record.serial)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.serial)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('serial', vm.utils.re_inspect_inspections.download_inspection.record.serial)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Model</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.model || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('model', vm.utils.re_inspect_inspections.download_inspection.record.model)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.model)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('model', vm.utils.re_inspect_inspections.download_inspection.record.model)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.type || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('type', vm.utils.re_inspect_inspections.download_inspection.record.type)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.type)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('type', vm.utils.re_inspect_inspections.download_inspection.record.type)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td ng-bind="vm.utils.re_inspect_inspections.download_inspection.record.description || 'Not set'"></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDetailProperty('description', vm.utils.re_inspect_inspections.download_inspection.record.description)" ng-show="!vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.description)">Use</button>
+
+                                    <span class="text-success" ng-show="vm.utils.re_inspect_inspections.inspection_details.detailsMatch('description', vm.utils.re_inspect_inspections.download_inspection.record.description)">Used <i class="bi bi-check2"></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.utils.re_inspect_inspections.inspection_details.setDestInspectionDetails('inspection')">Use All</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-success" ng-click="vm.utils.re_inspect_inspections.inspection_details.toggleViewOtherInspectionDetailOptions()">Confirm details</button>
+                    </div>
+
+                </div>
+
+                <div ng-show="!vm.utils.re_inspect_inspections.inspection_details.confirm_details" class="mt-4">
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-weight: 600; font-size: 1.2em;">Here is your inspections details</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="text-muted">Asset Ref</label>
+                        <br>
+                        <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.asset_ref" ng-disabled="true">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="text-muted">Serial</label>
+                        <br>
+                        <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.serial" ng-disabled="true">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="text-muted">Model</label>
+                        <br>
+                        <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.model" ng-disabled="true">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="text-muted">Type</label>
+                        <br>
+                        <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.type" ng-disabled="true">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="text-muted">Description</label>
+                        <br>
+                        <input type="text" class="form-control" placeholder="Not set" ng-model="vm.utils.re_inspect_inspections.inspection_details.data.description" ng-disabled="true">
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="javascript: void(0);" class="text-primary" style="font-weight: 600;" ng-click="vm.utils.re_inspect_inspections.inspection_details.toggleViewOtherInspectionDetailOptions()">Compare inspection details to Core and past inspection <i class="bi bi-chevron-right"></i></a>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END INSPECTION DETAILS -->
+
+            <div class="container margin-top-lg" ng-show="!vm.utils.re_inspect_inspections.inspection_details.confirm_details">
+
+                <div class="text-center">
+                    <p class="text-muted">Are you sure you want to use the data from this inspection in your current inspection?</p>
+                </div>
+
+                <div class="row margin-top">
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-success" ng-click="vm.utils.re_inspect_inspections.download_inspection.downloadInspectionData()" style="font-size: 1.4em;">Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="container margin-top-lg">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <a href="javascript: void(0);" ng-click="vm.utils.re_inspect_inspections.tabs.changeTab('inspection_list')" class="text-primary">Cancel</a>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <!-- END INSPECTION DOWNLOAD CONFIRMATION -->
+
+        <!-- ASSET DOWNLOADING -->
+        <div ng-show="vm.utils.re_inspect_inspections.downloading_asset" class="text-center padding margin-top-lg">
+            <img class="gears" src="../images/cog_loader.gif">
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Downloading inspection...</p>
+                <p class="text-secondary fw-bold">This can take a while depending on the size of the inspection</p>
+                <p class="text-secondary fw-bold">Please do not leave this page until it is finished</p>
+            </div>
+
+            <!-- ASSET DOWNLOAD STATUS -->
+            <div class="margin-top-lg" style="padding-left: 10%; padding-right: 10%;">
+                <div class="alert alert-primary padding">
+                    <p class="text-primary" ng-bind="vm.utils.project_download.display_message || 'Initialising'"></p>
+                    <p ng-show="vm.utils.project_download.active_fetch_item.record.status == 'Installing'">
+                        <span ng-bind="vm.utils.project_download.active_fetch_item.record.total_items_installed"></span> / <span ng-bind="vm.utils.project_download.active_fetch_item.record.total_items"></span> installed
+                    </p>
+                </div>
+            </div>
+            <!-- END ASSET DOWNLOAD STATUS -->
+
+        </div>
+        <!-- END ASSET DOWNLOADING -->
+
+    </div>
+
+</div>
+<!-- END RE-INSPECT INSPECTIONS SLIDEOUT -->
+
+<!-- START PIN REQUIREMENT CONFIRMATION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="PinConfirmSlideout" aria-labelledby="PinConfirmSlideoutLabel" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.pin_requirement.confirmation.hide()" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+
+        <p>Pin this due audit so that it always displays at the top of the list regardless of filters</p>
+
+        <div class="row mt-4">
+            <div class="col-6 text-start">
+                <button class="btn btn-sm btn-success" ng-click="vm.utils.pin_requirement.pinRecord(); vm.utils.pin_requirement.confirmation.hide();">Confirm</button>
+            </div>
+            <div class="col-6 text-end">
+                <button class="btn btn-sm btn-danger" ng-click="vm.utils.pin_requirement.confirmation.hide();">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- END PIN REQUIREMENT CONFIRMATION SLIDEOUT -->
+
+<!-- START UNPIN REQUIREMENT CONFIRMATION SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="UnPinConfirmSlideout" aria-labelledby="UnPinConfirmSlideoutLabel" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.unpin_requirement.confirmation.hide()" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+
+        <p>Are you sure you want to un-pin this due audit from your pinned list?</p>
+
+        <div class="row mt-4">
+            <div class="col-6 text-start">
+                <button class="btn btn-sm btn-success" ng-click="vm.utils.unpin_requirement.unPinRecord(); vm.utils.unpin_requirement.confirmation.hide();">Confirm</button>
+            </div>
+            <div class="col-6 text-end">
+                <button class="btn btn-sm btn-danger" ng-click="vm.utils.unpin_requirement.confirmation.hide();">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- END UNPIN REQUIREMENT CONFIRMATION SLIDEOUT -->
+
+<!-- START CLAIM REQUIREMENT SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="ClaimRequirementAside" aria-labelledby="ClaimRequirementAsideLabel" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.claim_requirement.close();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+            
+        <!-- START CLAIMING REQUIREMENT -->
+        <div ng-show="vm.utils.claim_requirement.loading" class="text-center py-5">
+            <img src="../images/loading-icon.gif" style="height: 40px;" > 
+
+            <p class="fw-bold">Claiming requirement, please wait...</p>
+        </div>
+        <!-- END CLAIMING REQUIREMENT -->
+
+        <!-- START REFRESHING REQUIREMENT -->
+        <div ng-show="vm.utils.claim_requirement.refreshing" class="text-center">
+            <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;">
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Refreshing requirement...</p>
+            </div>
+        </div>
+        <!-- END REFRESHING REQUIREMENT -->
+
+        <div ng-show="vm.utils.claim_requirement.error_handler.error" class="alert alert-danger">
+            <p class="fw-bold" ng-bind="vm.utils.claim_requirement.error_handler.error_message"></p>
+        </div>
+                    
+        <div ng-show="!vm.utils.claim_requirement.loading && !vm.utils.claim_requirement.refreshing && !vm.utils.claim_requirement.error_handler.error">
+
+            <!-- SHOW WHEN USER IS ELIGIBLE, ASSIGNED OR CLAIMED -->
+            <div ng-show="vm.utils.claim_requirement.record.user_is_assigned == 'Yes' || vm.utils.claim_requirement.record.user_is_allocated == 'Yes' || vm.utils.claim_requirement.record.user_has_claimed == 'Yes'">
+
+                <!-- START REQUIREMENT NOT CLAIMED -->
+                <div ng-show="!vm.utils.claim_requirement.record.rm_claimed_by_user_id">
+
+                    <div class="text-center">
+                        <p class="fw-bold">Are you sure you want to claim this due audit?</p>
+                    </div>
+
+                    <div class="row mt-10">
+                        <div class="col-6 text-center">
+                            <button class="btn btn-sm btn-success" ng-click="vm.utils.claim_requirement.confirm();">Claim</button>
+                        </div>
+                        <div class="col-6 text-center">
+                            <button class="btn btn-sm btn-danger" ng-click="vm.utils.claim_requirement.close();">Close</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END REQUIREMENT NOT CLAIMED -->
+
+
+                <!-- START USER HAS ALREADY CLAIMED -->
+                <div ng-show="vm.utils.claim_requirement.record.user_has_claimed == 'Yes'">
+                    
+                    <div class="alert alert-primary">
+                        <span class="fw-bold">You have already claimed this due audit</span>
+                    </div>
+
+                </div>
+                <!-- END USER HAS ALREADY CLAIMED -->
+
+
+                <!-- START ALREADY CLAIMED BY OTHER USER -->
+                <div ng-show="vm.utils.claim_requirement.record.user_has_claimed != 'Yes' && vm.utils.claim_requirement.record.rm_claimed_by_user_id">
+                    
+                    <!-- INSPECTION ALREADY STARTED -->
+                    <div ng-show="vm.utils.claim_requirement.record.date_started" class="alert alert-danger">
+                        
+                        <span><span ng-bind="vm.utils.claim_requirement.record.claimed_by_user_name || 'N/A'" class="fw-bold"></span> has already claimed and started this due audit on <span ng-bind="vm.utils.claim_requirement.record.date_started_d" class="fw-bold"></span></span>
+
+                    </div>
+                    <!-- END INSPECTION ALREADY STARTED -->
+
+
+                    <!-- INSPECTION NOT YET STARTED -->
+                    <div ng-show="!vm.utils.claim_requirement.record.date_started">
+
+                        <div class="alert alert-warning">
+                            <span><span ng-bind="vm.utils.claim_requirement.record.claimed_by_user_name || 'N/A'" class="fw-bold"></span> has already claimed this due audit on <span ng-bind="vm.utils.claim_requirement.record.claimed_date_d" class="fw-bold"></span></span>
+                        </div>
+
+                        <div class="mt-4">
+                            <span class="fw-bold">Are you sure you want to claim this due audit off of them?</span>
+                        </div>
+
+                        <div class="row mt-10">
+                            <div class="col-6 text-center">
+                                <button class="btn btn-sm btn-success" ng-click="vm.utils.claim_requirement.confirm();">Confirm</button>
+                            </div>
+                            <div class="col-6 text-center">
+                                <button class="btn btn-sm btn-danger" ng-click="vm.utils.claim_requirement.close();">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- END INSPECTION NOT YET STARTED -->
+
+                </div>
+                <!-- END ALREADY CLAIMED BY OTHER USER -->
+
+            </div>
+            <!-- END USER IS ELIGIBLE, ASSIGNED OR CLAIMED -->
+
+
+
+            <!-- SHOW WHEN USER IS NOT ELIGIBLE, ASSIGNED AND CLAIMED -->
+            <div ng-show="vm.utils.claim_requirement.record.user_is_assigned != 'Yes' && vm.utils.claim_requirement.record.user_is_allocated != 'Yes' && vm.utils.claim_requirement.record.user_has_claimed != 'Yes'">
+                
+                <div class="alert alert-danger">
+                    <span class="fw-bold">You are not eligible to claim this due audit</span>
+                </div>
+
+            </div>
+            <!-- END SHOW USER IS NOT ELIGIBLE, ASSIGNED AND CLAIMED -->
+
+        </div>
+
+    </div>
+
+</div>
+<!-- END CLAIM REQUIREMENT SLIDEOUT -->
+
+<!-- START UNCLAIM REQUIREMENT SLIDEOUT -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="UnClaimRequirementAside" aria-labelledby="UnClaimRequirementAsideLabel" data-bs-backdrop="static">
+
+    <div class="offcanvas-header">
+        <a href="javascript: void(0);" ng-click="vm.utils.unclaim_requirement.close();" style="text-decoration: none;">
+            <img src="../images/custom_icons/RM Exit Red.png"  style="width: 30px;" />
+        </a>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="text-start">
+            <!-- <span class="fw-bold" style="font-size: 2em;">Start inspection</span> -->
+        </div>
+        
+        <!-- START RELEASING CLAIM -->
+        <div ng-show="vm.utils.unclaim_requirement.loading" class="text-center py-5">
+            <img src="../images/loading-icon.gif" style="height: 40px;" > 
+
+            <p class="fw-bold">Releasing claim on requirement, please wait...</p>
+        </div>
+        <!-- END RELEASING CLAIM -->
+
+        <!-- START REFRESHING REQUIREMENT -->
+        <div ng-show="vm.utils.unclaim_requirement.refreshing" class="text-center">
+            <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;">
+
+            <div class="mt-4">
+                <p class="text-secondary fw-bold">Refreshing requirement...</p>
+            </div>
+        </div>
+        <!-- END REFRESHING REQUIREMENT -->
+
+        <div ng-show="vm.utils.unclaim_requirement.error_handler.error" class="alert alert-danger">
+            <p class="fw-bold" ng-bind="vm.utils.unclaim_requirement.error_handler.error_message"></p>
+        </div>
+                    
+        <div ng-show="!vm.utils.unclaim_requirement.loading && !vm.utils.unclaim_requirement.refreshing && !vm.utils.unclaim_requirement.error_handler.error">
+
+            <div class="text-center">
+                <p class="fw-bold">Are you sure you want to release your claim on this due audit?</p>
+            </div>
+
+            <div class="row mt-10">
+                <div class="col-6 text-center">
+                    <button class="btn btn-sm btn-success" ng-click="vm.utils.unclaim_requirement.confirm();">Release</button>
+                </div>
+                <div class="col-6 text-center">
+                    <button class="btn btn-sm btn-danger" ng-click="vm.utils.unclaim_requirement.close();">Close</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- END UNCLAIM REQUIREMENT SLIDEOUT -->
+
+<!-- START UNLICENSED FEATURE SLIDEOUT -->
+<div class="offcanvas offcanvas-end w-100" tabindex="-1" id="UnlicensedFeatureSlideout" aria-labelledby="UnlicensedFeatureSlideout" data-bs-backdrop="static">
+    <!-- <div class="offcanvas-header">
+    </div> -->
+    <div class="offcanvas-body p-0">
+
+        <div data-unlicensed-feature data-options="vm.utils.unlicensed_feature.options" class="h-100"></div>
+
+    </div>
+</div>
+<!-- END UNLICENSED FEATURE SLIDEOUT -->
+
+<!-- END SLIDEOUTS -->
+
+
+<!-- START TOASTS -->
+<div style="position: fixed; z-index: 1000; bottom: 0px; left: 0px; margin-bottom: 15px; margin-left: 15px;" class="me-5">
+
+    <!-- START NO INTERNET CONNECTION TOAST -->
+    <div id="NoInternetConnectionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>This action requires an internet connection</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END NO INTERNET CONNECTION TOAST -->
+
+    <!-- START MY ALLOCATIONS TOGGLE ON TOAST -->
+    <div id="MyAllocationsOnToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>Viewing your due audits</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END MY ALLOCATIONS TOGGLE ON TOAST -->
+
+    <!-- START MY ALLOCATIONS TOGGLE OFF TOAST -->
+    <div id="MyAllocationsOffToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>Viewing all due audits</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END MY ALLOCATIONS TOGGLE OFF TOAST -->
+
+    <!-- START REQUIREMENT PINNED TOAST -->
+    <div id="RequirementPinnedToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>Due audit pinned</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END REQUIREMENT PINNED TOAST -->
+
+    <!-- START REQUIREMENT UNPINNED TOAST -->
+    <div id="RequirementUnPinnedToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>Due audit un-pinned</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END REQUIREMENT UNPINNED TOAST -->
+
+    <!-- START NO ACTION OTHERS AUDITS TOAST -->
+    <div id="NoActionOthersAuditsToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>You can only view others due audits, not action them</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END NO ACTION OTHERS AUDITS TOAST -->
+
+</div>
+<!-- END TOASTS -->
+
+
+<!-- START MODALS -->
+
+<!-- START PAGE INIT MODAL -->
+<div class="modal fade" id="PageInitModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="PageInitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                
+            </div> -->
+            <div class="modal-body">
+
+                <div class="text-center">
+                    <img src="../images/loading-icon.gif" style="height: 50px; width: 50px;" >
+
+                    <div class="mt-5">
+                        <span class="fw-bold">Loading data...</span>
+                    </div>
+                </div>
+
+            </div>
+            <!-- <div class="modal-footer">
+                
+            </div> -->
+        </div>
+    </div>
+</div>
+<!-- END PAGE INIT MODAL -->
+
+<!-- END MODALS -->

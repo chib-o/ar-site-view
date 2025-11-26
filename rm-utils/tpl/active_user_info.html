@@ -1,0 +1,6 @@
+<div ng-show="vm.utils.profile_record" style="display: inline-block;">
+	<span><span ng-bind="vm.utils.profile_record.FirstName"></span> <span ng-bind="vm.utils.profile_record.LastName"></span></span> of <span ng-bind="vm.utils.profile_record.CompanyName" style="font-weight: bold;"></span>
+</div>
+<div ng-show="!vm.utils.profile_record" style="display: inline-block;" class="text-danger">
+	<span style="font-weight: bold;">Not logged in</span>
+</div>

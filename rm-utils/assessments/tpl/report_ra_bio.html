@@ -1,0 +1,2150 @@
+
+<!-- START RISK BIO INTERFACE -->
+<div ng-show="vm.utils.risk_bio.tabs.tabActive('interface');" class="p-5" style="margin-bottom: 100px;">
+
+    <div class="row">
+        <div class="col">
+
+            <div class="accordion" id="AssessmentAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button bg-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-details" aria-expanded="false" aria-controls="AssessmentAccordion-details" fdprocessedid="shomy8">
+                            Assessment Details
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-details" class="accordion-collapse collapse" data-bs-parent="#AssessmentAccordion" style="">
+                        <div class="accordion-body p-0">
+                            
+                            <table class="table mb-0" style="font-size: 0.8em;">
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold">ID</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.rm_id"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Ref / Rev</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.rm_ref"></span> / <span ng-bind="vm.utils.risk_bio.record.rm_revision_number"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Status</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.reported_ra_status_name" class="badge bg-warning" ng-class="{'badge-danger-soft': ra.status == '7', 'badge-success-soft': ra.status == '10', 'badge-warning-soft': ra.status == '6'}"></span>
+                                            <!-- <div class="mt-2" ng-show="vm.utils.risk_bio.record.AssessmentStatus == '6' || vm.utils.risk_bio.record.AssessmentStatus == '10'">
+                                                <a href="javascript: void(0);" ng-click="vm.utils.reopen_assessment.confirm();" style="font-size: 0.8em;">Re-open assessment</a>
+                                            </div> -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Date Created</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.date_added | date: 'dd/MM/yyyy'"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="fw-bold">Author</span>
+                                        </td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.modified_by_name || vm.utils.risk_bio.record.added_by_name"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Subject</td>
+                                        <td>
+                                            <div>
+                                                <span ng-bind="vm.utils.risk_bio.record.asset_ref"></span>
+                                            </div>
+
+                                            <!-- <div class="mt-1">
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.showAccordion('AssessmentAccordion-subject');">View more info</a>
+                                            </div> -->
+
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="vm.utils.risk_bio.record.assessment_method != '6'">
+                                        <td class="fw-bold">Hazard Type</td>
+                                        <td>
+                                            <!-- <img ng-src="../RMAngular/images/hazard_icons/black/Elec Hazard.png" style="width: 15px;" class="me-2" src="../RMAngular/images/hazard_icons/black/Elec Hazard.png"> -->
+                                            <span ng-bind="vm.utils.risk_bio.record.hazard_type_name"></span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="vm.utils.risk_bio.record.assessment_method != '6'">
+                                        <td class="fw-bold">Hazard Origin</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.hazard_origin_name"></span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="vm.utils.risk_bio.record.assessment_method != '6'">
+                                        <td class="fw-bold">Hazard Consequence</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.hazard_consequence_name"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Hazard Description</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.hazard_description"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Control Measure</td>
+                                        <td>
+                                            <span ng-bind="vm.utils.risk_bio.record.control_description"></span>
+                                        
+                                            <div ng-show="vm.utils.risk_bio.record.temporary_measure == 'Yes' || vm.utils.risk_bio.record.is_deviation == 'Yes'" class="mt-2">
+                                                <span ng-show="vm.utils.risk_bio.record.temporary_measure == 'Yes'" class="me-1"><span style="display: inline-block; border: 1px solid #ddd; border-radius: 5px; padding: 2px; padding-left: 4px; padding-right: 4px; font-size: 0.7em;"><i class="bi bi-alarm"></i></span> <span ng-bind="vm.utils.risk_bio.record.temporary_measure_expiry | date: 'dd/MM/yyyy'" style="font-size: 0.8em;"></span></span>
+                                                <span ng-show="vm.utils.risk_bio.record.is_deviation == 'Yes'" style="display: inline-block; border: 1px solid #ddd; border-radius: 5px; padding: 2px; padding-left: 4px; padding-right: 4px; font-size: 0.7em;" class="me-1">Deviation</span>
+                                            </div>
+
+                                            <div class="mt-2 pt-2" ng-show="vm.utils.risk_bio.record.status == 7" style="border-top: 1px solid #ddd;">
+                                                <div class="fw-bold">Not the control measure you applied?</div>
+                                                <div class="mt-1">
+                                                    <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.hide(); vm.utils.revise_assessment.start(vm.utils.risk_bio.record);"> click here</a> to revise the assessment
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Statutory</td>
+                                        <td>
+                                            <div ng-show="vm.utils.risk_bio.record.statutory == 'Yes'">
+                                                <div class="fw-bold text-danger">Yes</div>
+                                                <div>The assessor has decided that this corrective action IS a legal requirement.</div>
+                                            </div>
+                                            <div ng-show="vm.utils.risk_bio.record.statutory != 'Yes'">
+                                                <div class="fw-bold">No</div>
+                                                <div>The assessor has decided that this corrective action is NOT a legal requirement.</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Risk Before Control</td>
+                                        <td>
+
+                                            <!-- START PHA METHOD -->
+                                            <div ng-show="vm.utils.risk_bio.record.assessment_method == '0' || vm.utils.risk_bio.record.assessment_method == '1'">
+
+                                                <div>
+                                                    <span ng-bind="vm.utils.risk_bio.record.hrn_phrase_name_initial" style="border-radius: 5px; padding: 3px; font-size: 0.8em; font-weight: bold; border: 1px solid rgb(246, 161, 62);" ng-style="vm.utils.risk_bio.riskLevelStyle(vm.utils.risk_bio.record, 'initial');"></span>
+                                                </div>
+
+                                                <table class="table table-sm mt-2">
+                                                    <tbody><tr>
+                                                        <td><span class="fw-bold">NP</span> <span style="font-size: 0.8em;" class="text-muted">(Number of people)</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.np_initial"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="fw-bold">FE</span> <span style="font-size: 0.8em;" class="text-muted">(Frequency of exposure)</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.fe_initial"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="fw-bold">DPH</span> <span style="font-size: 0.8em;" class="text-muted">(Degree of Possible Harm)</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.dph_initial"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="fw-bold">LO</span> <span style="font-size: 0.8em;" class="text-muted">(Likelihood of Occurrence)</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.lo_initial"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody></table>
+
+                                                <div class="mt-2" style="font-size: 0.8em; font-style: italic;">*The author used the PHA (Preliminary Hazard Analysis) method to rate the risk</div>
+
+                                            </div>
+                                            <!-- END PHA METHOD -->
+
+                                            <!-- START OTHER METHODS -->
+                                            <div ng-show="vm.utils.risk_bio.record.assessment_method != '0' && vm.utils.risk_bio.record.assessment_method != '1'">
+                                                <div>
+                                                    <span ng-bind="vm.utils.risk_bio.displayPhrase(vm.utils.risk_bio.record, 'before')"></span><span style="font-size: 0.8em;">(<span ng-bind="vm.utils.risk_bio.displayRiskScore(vm.utils.risk_bio.record, 'before')"></span>)</span>
+
+                                                    <!-- <span ng-bind="vm.utils.risk_bio.record.DisplayRiskPhraseInitial"></span> <span style="font-size: 0.8em;">(<span ng-bind="vm.utils.risk_bio.record.DisplayRiskRatingInitial"></span>)</span> -->
+                                                </div>
+                                            </div>
+                                            <!-- END OTHER METHODS -->
+
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="vm.utils.risk_bio.hasAfterValue(vm.utils.risk_bio.record)">
+                                        <td class="fw-bold">Risk After Control</td>
+                                        <td>
+
+                                            <!-- START PHA METHOD -->
+                                            <div ng-show="vm.utils.risk_bio.record.assessment_method == '0' || vm.utils.risk_bio.record.assessment_method == '1'">
+                                                <span ng-bind="vm.utils.risk_bio.record.hrn_phrase_name_after" style="border-radius: 5px; padding: 3px; font-size: 0.8em; font-weight: bold; border: 1px solid rgb(246, 161, 62);" ng-style="vm.utils.risk_listing.riskLevelStyle(vm.utils.risk_bio.record, 'after');"></span>
+                                            
+                                                <table class="table table-sm mt-2">
+                                                    <tbody><tr>
+                                                        <td><span class="fw-bold">NP</span> <span style="font-size: 0.8em;" class="text-muted">Number of people</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.np_after"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="fw-bold">FE</span> <span style="font-size: 0.8em;" class="text-muted">Frequency of exposure</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.fe_after"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="fw-bold">DPH</span> <span style="font-size: 0.8em;" class="text-muted">Degree of Possible Harm</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.dph_after"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="fw-bold">LO</span> <span style="font-size: 0.8em;" class="text-muted">Likelihood of Occurrence</span></td>
+                                                        <td>
+                                                            <span ng-bind="vm.utils.risk_bio.record.lo_after"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody></table>
+
+                                                <div class="mt-2" style="font-size: 0.8em; font-style: italic;">*The author used the PHA (Preliminary Hazard Analysis) method to rate the risk</div>
+
+                                            </div>
+                                            <!-- END PHA METHOD -->
+
+                                            <!-- START OTHER METHODS -->
+                                            <div ng-show="vm.utils.risk_bio.record.assessment_method != '0' && vm.utils.risk_bio.record.assessment_method != '1'">
+                                                <div>
+                                                    <span ng-bind="vm.utils.risk_bio.record.DisplayRiskPhraseAfter"></span> <span style="font-size: 0.8em;">(<span ng-bind="vm.utils.risk_bio.record.DisplayRiskRatingAfter"></span>)</span>
+                                                </div>
+                                            </div>
+                                            <!-- END OTHER METHODS -->
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- START RISK IMAGES -->
+                            <div class="mt-5 p-5">
+                                
+                                <!-- <div ng-show="vm.utils.risk_bio.record.expired">
+                                    <div style="font-size: 0.8em;" class="text-danger fw-bold">This assessment is unlicensed. Please obtain a Report-Hub license to view the assessment images.</div>
+
+                                    <div class="mt-2">
+                                        <a href="https://system.riskmach.co.uk/RMAngular/#/feature/?feature_id=1" ng-href="https://system.riskmach.co.uk/RMAngular/#/feature/?feature_id=1" class="btn btn-primary btn-sm">Get Report-Hub License</a>
+                                    </div>
+                                </div> -->
+                                
+                                <div ng-show="!vm.utils.risk_bio.record.expired">
+
+                                    <!-- LOADING IMAGES INDICATOR -->
+                                    <div ng-show="vm.utils.risk_images.loading">
+                                        <div  ng-model="vm.utils.risk_images.loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px"></div></div>
+                                    </div>
+                                    <!-- END LOADING IMAGES INDICATOR -->
+
+                                    <!-- DOWNLOADING FILE INDICATOR -->
+                                    <div ng-show="vm.utils.risk_images.downloading_file" class="text-center padding margin-top-lg">
+                                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+                                        <div style="margin-top: 20px;">
+                                            <p class="fw-bold">Downloading file...</p>
+                                            <p>This can take a while depending on the size of the file</p>
+                                        </div>
+                                    </div>
+                                    <!-- END DOWNLOADING FILE INDICATOR -->
+
+                                    <div ng-show="!vm.utils.risk_images.loading && !vm.utils.risk_images.downloading_file && !vm.utils.risk_images.visible_media.length" class="text-center text-muted fw-bold">
+                                        
+                                        <div class="text-center mb-3">
+                                            <img src="../images/custom_icons/No Media.png" style="width: 80px;">
+                                        </div>
+
+                                        <div class="text-center">
+                                            No images taken for this assessment
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div ng-show="!vm.utils.risk_images.loading && !vm.utils.risk_images.downloading_file && vm.utils.risk_images.visible_media.length">
+
+                                        <div class="mb-5" style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;">
+
+                                            <div style="position: relative; min-height: 100px;">
+                                                <div class="text-center pt-5" ng-show="vm.utils.risk_images.active_record.file_downloaded == null">
+                                                    <a href="javascript: void(0);" ng-click="vm.utils.risk_images.downloadMediaFile(vm.utils.risk_images.active_record)" class="text-center">
+                                                        <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                                                    </a>
+                                                </div>
+                                                <a href="javascript: void(0);" ng-show="vm.utils.risk_images.active_record.file_downloaded == 'Yes'">
+                                                    <img ng-src="{{ vm.utils.risk_images.active_record.url }}">
+                                                </a>
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_images.previousImage();" style="display: inline-block; position: absolute; left: 15px; top: 50%; width:60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-left"></i></a>
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_images.nextImage();" style="display: inline-block; position: absolute; right: 15px; top: 50%; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-right"></i></a>
+                                            </div>
+
+                                            <div ng-show="vm.utils.risk_images.active_record.title || vm.utils.risk_images.active_record.description" class="mt-3">
+                                                <h5><span ng-bind="vm.utils.risk_images.active_record.title"></span></h5>
+                                                <p ng-bind="vm.utils.risk_images.active_record.description"></p>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="mt-5">
+                                            <div class="row g-3">
+                                                <div class="col-3" ng-repeat="risk_image in vm.utils.risk_images.visible_media">
+                                                    <a href="javascript: void(0);" ng-show="risk_image.file_downloaded == null" ng-click="vm.utils.risk_images.downloadMediaFile(risk_image)">
+                                                        <i class="bi bi-cloud-arrow-down-fill text-primary img-thumbnail" style="font-size: 2.5em;"></i>
+                                                    </a>
+
+                                                    <a href="javascript: void(0);" ng-click="vm.utils.risk_images.selectImage($index);" ng-show="risk_image.file_downloaded == 'Yes'">
+                                                        <img ng-src="{{ risk_image.url }}" class="img-thumbnail mb-5" ng-class="{ 'active-img': vm.utils.risk_images.active_index == $index }">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!-- END RISK IMAGES -->
+
+
+                        </div>
+                    </div>
+                </div>
+                
+                    
+                <!-- CLOSEOUT EVIDENCE ACCORDION -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-evidence" aria-expanded="true" aria-controls="AssessmentAccordion-evidence" data-bs-parent="#AssessmentAccordion" fdprocessedid="xze2b">
+                            Closeout Evidence
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-evidence" class="accordion-collapse collapse show" data-bs-parent="#AssessmentAccordion" style="">
+                        <div class="accordion-body p-0">
+
+                            <!-- START ASSESSMENT EVIDENCE -->
+                            <div class="p-5">
+                                
+                                <div ng-show="vm.utils.risk_bio.record.expired" class="ng-hide">
+                                    <div class="fw-bold text-danger" style="font-size: 0.8em;">This assessment is unlicensed. You may not add, view or action evidence. Please obtain a Report-Hub license</div>
+
+                                    <div class="mt-2">
+                                        <a href="https://system.riskmach.co.uk/RMAngular/#/feature/?feature_id=1" ng-href="https://system.riskmach.co.uk/RMAngular/#/feature/?feature_id=1" class="btn btn-primary btn-sm">Get Report-Hub License</a>
+                                        <!-- <a href="../packages/" class="btn btn-primary btn-sm">Get Report-Hub License</a> -->
+                                    </div>
+
+                                </div>
+
+                                <div ng-show="!vm.utils.risk_bio.record.expired">
+
+                                    <div class="mb-5" ng-show="vm.utils.risk_bio.record.status == '7'">
+
+                                        <div ng-show="vm.utils.report_info.data.report_record.status == '7'" class="text-center fw-bold text-danger" style="font-size: 0.8em;">
+                                            You may not upload evidence whilst the report is in a draft state
+                                        </div>
+
+                                        <!-- ng-show="vm.utils.report_info.data.report_record.status != '7'" -->
+                                        <div>
+
+                                            <div class="mb-4 mt-n2 text-end">
+                                                <div class="btn-group dropdown">
+                                                    <!-- DEVICE CAMERA -->
+                                                    <button ng-show="vm.utils.is_mobile" type="button" class="btn btn-success btn-sm">
+                                                        <label for="raCloseoutPhotoInput" style="padding: none; margin-bottom: 0px;"><i class="bi bi-camera-fill"></i> Take Photo</label>
+                                                    </button>
+                                                    <!-- DESKTOP CAMERA -->
+                                                    <button ng-show="!vm.utils.is_mobile" type="button" class="btn btn-success btn-sm" ng-click="vm.utils.closeout_images.takePhotoDesktop();">
+                                                        <i class="bi bi-camera-fill"></i> Take Photo
+                                                    </button>
+                                                    <!-- DROPDOWN BUTTON -->
+                                                    <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="closeoutImagesDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="closeoutImagesDropdownMenu">
+                                                        <li>
+                                                            <label class="dropdown-item" for="raCloseoutInputFile">Choose File</label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        
+                                    </div>
+
+                                    <!-- LOADING INDICATOR -->
+                                    <div ng-show="vm.utils.closeout_images.loading" class="text-center">
+                                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+                                        <div class="mt-4">
+                                            <span class="fw-bold">Loading closeout evidence...</span>
+                                        </div>
+                                    </div>
+                                    <!-- END LOADING INDICATOR -->
+
+                                    <!-- DOWNLOADING FILE INDICATOR -->
+                                    <div ng-show="vm.utils.closeout_images.downloading_file" class="text-center padding margin-top-lg">
+                                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;">
+
+                                        <div style="margin-top: 20px;">
+                                            <p class="fw-bold">Downloading file...</p>
+                                            <p>This can take a while depending on the size of the file</p>
+                                        </div>
+                                    </div>
+                                    <!-- END DOWNLOADING FILE INDICATOR -->
+
+                                    <div ng-show="!vm.utils.closeout_images.loading && !vm.utils.closeout_images.downloading_file && !vm.utils.closeout_images.visible_media.length">
+                                        
+                                        <div class="text-center mb-3">
+                                            <img src="../images/custom_icons/No Media.png" style="width: 80px;">
+                                        </div>
+
+                                        <div ng-show="vm.utils.risk_bio.record.status == '7'" class="text-center fw-bold text-muted">
+                                            You have not provided any supporting closeout evidence
+                                        </div>
+
+                                        <div ng-show="vm.utils.risk_bio.record.status == '6' || vm.utils.risk_bio.record.status == '10'" class="text-center">
+                                            <div class="fw-bold">Reason for no evidence</div>
+                                            <div>
+                                                <span ng-bind="vm.utils.risk_bio.record.no_evidence_reason || 'No reason given'">No reason given</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div ng-show="!vm.utils.closeout_images.loading && !vm.utils.closeout_images.downloading_file && vm.utils.closeout_images.visible_media.length">
+
+                                        <!-- START CLOSEOUT CONTROLS / STATS -->
+                                        <div ng-show="vm.utils.risk_bio.record.status == '6' && vm.utils.risk_bio.canReviewAssessment(vm.utils.risk_bio.record)">
+
+                                            <div style="font-size: 0.8em;" class="text-end text-muted mb-8">
+                                                <div ng-show="vm.utils.closeout_images.stats.data.pending" class="mb-5 text-start fw-bold">
+                                                    Review the evidence provided
+                                                </div>
+                                                <div ng-show="!vm.utils.closeout_images.stats.data.pending" class="mb-5 text-start fw-bold">
+                                                    All evidence has been reviewed. Make your decision on whether to close or reject this submission.
+                                                </div>
+                                                <div>
+                                                    <span><span ng-bind="vm.utils.closeout_images.stats.data.approved" class="fw-bold"></span> Approved</span> | <span><span ng-bind="vm.utils.closeout_images.stats.data.rejected" class="fw-bold"></span> Rejected</span> | <span><span ng-bind="vm.utils.closeout_images.stats.data.pending" class="fw-bold"></span> Not reviewed</span>
+                                                </div>
+                                                <div>
+                                                    <div class="progress" role="progressbar" aria-label="Default striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                        <div class="progress-bar progress-bar-striped" style="width: 0%"><span ng-bind="vm.utils.closeout_images.stats.data.percentage_checked + '%'"></span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- END CLOSEOUT CONTROLS STATS -->
+
+                                        <div class="mb-5" style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;">
+
+                                            <div style="position: relative; min-height: 100px;">
+                                                <div class="text-center pt-5" ng-show="vm.utils.closeout_images.active_record.file_downloaded == null">
+                                                    <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.downloadMediaFile(vm.utils.closeout_images.active_record)" class="text-center">
+                                                        <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                                                    </a>
+                                                </div>
+                                                <a href="javascript: void(0);" ng-show="vm.utils.closeout_images.active_record.file_downloaded == 'Yes'">
+                                                    <img ng-src="{{ vm.utils.closeout_images.active_record.url }}" class="d-block w-100" alt="...">
+                                                </a>
+
+                                                <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.previousImage();" style="display: inline-block; position: absolute; right: -20px; top: -20px; width:40px; height: 40px; line-height: 40px; border-radius: 50%; font-size: 2em; color: #fff; text-align: center;" ng-class="{ 'bg-success': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'bg-danger': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'bg-secondary': !vm.utils.closeout_images.active_record.approval_status }" class="bg-secondary">
+                                                    <i class="bi bi-question-lg" ng-class="{ 'bi-check-circle': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'bi-x-circle': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'bi-question-lg': !vm.utils.closeout_images.active_record.approval_status }"></i> 
+                                                </a>
+
+                                                <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.previousImage();" style="display: inline-block; position: absolute; left: 15px; top: 50%; width:60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-left"></i></a>
+                                                <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.nextImage();" style="display: inline-block; position: absolute; right: 15px; top: 50%; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-right"></i></a>
+                                            </div>
+
+                                            <div class="mt-3">
+                                                 
+                                                <table class="table table-sm" style="font-size: 0.8em;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="fw-bold">Filename</td>
+                                                            <td>
+                                                                <span ng-bind="vm.utils.closeout_images.active_record.file_name"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Upload Date</td>
+                                                            <td>
+                                                                <span ng-bind="vm.utils.closeout_images.active_record.date_added | date: 'dd/MM/yyyy'"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Title</td>
+                                                            <td>
+                                                               <span ng-bind="vm.utils.closeout_images.active_record.title"></span> 
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Description</td>
+                                                            <td>
+                                                                <span ng-bind="vm.utils.closeout_images.active_record.description"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold">Review Status</td>
+                                                            <td>
+                                                                <div class="fw-bold fs-5 text-muted" ng-class="{ 'text-success': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'text-danger': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'text-muted': !vm.utils.closeout_images.active_record.approval_status }">
+                                                                    <i class="bi bi-question-lg" ng-class="{ 'bi-check-circle': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'bi-x-circle': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'bi-question-lg': !vm.utils.closeout_images.active_record.approval_status }"></i> <span ng-bind="vm.utils.closeout_images.active_record.approval_status || 'Not Reviewed'"></span>
+                                                                </div>
+                                                                <div ng-show="vm.utils.closeout_images.active_record.approval_status">
+                                                                    <span ng-bind="vm.utils.closeout_images.active_record.approval_message"></span>
+                                                                </div>
+                                                                <div ng-show="vm.utils.closeout_images.active_record.approval_status">
+                                                                    <span ng-bind="vm.utils.closeout_images.active_record.checked_by_name"></span> @ <span ng-bind="vm.utils.closeout_images.active_record.date_checked | date: 'dd/MM/yyyy'"></span>
+                                                                </div>
+
+                                                                <!-- START REVIEW FORM -->
+                                                                <div ng-show="vm.utils.risk_bio.record.status == '6' && vm.utils.risk_bio.canReviewAssessment(vm.utils.risk_bio.record)">
+
+                                                                    <div ng-show="vm.utils.closeout_images.active_record.approval_status && !vm.utils.closeout_images.active_record.show_review_form" class="mt-2">
+                                                                        <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.showReviewForm(vm.utils.closeout_images.active_record);">Update review</a>
+                                                                    </div>
+
+                                                                    <div class="mt-3" ng-show="vm.utils.closeout_images.active_record.show_review_form">
+                                                                        <div class="mb-3">
+                                                                            <label>Rejection message</label>
+                                                                            <textarea class="form-control" ng-model="vm.utils.review_evidence.approval_info.message" ng-disabled="vm.utils.review_evidence.loading"></textarea>
+                                                                        </div>
+
+                                                                        <div class="row">
+                                                                            <div class="col">
+                                                                                <button type="button" class="btn btn-danger btn-sm" ng-click="vm.utils.review_evidence.submit('Rejected');" ng-disabled="vm.utils.review_evidence.loading">Reject</button>
+                                                                            </div>
+                                                                            <div class="col text-end">
+                                                                                <button type="button" class="btn btn-success btn-sm" ng-click="vm.utils.review_evidence.submit('Approved');" ng-disabled="vm.utils.review_evidence.loading">Approve</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <!-- END REVIEW FORM -->
+
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="mt-5">
+
+                                            <div class="row g-3 mt-3">
+                                                <div class="col-3" ng-repeat="closeout_image in vm.utils.closeout_images.visible_media" style="position: relative;">
+                                                    <a href="javascript: void(0);" ng-show="closeout_image.file_downloaded == null" ng-click="vm.utils.closeout_images.downloadMediaFile(closeout_image)">
+                                                        <i class="bi bi-cloud-arrow-down-fill text-primary img-thumbnail" style="font-size: 2.5em;"></i>
+                                                    </a>
+
+                                                    <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.selectImage($index, closeout_image);" ng-show="closeout_image.file_downloaded == 'Yes'">
+                                                        <img class="img-thumbnail mb-5" ng-class="{ 'active-img': vm.utils.closeout_images.active_index == $index && vm.utils.closeout_images.active_record._id == closeout_image._id }" src="{{ closeout_image.url }}">
+                                                    </a>
+                                                    <a href="javascript: void(0);" style="display: inline-block; position: absolute; right: -5px; top: -10px; width: 30px; height: 30px; line-height: 30px; border-radius: 50%; font-size: 2em; color: #fff; text-align: center;" ng-class="{ 'bg-success': closeout_image.approval_status == 'Approved', 'bg-danger': closeout_image.approval_status == 'Rejected', 'bg-secondary': !closeout_image.approval_status }" class="bg-secondary">
+                                                        <i class="bi" ng-class="{ 'bi-check-circle': closeout_image.approval_status == 'Approved', 'bi-x-circle': closeout_image.approval_status == 'Rejected', 'bi-question-lg': !closeout_image.approval_status }"></i> 
+                                                    </a>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!-- END ASSESSMENT EVIDENCE -->
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- SUBJECT ACCORDION -->
+                <div class="accordion-item" ng-show="false">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-subject" aria-expanded="false" aria-controls="AssessmentAccordion-subject" data-bs-parent="#AssessmentAccordion" fdprocessedid="5z5zjk">
+                            Assessment Subject
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-subject" class="accordion-collapse collapse" data-bs-parent="#AssessmentAccordion">
+                        <div class="accordion-body p-0">
+
+                            <div data-ajax-loader="" ng-model="vm.utils.risk_subject.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                            <div ng-show="!vm.utils.risk_subject.is_loading" class="">
+
+                                <div class="p-3 pb-1">
+
+                                    <ul class="nav nav-underline mb-5">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" ng-class="{ 'active': vm.utils.risk_subject.tabs.tabActive('snapshot') }" href="javascript: void(0);" ng-click="vm.utils.risk_subject.tabs.changeTab('snapshot')">Inspection Snapshot</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" ng-class="{ 'active': vm.utils.risk_subject.tabs.tabActive('core') }" href="javascript: void(0);" ng-click="vm.utils.risk_subject.tabs.changeTab('core')">Core</a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                                <!-- START SNAPSHOT TAB -->
+                                <div ng-show="vm.utils.risk_subject.tabs.tabActive('snapshot')">
+
+                                    <table class="table" style="font-size: 0.8em;">
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Snapshot ID</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.AssetID" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">QR Code</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.FullQRCode" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Asset Ref</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.AssetRef" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Serial</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.Serial" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Type</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.Type" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Model</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.Model" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Manufacturer</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.Manufacturer" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Supplier</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.Supplier" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Description</td>
+                                                <td>
+                                                    <span ng-bind-html="vm.utils.risk_subject.record.Description" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- START IMAGE GALLERY -->
+                                    <div class="mt-5 p-5">
+                                        
+                                        <div data-ajax-loader="" ng-model="vm.util.risk_subject.snapshot_media.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                                        <div ng-show="!vm.utils.risk_subject.snapshot_media.is_loading &amp;&amp; !vm.utils.risk_subject.snapshot_media.data.length" class="text-center text-muted fw-bold">
+                                            
+                                            <div class="mb-3 text-center">
+                                                <img src="../RMAngular/images/custom_icons/No Media.png" style="width: 30px;">
+                                            </div>
+
+                                            <div class="text-center">No inspection images available</div>
+
+                                        </div>
+
+                                        <div ng-show="!vm.utils.risk_subject.snapshot_media.is_loading &amp;&amp; vm.utils.risk_subject.snapshot_media.data.length" class="ng-hide">
+                                            
+                                            <div style="position: relative;" class="mb-5">
+                                                <img ng-src="../RMAngular/images/custom_icons/No Media.png" class="d-block w-50 mx-auto" alt="..." src="../RMAngular/images/custom_icons/No Media.png">
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_subject.snapshot_media.previousImage();" style="display: inline-block; position: absolute; left: 15px; top: 50%; width:60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-left"></i></a>
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_subject.snapshot_media.nextImage();" style="display: inline-block; position: absolute; right: 15px; top: 50%; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-right"></i></a>
+                                            </div>
+
+                                            <div ng-show="vm.utils.risk_subject.snapshot_media.active_record.Title || vm.utils.risk_subject.snapshot_media.active_record.Description" class="mt-3 ng-hide">
+                                                <h5><span ng-bind="vm.utils.risk_subject.snapshot_media.active_record.Title" class="ng-binding"></span></h5>
+                                                <p ng-bind="vm.utils.risk_subject.snapshot_media.active_record.Description" class="ng-binding"></p>
+                                            </div>
+
+                                            <div class="row mt-5">
+                                                <!-- ngRepeat: media in vm.utils.risk_subject.snapshot_media.data -->
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <!-- END IMAGE GALLERY -->
+
+
+                                </div>
+                                <!-- END SNAPSHOT TAB -->
+
+                                <!-- START REGISTER TAB -->
+                                <div ng-show="vm.utils.risk_subject.tabs.tabActive('core')" class="ng-hide">
+
+                                    <div ng-show="vm.utils.risk_subject.record.AssignedToRegister != 'Yes'" class="text-center text-muted fw-bold p-5">
+                                        <div>This inspection has not been assigned to core</div>
+
+                                        <div class="mt-3">
+                                            <button type="button" class="btn btn-primary" ng-click="vm.utils.risk_bio.assignToCore(); vm.utils.risk_bio.hide();">Assign to core</button>
+                                        </div>
+                                    </div>
+
+                                    <table ng-show="vm.utils.risk_subject.record.AssignedToRegister == 'Yes'" class="table ng-hide" style="font-size: 0.8em;">
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Core ID</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetID" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Asset Ref</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetRef" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Serial</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetSerial" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Type</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetType" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Model</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetModel" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Manufacturer</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetManufacturer" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Supplier</td>
+                                                <td>
+                                                    <span ng-bind="vm.utils.risk_subject.record.RegisterAssetSupplier" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Description</td>
+                                                <td>
+                                                    <span ng-bind-html="vm.utils.risk_subject.record.RegisterAssetDescription" class="ng-binding"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- START IMAGE GALLERY -->
+                                    <div class="mt-5 p-5">
+                                        
+                                        <div data-ajax-loader="" ng-model="vm.util.risk_subject.core_media.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                                        <div ng-show="!vm.utils.risk_subject.core_media.is_loading &amp;&amp; !vm.utils.risk_subject.core_media.data.length" class="text-center text-muted fw-bold">
+                                            
+                                            <div class="mb-3 text-center">
+                                                <img src="../RMAngular/images/custom_icons/No Media.png" style="width: 30px;">
+                                            </div>
+
+                                            <div class="text-center">No core images available</div>
+
+                                        </div>
+
+                                        <div ng-show="!vm.utils.risk_subject.core_media.is_loading &amp;&amp; vm.utils.risk_subject.core_media.data.length" class="ng-hide">
+                                            
+                                            <div style="position: relative;" class="mb-5">
+                                                <img ng-src="../RMAngular/images/custom_icons/No Media.png" class="d-block w-50 mx-auto" alt="..." src="../RMAngular/images/custom_icons/No Media.png">
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_subject.core_media.previousImage();" style="display: inline-block; position: absolute; left: 15px; top: 50%; width:60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-left"></i></a>
+                                                <a href="javascript: void(0);" ng-click="vm.utils.risk_subject.core_media.nextImage();" style="display: inline-block; position: absolute; right: 15px; top: 50%; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-right"></i></a>
+                                            </div>
+
+                                            <div ng-show="vm.utils.risk_subject.core_media.active_record.Title || vm.utils.risk_subject.core_media.active_record.Description" class="mt-3 ng-hide">
+                                                <h5><span ng-bind="vm.utils.risk_subject.core_media.active_record.Title" class="ng-binding"></span></h5>
+                                                <p ng-bind="vm.utils.risk_subject.core_media.active_record.Description" class="ng-binding"></p>
+                                            </div>
+
+                                            <div class="row mt-5">
+                                                <!-- ngRepeat: media in vm.utils.risk_subject.core_media.data -->
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <!-- END IMAGE GALLERY -->
+
+
+                                </div>
+                                <!-- END REGISTER TAB -->
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END SUBJECT ACCORDION -->
+
+                <!-- REVIEW HISTORY ACCORDION -->
+                <div class="accordion-item" ng-show="falses">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-approvals" aria-expanded="false" aria-controls="AssessmentAccordion-approvals" fdprocessedid="e1jdtq">
+                            Review History
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-approvals" class="accordion-collapse collapse" data-bs-parent="#AssessmentAccordion">
+                        <div class="accordion-body p-0">
+
+                            <div data-ajax-loader="" ng-model="vm.utils.submission_history.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                            <div ng-show="!vm.utils.submission_history.is_loading &amp;&amp; !vm.utils.submission_history.data.length" class="text-muted text-center fw-bold p-5">
+                                No reviews found
+                            </div>
+
+                            <div class="table-responsive">
+                                <table ng-show="!vm.utils.submission_history.is_loading &amp;&amp; vm.utils.submission_history.data.length" class="table ng-hide" style="font-size: 0.8em;">
+                                    <thead>
+                                        <tr><th>Date</th>
+                                        <th>Outcome</th>
+                                        <th>Author</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <!-- ngRepeat: review in vm.utils.submission_history.data -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END REVIEW HISTORY ACCORDION -->
+
+                <!-- REVISION HISTORY ACCORDION -->
+                <div class="accordion-item" ng-show="false">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-revisions" aria-expanded="false" aria-controls="AssessmentAccordion-revisions" fdprocessedid="c8utnh">
+                            Revision History
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-revisions" class="accordion-collapse collapse" data-bs-parent="#AssessmentAccordion">
+                        <div class="accordion-body p-0">
+
+                            <div data-ajax-loader="" ng-model="vm.utils.risk_revisions.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                            <div ng-show="!vm.utils.risk_revisions.is_loading &amp;&amp; !vm.utils.risk_revisions.data.length" class="text-muted text-center fw-bold p-5 ng-hide">
+                                There are no revisions for this risk assessment
+                            </div>
+
+                            <div class="table-responsive" ng-show="!vm.utils.risk_revisions.is_loading &amp;&amp; vm.utils.risk_revisions.data.length">
+                                <table class="table" style="font-size: 0.8em;">
+                                    <thead>
+                                        <tr><th>Ref (rev)</th>
+                                        <th>Date Created</th>
+                                        <th>Author</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <!-- ngRepeat: revision in vm.utils.risk_revisions.data --><tr ng-repeat="revision in vm.utils.risk_revisions.data" class="ng-scope">
+                                            <td>
+                                                <span ng-bind="revision.Ref" class="ng-binding">656659</span> - <span ng-bind="revision.RevisionNumber" class="ng-binding">0</span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="revision.DateCreated" class="ng-binding">07-03-2025</span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="revision.AddedByName" class="ng-binding">System Dev</span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="revision.AssessmentStatusName" class="ng-binding">Closed</span>
+                                            </td>
+                                            <td>
+                                                <a href="javascript: void(0);">
+                                                    <img src="../RMAngular/images/custom_icons/PDF Colour.png" style="width: 20px;">
+                                                </a>
+                                            </td>
+                                        </tr><!-- end ngRepeat: revision in vm.utils.risk_revisions.data -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END REVISION HISTORY ACCORDION -->
+
+                <!-- CHAT ACCORDION -->
+                <div class="accordion-item" ng-show="false">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-chat" aria-expanded="false" aria-controls="AssessmentAccordion-chat" fdprocessedid="va12hs">
+                            Chat
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-chat" class="accordion-collapse collapse" data-bs-parent="#AssessmentAccordion">
+                        <div class="accordion-body p-0">
+
+                            <div data-ajax-loader="" ng-model="vm.utils.risk_chat.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                            <div ng-show="!vm.utils.risk_chat.is_loading &amp;&amp; !vm.utils.risk_chat.messages.length" class="text-center text-muted fw-bold p-5">
+                                No message have been posted
+                            </div>
+
+                            <div id="RiskChatWindow" ng-show="!vm.utils.risk_chat.is_loading &amp;&amp; vm.utils.risk_chat.messages.length" style="max-height: 400px; overflow-y: auto;" class="ng-hide">
+
+                                <table class="table table-striped table-sm mb-0" style="font-size: 0.8em;">
+                                    <tbody>
+                                        <!-- ngRepeat: message in vm.utils.risk_chat.messages -->
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <form class="ng-pristine ng-valid">
+                                <div class="input-group">
+                                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" ng-model="vm.utils.risk_chat.new_message" ng-disabled="vm.utils.risk_chat.saving_message" placeholder="Your message..." style="border-top-left-radius: 0px; border-bottom-left-radius: 0px; border-left: 0px solid #ddd; border-bottom: 0px solid #ddd;">
+                                    <button ng-click="vm.utils.risk_chat.saveMessage();" ng-disabled="vm.utils.risk_chat.saving_message || !vm.utils.risk_chat.new_message" class="btn btn-primary" type="submit" disabled="disabled"><i class="bi bi-send"></i></button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END CHAT ACCORDION -->
+
+                <!-- RASIC ACCORDION -->
+                <div class="accordion-item" ng-show="false">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#AssessmentAccordion-rasic" aria-expanded="false" aria-controls="AssessmentAccordion-rasic" fdprocessedid="78nwq">
+                            RASIC
+                        </button>
+                    </h2>
+                    <div id="AssessmentAccordion-rasic" class="accordion-collapse collapse" data-bs-parent="#AssessmentAccordion">
+                        <div class="accordion-body p-0">
+
+                            <div class="p-3 pb-1">
+
+                                <ul class="nav nav-underline mb-5">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" ng-class="{ 'active': vm.utils.risk_rasic.tabs.tabActive('allocated') }" href="javascript: void(0);" ng-click="vm.utils.risk_rasic.tabs.changeTab('allocated')">Allocated</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" ng-class="{ 'active': vm.utils.risk_rasic.tabs.tabActive('unallocated') }" href="javascript: void(0);" ng-click="vm.utils.risk_rasic.tabs.changeTab('unallocated')">Un-Allocated</a>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                            <div data-ajax-loader="" ng-model="vm.utils.risk_rasic.is_loading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope"><div class="text-center"><img src="assets/images/loading-icon.gif" height="50px" ng-show="isLoading" style="margin-top: 10px; margin-bottom: 10px" class="ng-hide"></div></div>
+
+                            <div ng-show="!vm.utils.risk_rasic.is_loading" class="">
+                                
+                                <div ng-show="vm.utils.risk_rasic.tabs.tabActive('allocated');">
+                                    
+                                    <div ng-show="!vm.utils.risk_rasic.is_loading &amp;&amp; !vm.utils.risk_rasic.allocated.length" class="text-center text-muted fw-bold p-5">
+                                        No users allocated
+                                    </div>
+
+                                    <table ng-show="!vm.utils.risk_rasic.is_loading &amp;&amp; vm.utils.risk_rasic.allocated.length" class="table table-striped mb-0 ng-hide" style="font-size: 0.8em;">
+                                        <tbody>
+                                            <!-- ngRepeat: rasic in vm.utils.risk_rasic.allocated -->
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                                <div ng-show="vm.utils.risk_rasic.tabs.tabActive('unallocated');" style="max-height: 400px; overflow-y: scroll;" class="ng-hide">
+
+                                    <div class="mb-3 p-2">
+                                        <div class="d-flex">
+                                            <div>
+                                                <ul class="nav nav-pills mb-0" style="flex-wrap: nowrap;">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" ng-class="{ 'active': !vm.utils.risk_rasic.local_filters.is_team }" href="javascript: void(0);" ng-click="vm.utils.risk_rasic.toggleTeamFilter(false);">
+                                                            <i class="bi bi-person fs-4"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ng-class="{ 'active': vm.utils.risk_rasic.local_filters.is_team }" href="javascript: void(0);" ng-click="vm.utils.risk_rasic.toggleTeamFilter(true);">
+                                                            <i class="bi bi-people fs-4"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <input type="text" class="form-control ng-pristine ng-untouched ng-valid" placeholder="Search..." ng-model="vm.utils.risk_rasic.local_filters.general_search" ng-change="vm.utils.risk_rasic.autoFilterUnallocated();">
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <div ng-show="!vm.utils.risk_rasic.is_loading &amp;&amp; !vm.utils.risk_rasic.unallocated_f.length" class="text-center text-muted fw-bold p-5 ng-hide">
+                                       No users / teams found
+                                    </div>
+
+                                    <table ng-show="!vm.utils.risk_rasic.is_loading &amp;&amp; vm.utils.risk_rasic.unallocated_f.length" class="table table-striped mb-0" style="font-size: 0.8em;">
+                                        <tbody>
+                                            <!-- ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding"></span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">actiontest</span> <span ng-bind="user.LastName" class="ng-binding">somewhere.com</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">actiontest</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Adam</span> <span ng-bind="user.LastName" class="ng-binding">Ginn</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Adam</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">AT</span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">AT</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">AT</span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">AT</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Ayden</span> <span ng-bind="user.LastName" class="ng-binding">Thomas</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Ayden</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Ayden</span> <span ng-bind="user.LastName" class="ng-binding">Thomas</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Ayden</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">EJ</span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">EJ</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">EJ Join Company 1</span> <span ng-bind="user.LastName" class="ng-binding">Test</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">EJ Join Company 1</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Liam</span> <span ng-bind="user.LastName" class="ng-binding">Malin</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Liam</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Melissa</span> <span ng-bind="user.LastName" class="ng-binding">Adkins</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Melissa</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">new@...</span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">new@...</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">personnew</span> <span ng-bind="user.LastName" class="ng-binding">test.com</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">personnew</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">System</span> <span ng-bind="user.LastName" class="ng-binding">Dev</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">System</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span> <span ng-bind="user.LastName" class="ng-binding">Test</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span> <span ng-bind="user.LastName" class="ng-binding">ttestt</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span> <span ng-bind="user.LastName" class="ng-binding">Worker</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span> <span ng-bind="user.LastName" class="ng-binding">Worker</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span> <span ng-bind="user.LastName" class="ng-binding">Worker</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span> <span ng-bind="user.LastName" class="ng-binding">Worker 2</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test2</span> <span ng-bind="user.LastName" class="ng-binding">Test2</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Test2</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">test@...</span> <span ng-bind="user.LastName" class="ng-binding"></span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">test@...</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Testing</span> <span ng-bind="user.LastName" class="ng-binding">Roles</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Testing</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Testing</span> <span ng-bind="user.LastName" class="ng-binding">Roles 2</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Testing</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Testy</span> <span ng-bind="user.LastName" class="ng-binding">Testman</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Testy</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">the</span> <span ng-bind="user.LastName" class="ng-binding">receiver.com</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">the</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f --><tr ng-repeat="user in vm.utils.risk_rasic.unallocated_f" class="ng-scope">
+                                                <td>
+                                                    <span ng-show="user.IsUserGroup != 'Yes'">
+                                                        <i class="bi bi-person fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Warren</span> <span ng-bind="user.LastName" class="ng-binding">Spiers</span>
+                                                    </span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="ng-hide">
+                                                       <i class="bi bi-people fs-4 text-primary me-2"></i> <span ng-bind="user.FirstName" class="ng-binding">Warren</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                   <!--  <span ng-show="user.IsUserGroup != 'Yes'" class="badge bg-secondary-soft me-2" ng-bind="user.UserTypeName | limitTo: 1"></span>
+                                                    <span ng-show="user.IsUserGroup == 'Yes'" class="badge bg-secondary-soft me-2">T</span> -->
+
+                                                    <button type="buttton" class="btn btn-primary btn-xs" ng-click="vm.utils.risk_rasic.allocate(user);" ng-disabled="user.rasic_loading">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </tr><!-- end ngRepeat: user in vm.utils.risk_rasic.unallocated_f -->
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END RASIC ACCORDION -->
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<!-- END RISK BIO INTERFACE -->
+
+
+<!-- START RISK CLOSEOUT DECISION -->
+<div ng-show="vm.utils.risk_bio.tabs.tabActive('closeout_decision');" style="margin-bottom: 100px;">
+
+    <div class="mb-5 p-5">
+        <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.tabs.changeTab('interface');"><span class="text-danger"><i class="bi bi-arrow-left"></i> <span class="fw-bold">return to assessment info</span></span></a>
+    </div>
+
+    <div class="p-5">
+
+        <div class="text-center mb-5">Please choose the nature of your response below</div>
+
+        <div class="text-center mb-5 bg-white p-3" style="border-radius: 5px; border: 3px solid #019EDF;">
+            <div><a href="javascript: void(0);" ng-click="vm.utils.risk_bio.tabs.changeTab('closeout_flow');" class="fw-bold">Done</a></div>
+            <div class="text-muted" style="font-size: 0.8em;">The action required has been taken no deviation from that stated</div>
+        </div>
+
+        <div class="text-center mb-5 p-3" style="border-radius: 5px; border: 3px solid #019EDF;">
+            <div><a href="javascript: void(0);" ng-click="vm.utils.revise_assessment.start(vm.utils.risk_bio.record, false); vm.utils.risk_bio.hide();" class="fw-bold">Control Measure Has Been Changed</a></div>
+            <div class="text-muted" style="font-size: 0.8em;">You are going to or have have done something else and want to update the risk assessment</div>
+        </div>
+
+        <div class="text-center mb-5 p-3" style="border-radius: 5px; border: 3px solid #019EDF;">
+            <div><a href="javascript: void(0);" ng-click="vm.utils.revise_assessment.start(vm.utils.risk_bio.record, true); vm.utils.risk_bio.hide();" class="fw-bold">Temporary Fix</a></div>
+            <div class="text-muted" style="font-size: 0.8em;">Use this option if you've done a quick fix that will see you through for a bit</div>
+        </div>
+
+    </div>
+
+</div>
+<!-- END RISK CLOSEOUT DECISION -->
+
+
+<!-- START RISK CLOSEOUT FLOW -->
+<div ng-show="vm.utils.risk_bio.tabs.tabActive('closeout_flow');">
+
+    <div class="mb-5 p-5" ng-show="!vm.utils.upload_closeout.loading">
+        <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.tabs.changeTab('closeout_decision');"><span class="text-danger"><i class="bi bi-arrow-left"></i> <span class="fw-bold">Back</span></span></a>
+    </div>
+
+    <div ng-show="vm.utils.upload_closeout.loading" class="text-center">
+        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+        <div class="mt-4">
+            <span class="fw-bold">Please Wait - Submitting Assessment</span>
+        </div>
+    </div>
+
+    <!-- START ASSESSMENT EVIDENCE -->
+    <div class="p-5" ng-show="!vm.utils.upload_closeout.loading">
+        
+        <div ng-show="vm.utils.risk_bio.record.expired">
+            <div class="fw-bold text-danger" style="font-size: 0.8em;">This assessment is unlicensed. You may not add, view or action evidence. Please obtain a Report-Hub license</div>
+
+            <div class="mt-2">
+                <a href="https://system.riskmach.co.uk/RMAngular/#/feature/?feature_id=1" ng-href="https://system.riskmach.co.uk/RMAngular/#/feature/?feature_id=1" class="btn btn-primary btn-sm">Get Report-Hub License</a>
+            </div>
+
+        </div>
+
+        <div ng-show="!vm.utils.risk_bio.record.expired">
+
+            <div ng-show="vm.utils.closeout_images.loading">
+
+                <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+            </div>
+
+            <div ng-show="!vm.utils.closeout_images.loading && !vm.utils.closeout_images.visible_media.length" class="text-center">
+                
+                <div class="text-center mb-3">
+                    <img src="../images/custom_icons/No Media.png" style="width: 80px;">
+                </div>
+
+                <div class="text-center mb-3 fw-bold">It appears you have not provided any supporting closeout evidence</div>
+
+                <div class="text-center mb-5" style="font-size: 0.8em;">
+                    <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.tabs.changeTab('interface'); vm.utils.risk_bio.reviewEvidence();" class="fw-bold">Click here</a> if you wish to return and add supporting evidence
+                </div>
+
+                <div class="mt-10">
+
+                    <div class="text-center mb-5">If you wish to submit this assessment for review without any supporting evidence, please give a brief explanation below for the reviewer to take in to consideration.</div>
+
+                    <div>
+                        <label class="form-label">Reason for not providing any evidence</label>
+                        <textarea class="form-control" ng-model="vm.utils.risk_closeout.no_evidence_reason"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div ng-show="!vm.utils.closeout_images.loading && vm.utils.closeout_images.visible_media.length">
+
+                <div class="text-center mb-3">If you are happy with the supporting evidence provided you may submit the evidence for review</div>
+
+                <div class="text-center mb-5" style="font-size: 0.8em;">
+                    Or <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.tabs.changeTab('interface'); vm.utils.risk_bio.reviewEvidence();" class="fw-bold">click here</a> if you wish to return to the assessment info and add more evidence
+                </div>
+
+                <div class="mb-5" style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;">
+
+                    <div style="position: relative;">
+
+                        <div class="text-center pt-5" ng-show="vm.utils.closeout_images.active_record.file_downloaded == null">
+                            <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.downloadMediaFile(vm.utils.closeout_images.active_record)" class="text-center">
+                                <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+                            </a>
+                        </div>
+                        <a href="javascript: void(0);" ng-show="vm.utils.closeout_images.active_record.file_downloaded == 'Yes'">
+                            <img ng-src="{{ vm.utils.closeout_images.active_record.url }}" class="d-block w-100" alt="...">
+                        </a>
+
+                        <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.previousImage();" style="display: inline-block; position: absolute; right: -20px; top: -20px; width:40px; height: 40px; line-height: 40px; border-radius: 50%; font-size: 2em; color: #fff; text-align: center;" ng-class="{ 'bg-success': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'bg-danger': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'bg-secondary': !vm.utils.closeout_images.active_record.approval_status }" class="bg-secondary">
+                            <i class="bi bi-question-lg" ng-class="{ 'bi-check-circle': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'bi-x-circle': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'bi-question-lg': !vm.utils.closeout_images.active_record.approval_status }"></i>
+                        </a>
+
+                        <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.previousImage();" style="display: inline-block; position: absolute; left: 15px; top: 50%; width:60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-left"></i></a>
+                        <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.nextImage();" style="display: inline-block; position: absolute; right: 15px; top: 50%; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; font-size: 2em; background-color: #fff; border: 1px solid #ddd; color: #333; text-align: center; opacity: 0.5;"><i class="bi bi-arrow-right"></i></a>
+                    </div>
+
+                    <div class="mt-3">
+                         
+                        <table class="table table-sm" style="font-size: 0.8em;">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold">Filename</td>
+                                    <td>
+                                        <span ng-bind="vm.utils.closeout_images.active_record.file_name"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Upload Date</td>
+                                    <td>
+                                        <span ng-bind="vm.utils.closeout_images.active_record.date_uploaded"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Title</td>
+                                    <td>
+                                       <span ng-bind="vm.utils.closeout_images.active_record.title"></span> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Description</td>
+                                    <td>
+                                        <span ng-bind="vm.utils.closeout_images.active_record.description"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Review Status</td>
+                                    <td>
+                                        <div class="fw-bold fs-5 text-muted" ng-class="{ 'text-success': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'text-danger': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'text-muted': !vm.utils.closeout_images.active_record.approval_status }">
+                                            <i class="bi bi-question-lg" ng-class="{ 'bi-check-circle': vm.utils.closeout_images.active_record.approval_status == 'Approved', 'bi-x-circle': vm.utils.closeout_images.active_record.approval_status == 'Rejected', 'bi-question-lg': !vm.utils.closeout_images.active_record.approval_status }"></i> <span ng-bind="vm.utils.closeout_images.active_record.approval_status || 'Not Reviewed'">Not Reviewed</span>
+                                        </div>
+                                        <div ng-show="vm.utils.closeout_images.active_record.approval_status">
+                                            <span ng-bind="vm.utils.closeout_images.active_record.approval_message"></span>
+                                        </div>
+                                        <div ng-show="vm.utils.closeout_images.active_record.approval_status">
+                                            <span ng-bind="vm.utils.closeout_images.active_record.checked_by_name"></span> @ <span ng-bind="vm.utils.closeout_images.active_record.date_checked | date: 'dd/MM/yyyy'"></span>
+                                        </div>
+
+                                        <!-- START REVIEW FORM -->
+                                        <div ng-show="vm.utils.risk_bio.record.status == '6' && vm.utils.risk_bio.canReviewAssessment(vm.utils.risk_bio.record)">
+
+                                            <div ng-show="vm.utils.closeout_images.active_record.approval_status && !vm.utils.closeout_images.active_record.show_review_form" class="mt-2">
+                                                <a href="javascript: void(0);" ng-click="vm.utils.closeout_images.showReviewForm(vm.utils.closeout_images.active_record);">Update review</a>
+                                            </div>
+
+                                            <div class="mt-3" ng-show="vm.utils.closeout_images.active_record.show_review_form">
+                                                <div class="mb-3">
+                                                    <label>Rejection message</label>
+                                                    <textarea class="form-control" ng-model="vm.utils.review_evidence.approval_info.message" ng-disabled="vm.utils.review_evidence.loading"></textarea>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <button type="button" class="btn btn-danger btn-sm" ng-click="vm.utils.review_evidence.submit('Rejected');" ng-disabled="vm.utils.review_evidence.loading">Reject</button>
+                                                    </div>
+                                                    <div class="col text-end">
+                                                        <button type="button" class="btn btn-success btn-sm" ng-click="vm.utils.review_evidence.submit('Approved');" ng-disabled="vm.utils.review_evidence.loading">Approve</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- END REVIEW FORM -->
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="mt-5 text-center">
+                
+                <button type="button" class="btn btn-primary" ng-click="vm.utils.risk_closeout.confirm();" ng-disabled="vm.utils.upload_closeout.loading || vm.utils.closeout_images.loading">Submit For Review</button>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- END ASSESSMENT EVIDENCE -->
+
+    <div ng-show="false">
+        <div id="closeoutEvidenceUploadContainer">
+            <a id="pickfiles" href="javascript:;" class="hidden">[Select files]</a>
+            <a id="uploadfiles" href="javascript:;" class="hidden">[Upload files]</a>
+
+            <button type="uploadfiles" ng-click="vm.utils.uploader.start();" class="btn btn-success hidden">Start Upload</button>
+            <div id="filelist"></div>
+        </div>
+    </div>
+
+</div>
+<!-- END RISK CLOSEOUT FLOW -->
+
+
+<!-- START RISK REVISION -->
+<div ng-show="vm.utils.risk_bio.tabs.tabActive('revise_assessment')">
+
+    <div class="mb-5 p-5" ng-show="!vm.utils.revise_assessment.loading">
+        <a href="javascript: void(0);" ng-click="vm.utils.risk_bio.tabs.changeTab('closeout_decision');"><span class="text-danger"><i class="bi bi-arrow-left"></i> <span class="fw-bold">return to closeout decision</span></span></a>
+    </div>
+
+    <div class="p-5">
+
+        <!-- START LOADING INDICATOR -->
+        <div ng-show="vm.utils.revise_assessment.loading" class="text-center">
+
+            <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+            <div class="mt-4">
+                <span class="fw-bold">Please wait while we revise this risk assessment...</span>
+            </div>
+
+        </div>
+        <!-- END LOADING INDICATOR -->
+
+        <div ng-show="!vm.utils.revise_assessment.loading">
+
+            <div class="mb-5">
+
+                <div class="fw-bold mb-2">Risk Info</div>
+                
+                <table class="table" style="font-size: 0.8em;">
+                    <tbody>
+                        <tr>
+                            <td>ID</td>
+                            <td>
+                                <span ng-bind="vm.utils.revise_assessment.record.rm_id"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ref / Rev</td>
+                            <td>
+                                <span ng-bind="vm.utils.revise_assessment.record.rm_ref"></span> / <span ng-bind="vm.utils.revise_assessment.record.rm_revision_number || '0'"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Date Created</td>
+                            <td>
+                                <span ng-bind="vm.utils.revise_assessment.record.date_added | date: 'dd/MM/yyyy'"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Author</td>
+                            <td>
+                                <span></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Subject</td>
+                            <td>
+                                <span ng-bind="vm.utils.revise_assessment.record.asset_ref"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Hazard</td>
+                            <td>
+                                <div class="fw-bold">
+                                    <span ng-bind="vm.utils.revise_assessment.record.hazard_type_name"></span>
+                                </div>
+                                <span ng-bind="vm.utils.revise_assessment.record.hazard_description"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="mb-5">
+                <label class="form-label">Current control measure</label>
+                <div>
+                    <span ng-bind="vm.utils.revise_assessment.record.control_description"></span>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <label class="form-label">Describe the newly implemented control measure</label>
+                <textarea class="form-control" ng-model="vm.utils.revise_assessment.revision_info.control_description" style="height: 200px;"></textarea>
+                <div class="text-danger mt-1" ng-show="!vm.utils.revise_assessment.revision_info.control_description" style="font-size: 0.8em;">Please describe the control measure</div>
+            </div>
+
+            <div class="mb-5">
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" ng-model="vm.utils.revise_assessment.revision_info.is_deviation" id="RevisionDeviationCheckbox">
+                    <label class="form-check-label" for="RevisionDeviationCheckbox">Tick if the control measures detailed herein is a deviation from technical standards ( e.g. BS EN Standards ) that are used to presume conformity with essential requirements</label>
+                </div>
+
+            </div>
+
+            <div class="mb-5">
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" role="switch" ng-model="vm.utils.revise_assessment.revision_info.is_temporary" id="RevisionTemporaryCheckbox">
+                    <label class="form-check-label" for="RevisionTemporaryCheckbox">Tick here if this is a temporary measure</label>
+                </div>
+
+                <div class="mb-3 ng-hide" ng-show="vm.utils.revise_assessment.revision_info.is_temporary">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="text" class="form-control" ng-model="vm.utils.revise_assessment.revision_info.temporary_expiry_date" data-date-format="dd-MM-yyyy" data-model-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="today" bs-datepicker="">
+                    <div class="text-danger" ng-show="!vm.utils.revise_assessment.revision_info.temporary_expiry_date" style="font-size: 0.8em;">Please set an expiry date</div>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="mb-5">
+                <label class="form-label">Re-Assess Score</label>
+                <div class="mb-5">As the implemented control measure has changed, you will need to re-assess the risk after this control measure has been implemented</div>
+
+                <!-- START RISK LEVEL NOT AVAILABLE -->
+                <div ng-show="vm.utils.revise_assessment.record.assessment_method != '0' && vm.utils.revise_assessment.record.assessment_method != '1' && vm.utils.revise_assessment.record.assessment_method != '2'">
+                    <div class="fw-bold">The score may not be re-evaluated for this assessment</div>
+                </div>
+                <!-- END RISK LEVEL NOT AVAILABLE -->
+
+                <!-- START PHA METHOD -->
+                <div ng-show="vm.utils.revise_assessment.record.assessment_method == '0' || vm.utils.revise_assessment.record.assessment_method == '1'">
+
+                    <div class="mb-3">
+                        <label class="form-label">LO - Likelihood of occurrence</label>
+                        <select class="form-control" ng-model="vm.utils.revise_assessment.revision_info.pha.LOAfter" ng-change="vm.utils.revise_assessment.calcHrn('After');" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.lo_list"></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">FE - Frequency of exposure</label>
+                        <select class="form-control" ng-model="vm.utils.revise_assessment.revision_info.pha.FEAfter" ng-change="vm.utils.revise_assessment.calcHrn('After');" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.fe_list"></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">NP - Number of people</label>
+                        <select class="form-control" ng-model="vm.utils.revise_assessment.revision_info.pha.NPAfter" ng-change="vm.utils.revise_assessment.calcHrn('After');" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.np_list"></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">DPH - Degree of possible harm</label>
+                        <select class="form-control" ng-model="vm.utils.revise_assessment.revision_info.pha.DPHAfter" ng-change="vm.utils.revise_assessment.calcHrn('After');" ng-options="option.Value as option.Description for option in vm.utils.risk_utils.dph_list"></select>
+                    </div>
+
+                    <div class="mt-5">
+                        <div class="form-label">New Risk Score</div>
+                        <div ng-show="!vm.utils.revise_assessment.revision_info.pha.HRNPhraseNameAfter" class="text-danger"><i class="bi bi-exclamation-triangle"></i> Risk not yet rated</div>
+                        <div ng-show="vm.utils.revise_assessment.revision_info.pha.HRNPhraseNameAfter" ng-style="vm.utils.revise_assessment.riskLevelStyle(vm.utils.revise_assessment.revision_info.pha.HRNPhraseNameAfter);" class="fw-bold fs-3"><span ng-bind="vm.utils.revise_assessment.revision_info.pha.HRNPhraseNameAfter"></span> (<span ng-bind="vm.utils.revise_assessment.revision_info.pha.HRNAfter"></span>)</div>
+                    </div>
+
+                </div>
+                <!-- END PHA METHOD -->
+
+                <!-- START MATRIX METHOD -->
+                <div ng-show="vm.utils.revise_assessment.record.assessment_method == '2'">
+                    <!-- <div data-risk-matrix-5x5="" data-directiveid="vm.utils.revise_assessment.matrix.directive_id" data-coord="vm.utils.revise_assessment.matrix.co_ord"></div> -->
+                
+                    <div class="mt-5">
+                        <div class="form-label">New Risk Score</div>
+                        <div ng-show="!vm.utils.revise_assessment.revision_info.matrix.score_data" class="text-danger"><i class="bi bi-exclamation-triangle"></i> Risk not yet rated</div>
+                        <div ng-show="vm.utils.revise_assessment.revision_info.matrix.score_data" ng-style="vm.utils.revise_assessment.riskLevelStyle(vm.utils.revise_assessment.revision_info.matrix.score_data.score_label);" class="fw-bold fs-3" style="color: rgb(0, 67, 95);"><span ng-bind="vm.utils.revise_assessment.revision_info.matrix.score_data.score_label"></span> (<span ng-bind="vm.utils.revise_assessment.revision_info.matrix.score_data.score"></span>)</div>
+                    </div>
+                </div>
+                <!-- END MATRIX METHOD -->
+
+            </div>
+
+            <div class="mt-10 text-center">
+                <button type="button" class="btn btn-primary" ng-click="vm.utils.revise_assessment.save();" ng-disabled="vm.utils.revise_assessment.loading">Publish Revision</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- END RISK REVISION -->
+
+
+<!-- START FIXED TOOL BAR -->
+<div ng-show="!vm.utils.risk_bio.tabs.tabActive('pdf') && !vm.utils.risk_bio.tabs.tabActive('closeout_flow') && !vm.utils.risk_bio.tabs.tabActive('revise_assessment')" class="bg-white p-5" style="border-top: 1px solid #ddd; position: absolute; bottom: 0; width: 100%;">
+
+    <div class="d-flex">
+        <div class="me-2">
+
+            <div ng-show="vm.utils.risk_bio.record.status == '7' && vm.utils.risk_bio.tabs.tabActive('interface');" style="font-size: 1em;" class="text-muted">
+                <div class="fw-bold"><a href="javascript: void(0);" ng-click="vm.utils.risk_bio.reviewEvidence();">Provide evidence</a></div>
+                <div style="font-size: 0.8em;">Upload your evidence and submit for approval</div>
+            </div>
+            
+            <div ng-show="vm.utils.risk_bio.record.status == '6'" style="font-size: 1em;" class="text-muted">
+                <div ng-show="vm.utils.closeout_images.stats.data.pending">
+                    <div class="fw-bold">Review evidence</div>
+                    <div style="font-size: 0.8em;">
+                        <span><a href="javascript: void(0);" ng-click="vm.utils.risk_bio.reviewEvidence();"><span ng-bind="vm.utils.closeout_images.stats.data.pending" class="fw-bold">0</span> files</a> not reviewed</span>
+                    </div>
+                </div>
+                <div ng-show="!vm.utils.closeout_images.stats.data.pending && !vm.utils.approve_assessment.info.approved">
+                    <div class="fw-bold">Make your decision</div>
+                </div>
+            </div>
+
+            <div ng-show="vm.utils.risk_bio.record.status == '10'" style="font-size: 1em;">
+                <button type="button" class="btn btn-primary" ng-click="vm.utils.risk_bio.reviewEvidence();">View evidence</button>
+            </div>
+
+        </div>
+        <div class="flex-grow-1 text-end">
+
+            <!-- START OPEN ISSUE OPTIONS -->
+            <div ng-show="vm.utils.risk_bio.record.status == '7' && vm.utils.risk_bio.tabs.tabActive('interface')">
+                <button type="button" class="btn btn-primary text-center" ng-click="vm.utils.risk_closeout.makeDecision();" ng-disabled="vm.utils.upload_closeout.loading">Submit for review</button>
+                <div style="font-size: 0.8em;" ng-show="vm.utils.upload_closeout.loading" class="text-muted">Submitting assessment - please wait...</div>
+            </div>
+            <!-- END OPEN ISSUE OPTIONS -->
+
+            <!-- START PENDING APPROVAL OPTIONS -->
+            <div ng-show="vm.utils.risk_bio.record.status == '6'">
+
+                <div ng-show="!vm.utils.closeout_images.loaded">
+                    <div class="text-center">Loading evidence...</div>
+                </div>
+
+                <div ng-show="vm.utils.closeout_images.loaded">
+
+                    <div ng-show="!vm.utils.approve_assessment.info.approved">
+
+                        <div ng-show="vm.utils.closeout_images.stats.data.pending">
+
+                            <button type="button" class="btn btn-primary" ng-click="vm.utils.risk_bio.pleaseReviewFiles();">Make Decision</button>
+
+                        </div>
+
+                        <div class="dropdown" ng-show="!vm.utils.closeout_images.stats.data.pending">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Make Decision
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.approve_assessment.selectStatus('approve');">Approve / Close Issue</a></li>
+                                <li><a class="dropdown-item" href="javascript: void(0);" ng-click="vm.utils.approve_assessment.selectStatus('reject');">Reject submission</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div ng-show="vm.utils.approve_assessment.info.approved == 'reject'">
+                                                            
+                        <div class="mb-3">
+                            <label class="form-label">Reason for rejecting</label>
+                            <textarea class="form-control" ng-model="vm.utils.approve_assessment.info.description"></textarea>
+                        </div>
+
+                        <div>
+                            <button type="button" class="btn btn-default" ng-click="vm.utils.approve_assessment.selectStatus(null);" ng-disabled="vm.utils.approve_assessment.loading">Cancel</button>
+                            <button type="button" class="btn btn-danger" ng-click="vm.utils.approve_assessment.confirm();" ng-disabled="vm.utils.approve_assessment.loading">Confirm rejection</button>
+                        </div>
+
+                    </div>
+
+                    <div ng-show="vm.utils.approve_assessment.info.approved == 'approve'">
+                        
+                        <p style="font-size: 0.8em;">Are you sure you want to approve and closeout this assessment?</p>
+
+                        <div>
+                            <button type="button" class="btn btn-default" ng-click="vm.utils.approve_assessment.selectStatus(null);" ng-disabled="vm.utils.approve_assessment.loading">Cancel</button>
+                            <button type="button" class="btn btn-success" ng-click="vm.utils.approve_assessment.confirm();" ng-disabled="vm.utils.approve_assessment.loading">Confirm Approval</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- END PENDING APPROVAL OPTIONS -->
+
+            <!-- START CLOSED AND APPROVED -->
+            <div ng-show="vm.utils.risk_bio.record.status == '10'">
+                <div class="text-success"><i class="bi bi-check-circle"></i> <span class="fw-bold">Issue resolved</span></div>
+            </div>
+            <!-- END CLOSED AND APPROVED -->
+
+        </div>
+    </div>
+
+</div>
+<!-- END FIXED TOOL BAR -->
+
+
+<!-- START TOASTS -->
+<div style="position: fixed; z-index: 1000; bottom: 0px; left: 0px; margin-bottom: 15px; margin-left: 15px;" class="me-5">
+
+    <!-- START RISK SUBMITTED TOAST -->
+    <div id="RiskSubmittedToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>Assessment submitted</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END RISK SUBMITTED TOAST -->
+
+
+    <!-- START RISK APPROVED TOAST -->
+    <div id="RiskApprovedToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Submission approved
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END RISK APPROVED TOAST -->
+
+
+    <!-- START RISK REJECTED TOAST -->
+    <div id="RiskRejectedToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Submission rejected
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END RISK REJECTED TOAST -->
+
+
+    <!-- START NO CLOSEOUT PERMISSION TOAST -->
+    <div id="NoCloseoutPermissionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                You do not have permission to close this risk assessment
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END NO CLOSEOUT PERMISSION TOAST -->
+
+
+    <!-- START NO CLOSEOUT APPROVAL PERMISSION TOAST -->
+    <div id="NoCloseoutApprovalPermissionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                You do not have permission to approve/reject this risk assessment
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END NO CLOSEOUT APPROVAL PERMISSION TOAST -->
+
+
+    <!-- START NO RISK REVISION PERMISSION TOAST -->
+    <div id="NoRiskRevisionPermissionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                You do not have permission to revise this risk assessment
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END NO RISK REVISION PERMISSION TOAST -->
+
+    <!-- START NO INTERNET CONNECTION TOAST -->
+    <div id="ReportRiskBioNoInternetConnectionToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span>This action requires an internet connection</span> 
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <!-- END NO INTERNET CONNECTION TOAST -->
+
+</div>    
+<!-- END TOASTS -->

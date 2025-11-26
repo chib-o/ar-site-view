@@ -1,0 +1,36 @@
+{
+  "siteId": "MOCK-SITE",
+  "floorId": "MOCK-FLOOR",
+  "version": "v1",
+  "alignment": {
+    "method": "mock",
+    "markers": [
+      {
+        "id": "M1",
+        "type": "qr",
+        "physicalSizeMeters": 0.1,
+        "modelPosition": [0, 0, 0],
+        "modelRotationEuler": [0, 0, 0]
+      }
+    ]
+  },
+  "assets": [
+    {
+      "assetId": "MOCK-ASSET-1",
+      "type": "MockMachine",
+      "name": "Mock Asset 1",
+      "position": [1, 0, -2],
+      "boundingBox": {
+        "min": [0.8, -0.2, -2.2],
+        "max": [1.2, 0.2, -1.8]
+      }
+    }
+  ],
+  "rooms": [
+    {
+      "roomId": "ROOM-001",
+      "name": "Demo Room",
+      "position": [0, 0, 0]
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+
+<!-- START PLAYLISTS TAB -->
+<div ng-show="vm.utils.tabs.tabActive('playlists')">
+
+	<!-- START PLAYLISTS LOADING INDICATOR -->
+	<div ng-show="vm.utils.playlist_listing.loading" class="text-center">
+		<img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+		<div class="mt-5">
+			<span class="fw-bold">Loading video playlists...</span>
+		</div>
+	</div>
+	<!-- END PLAYLISTS LOADING INDICATOR -->
+
+	<div ng-show="!vm.utils.playlist_listing.loading">
+		
+		<!-- START PLAYLIST ERROR -->
+		<div ng-show="vm.utils.playlist_listing.error_handler.error">
+			
+			<div class="alert alert-danger text-center">
+				<i class="bi bi-exclamation-circle-fill text-danger" style="font-size: 1.4em;"></i>
+
+				<div class="mt-4">
+					<span ng-bind="vm.utils.playlist_listing.error_handler.error_message"></span>
+				</div>
+			</div>
+
+		</div>
+		<!-- END PLAYLISTS ERROR -->
+
+		<!-- START PLAYLISTS LISTING -->
+		<div ng-show="!vm.utils.playlist_listing.error_handler.error">
+
+			<div class="mb-4">
+				<input ng-model="vm.utils.playlist_listing.filters.general_search" class="form-control form-control-sm" placeholder="Search playlists..." >
+			</div>
+ 
+			<div ng-show="!vm.utils.playlist_listing.data.length" class="text-center mt-10">
+				<i class="bi bi-exclamation-circle-fill"></i>
+
+				<p class="fw-bold">There are no video playlists for this company</p>
+			</div>
+			
+			<div class="row py-2 mx-0 playlist-item" ng-repeat="playlist in vm.utils.playlist_listing.data | filter: vm.utils.playlist_listing.filters.general_search" ng-show="vm.utils.playlist_listing.data.length" ng-click="vm.utils.playlist_listing.enterPlaylist(playlist)" style="border-bottom: 1px solid lightgrey; cursor: pointer;">
+				<div class="col-12">
+					<p class="fw-bold mb-1" ng-bind="playlist.Title || 'N/A'"></p>
+					<p class="mb-0" style="font-size: 0.9em;"><span ng-bind="playlist.NumItems || '0'"></span> videos</p>
+				</div>
+			</div>
+
+		</div>
+		<!-- END PLAYLISTS LISTING -->
+
+	</div>	
+
+</div>
+<!-- END PLAYLISTS TAB -->
+
+
+<!-- START PLAYLIST ITEMS TAB -->
+<div ng-show="vm.utils.tabs.tabActive('playlist_items')">
+
+	<!-- START VIDEOS LOADING INDICATOR -->
+	<div ng-show="vm.utils.video_listing.loading" class="text-center">
+		<img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+		<div class="mt-5">
+			<span class="fw-bold">Loading videos...</span>
+		</div>
+	</div>
+	<!-- END VIDEOS LOADING INDICATOR -->
+
+	<div ng-show="!vm.utils.video_listing.loading">
+
+		<div class="mb-4">
+			<a href="javascript: void(0);" ng-click="vm.utils.tabs.changeTab('playlists')" style="text-decoration: none;">
+				<img src="../images/custom_icons/RM Exit Red.png"  style="width: 25px;" />
+			</a>
+		</div>
+
+		<div class="mb-2">
+			<div ng-show="vm.utils.active_playlist.record" class="mt-4">
+				<span ng-bind="vm.utils.active_playlist.record.Title" class="fw-bold"></span>
+			</div>
+		</div>
+		
+		<!-- START VIDEO LISTING ERROR -->
+		<div ng-show="vm.utils.video_listing.error_handler.error">
+			
+			<div class="alert alert-danger text-center">
+				<i class="bi bi-exclamation-circle-fill text-danger" style="font-size: 1.4em;"></i>
+
+				<div class="mt-4">
+					<span ng-bind="vm.utils.video_listing.error_handler.error_message"></span>
+				</div>
+			</div>
+
+		</div>
+		<!-- END VIDEO LISTING ERROR -->
+
+		<!-- START VIDEO LISTING -->
+		<div ng-show="!vm.utils.video_listing.error_handler.error">
+				
+			<div class="mb-4">
+				<input ng-model="vm.utils.video_listing.filters.general_search" class="form-control form-control-sm" placeholder="Search videos..." >
+			</div>
+ 
+			<div ng-show="!vm.utils.video_listing.data.length" class="text-center mt-10">
+				<i class="bi bi-exclamation-circle-fill"></i>
+
+				<p class="fw-bold">There are no videos for this playlist</p>
+			</div>
+			
+			<div class="row py-2 mx-0 playlist-video-item" ng-repeat="video in vm.utils.video_listing.data | filter: vm.utils.video_listing.filters.general_search" ng-show="vm.utils.video_listing.data.length" ng-click="vm.utils.video_listing.watchVideo(video)" style="border-bottom: 1px solid lightgrey; cursor: pointer;">
+				<div class="col-1 text-center">
+					<span ng-bind="$index + 1"></span>
+				</div>
+				<div class="col-3">
+					<div style="width: 100%; position: relative;">
+						<img src="{{ video.vid_poster }}" style="width: 100%; height: auto;" >
+
+						<span class="badge text-bg-dark" ng-bind="video.Length | secondsToDateTime | date: 'mm:ss'" style="position: absolute; bottom: 1px; right: 1px; border-radius: 4px; border-bottom: 1px solid lightgrey; border-right: 2px solid whitesmoke;"></span>
+					</div>
+				</div>
+				<div class="col-8">
+					<span class="fw-bold" ng-bind="video.VideoTitle || 'N/A'"></span>
+				</div>
+			</div>
+
+		</div>
+		<!-- END VIDEO LISTING -->
+
+	</div>
+
+</div>
+<!-- END PLAYLIST ITEMS TAB -->
+
+
+<!-- START VIDEO PLAYER TAB -->
+<div ng-show="vm.utils.tabs.tabActive('video_player')">
+
+	<div class="mb-4">
+		<a href="javascript: void(0);" ng-click="vm.utils.online_video_player.close(); vm.utils.tabs.changeTab('playlist_items')" style="text-decoration: none;">
+			<img src="../images/custom_icons/RM Exit Red.png"  style="width: 25px;" />
+		</a>
+	</div>
+
+	<!-- VIDEO INFO -->
+	<div>
+		<p class="fw-bold mb-0" ng-bind="vm.utils.online_video_player.video_record.VideoTitle"></p>
+		<p ng-bind="vm.utils.online_video_player.video_record.VideoDescription"></p>
+	</div>
+	<!-- END VIDEO INFO -->
+
+	<div data-online-video-player data-directiveid="vm.utils.online_video_player.directive_id" data-videoref="vm.utils.online_video_player.video_ref" class="w-100"></div>
+
+</div>
+<!-- END VIDEO PLAYER TAB -->

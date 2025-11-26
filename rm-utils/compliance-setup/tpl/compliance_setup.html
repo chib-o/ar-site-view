@@ -1,0 +1,73 @@
+<div>
+	<a href="javascript: void(0);" ng-click="vm.utils.compliance_setup.exit()">
+        <img src="../images/exit_red.png" style="width: 30px;" />
+    </a>
+</div>
+
+<div ng-show="vm.utils.compliance_setup.loading" class="text-center my-5">
+	<p class="fw-bold">Loading Compliance Setup...</p>
+</div>
+
+<div ng-show="vm.utils.compliance_setup.saving" class="text-center my-5">
+	<p class="fw-bold">Saving Compliance Setup...</p>
+</div>
+
+<div ng-show="!vm.utils.compliance_setup.loading && !vm.utils.compliance_setup.saving">
+
+	<!-- START COMPLIANCE SETUP -->
+	<div ng-show="!vm.utils.ipp_score_form.show">
+
+		<!-- RECORD INFO -->
+		<div>
+			<h3 class="text-primary" ng-bind="vm.utils.active_record.record.asset_ref"></h3>
+		</div>
+		<!-- END RECORD INFO -->
+
+		<p class="text-secondary">Select which compliance profiles are applicable to this asset</p>
+
+		<div class="compliance-list-item" ng-repeat="profile_point in vm.utils.profile_points.visible_data track by profile_point.ProfileID" ng-style="vm.utils.profile_points.profilePointStyle(profile_point)">
+			<div class="row">
+				<div class="col-6">
+					<p ng-bind="profile_point.Title || 'Title not set'" style="font-weight: 600;"></p>
+					<a href="javascript: void(0);" style="text-decoration: none;" ng-show="vm.utils.profile_points.hasLiveIppRecord(profile_point)">
+						<img src="{{ vm.utils.profile_points.ippScoreIcon(profile_point) }}" class="panel-icon" ng-click="vm.utils.ipp_score_form.open(profile_point)">
+					</a>
+				</div>
+				<div class="col-6">
+					<div class="row" ng-show="vm.utils.profile_points.hasLiveIppRecord(profile_point)">
+						<div class="col-6">
+							<div class="form-group">
+								<label class="form-label">Once Every</label>
+								<input type="number" class="form-control" ng-model="profile_point.ipp_record.frequency" ng-change="vm.utils.profile_points.markProfilePointChanged(profile_point);" />
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="form-group">
+								<label class="form-label">Interval</label>
+								<select class="form-select" ng-model="profile_point.ipp_record.frequency_interval" name="interval" ng-options="option.value as option.label for option in vm.utils.compliance_setup.frequency_unit_options" ng-change="vm.utils.profile_points.markProfilePointChanged(profile_point);">
+									
+								</select>
+							</div>
+							<a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.profile_points.toggleProfilePointApplicable(profile_point)"><p class="text-danger text-end" style="font-weight: 600;">Remove</p></a>
+						</div>
+					</div>
+					<div ng-show="!vm.utils.profile_points.hasLiveIppRecord(profile_point)" class="text-end">
+						<a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.profile_points.toggleProfilePointApplicable(profile_point)"><i class="bi bi-plus-lg text-success"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group mt-4">
+			<button type="button" class="btn btn-success" ng-click="vm.utils.profile_points.saveComplianceSetup();" ng-disabled="vm.utils.compliance_setup.loading" ng-class="{'disabled-button': vm.utils.compliance_setup.loading}">Save Compliance Setup</button>
+		</div>
+	</div>
+	<!-- END COMPLIANCE SETUP -->
+
+	<!-- START IPP SCORE RATING -->
+	<div ng-show="vm.utils.ipp_score_form.show">
+		<div data-ipp-score-form data-recordid="vm.utils.ipp_score_form.record_id" data-recordtype="vm.utils.ipp_score_form.record_type" data-profilepointref="vm.utils.ipp_score_form.profile_point_ref" data-options="{change_compliance: true}"></div>
+	</div>
+	<!-- END IPP SCORE RATING -->
+
+</div>

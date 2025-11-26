@@ -1,0 +1,184 @@
+
+<div class="h-100">
+
+	<div class="p-5 text-end">
+		<a href="javascript: void(0);" ng-click="vm.utils.close();" style="font-size: 1.8em;"><i class="bi bi-x-lg text-dark"></i></a>
+	</div>
+
+	<div class="container pt-5 pt-md-10">
+		
+		<!-- INITIALISING INDICATOR -->
+		<div ng-show="vm.utils.initialising" class="text-center">
+				
+			<img src="../images/loading-icon-white.gif" style="height: 50px; width: auto;" >
+
+			<div class="mt-4">
+				<p>Please wait...</p>
+			</div>
+		</div>
+		<!-- END INITIALISING INDICATOR -->
+
+
+		<!-- REFRESHING LICENSES INDICATOR -->
+		<!-- <div ng-show="vm.utils.company_licenses.refreshing" class="text-center">
+				
+			<img src="../images/loading-icon-white.gif" style="height: 50px; width: auto;" >
+
+			<div class="mt-4">
+				<p class="text-white">Refreshing licenses...</p>
+			</div>
+		</div> -->
+		<!-- END REFRESHING LICENSES INDICATOR -->
+
+
+		<!-- UNLICENSED FEATURE INFO -->
+		<div ng-show="!vm.utils.initialising">
+			
+			<!-- <div ng-show="vm.utils.feature_license">
+				<h4 ng-bind="vm.utils.feature_license.ProductName || 'Not found'"></h4>
+
+				<p ng-bind="vm.utils.feature_license.ProductDescription"></p>
+			</div> -->
+
+			<div class="panel panel-white p-5">
+
+				<!-- REFRESHING LICENSES INDICATOR -->
+				<div ng-show="vm.utils.company_licenses.refreshing" class="text-center">
+						
+					<img src="../images/loading-icon.gif" style="height: 50px; width: auto;" >
+
+					<div class="mt-4">
+						<p>Refreshing licenses...</p>
+					</div>
+				</div>
+				<!-- END REFRESHING LICENSES INDICATOR -->
+
+
+				<div ng-show="!vm.utils.company_licenses.refreshing">
+					
+					<p ng-show="vm.utils.company_license && !vm.utils.isFeatureLicensed()">Up to date as of: <span class="fw-bold" ng-bind="vm.utils.company_license.date_updated | date: 'dd/MM/yyyy hh:mm'"></span> <a href="javascript: void(0);" ng-click="vm.utils.company_licenses.refresh();"><i class="bi bi-arrow-clockwise"></i></a></p>
+
+					<!-- RISKMACH BUNDLE -->
+					<div ng-show="vm.utils.options.used_free_trial == 'Yes'">
+						<div class="text-center">
+							<i class="bi bi-lock-fill" style="font-size: 3em;"></i>
+
+							<h3>You have used your 1 free inspection in your RiskMach trial</h3>
+
+							<p>Get a license to create as many inspections as you want</p>
+						</div>
+
+						<div class="text-center mt-10">
+							<button class="btn btn-success" ng-click="vm.utils.document_handler.goToRiskMachPricing();">Get license</button>
+						</div>
+					</div>
+					<!-- END RISKMACH BUNDLE -->
+
+
+					<!-- INDIVIDUAL FEATURE -->
+					<div ng-show="vm.utils.options.used_free_trial == 'No'">
+
+						<!-- FEATURE IS NOT LICENSED -->
+						<div ng-show="!vm.utils.isFeatureLicensed()">
+							
+							<!-- LICENSE EXPIRED -->
+							<div ng-show="vm.utils.feature_license.Expired == 'Yes'">
+
+								<div class="text-center">
+									<i class="bi bi-lock-fill" style="font-size: 3em;"></i>
+
+									<h3>You're license for this feature expired on <span ng-bind="vm.utils.feature_license.ExpiryDate"></span></h3>
+
+									<p>Renew your license to regain access to this feature!</p>
+								</div>
+
+								<div class="text-center mt-10">
+									<button class="btn btn-success" ng-click="vm.utils.document_handler.goToRiskMachPricing();">Renew license</button>
+								</div>
+							</div>
+							<!-- END EXPIRED LICENSE -->
+
+
+							<!-- DON'T HAVE LICENSE -->
+							<div ng-show="vm.utils.feature_license.Expired != 'Yes'">
+
+								<div class="text-center" ng-show="!vm.utils.isBillingModeAdvanced()">
+									<i class="bi bi-lock-fill" style="font-size: 3em;"></i>
+
+									<h3>You don't have access to this feature</h3>
+
+									<p>Purchase a plan to gain access!</p>
+								</div>
+
+								<div class="text-center" ng-show="vm.utils.isBillingModeAdvanced()">
+									<i class="bi bi-lock-fill" style="font-size: 3em;"></i>
+
+									<h3>You don't have access to this feature</h3>
+
+									<p>Please contact your companies billing user or alternatively you can contact us directly</p>
+
+									<div class="mt-10">
+										<p class="fw-bold mb-0">Your Companies Power User</p>
+										<p class="mb-0" ng-bind="vm.utils.company_license.company_record.power_user_name || 'N/A'"></p>
+									</div>
+
+									<div class="mt-5">
+										<p class="fw-bold mb-0">Your Companies Billing User</p>
+										<p class="mb-0" ng-bind="vm.utils.company_license.company_record.billing_user_name || 'N/A'"></p>
+									</div>
+
+									<div class="mt-5">
+										<p class="fw-bold mb-0">Contact RiskMach</p>
+										<p class="mb-0">
+											<a href="mailto:riskmach@riskmach.co.uk"><i class="bi bi-envelope"></i> riskmach@riskmach.co.uk</a>
+										</p>
+									</div>
+								</div>
+
+								<!-- <div class="text-center mt-10">
+									<button class="btn btn-success" ng-click="vm.utils.document_handler.goToRiskMachPricing();">Buy license</button>
+								</div> -->
+
+								<div ng-show="!vm.utils.isBillingModeAdvanced()">
+
+									<!-- PRICING TABLE -->
+									<div data-pricing-table data-tableref="vm.utils.pricing_table.table_guid_ref"></div>
+									<!-- END PRICING TABLE -->
+
+								</div>
+
+							</div>
+							<!-- END DON'T HAVE LICENSE -->
+
+						</div>
+						<!-- END FEATURE IS NOT LICENSED -->
+
+
+						<!-- FEATURE IS LICENSED -->
+						<div ng-show="vm.utils.isFeatureLicensed()">
+
+							<div class="text-center">
+								<i class="bi bi-check-circle-fill text-success" style="font-size: 3em;"></i>
+
+								<h3>Feature licensed!</h3>
+							</div>
+
+							<div class="text-center mt-10">
+								<button class="btn btn-primary" ng-click="vm.utils.close();">Continue</button>
+							</div>
+						</div>
+						<!-- END FEATURE IS LICENSED -->
+
+					</div>
+					<!-- END INDIVIDUAL FEATURE -->
+
+				</div>
+
+			</div>
+
+		</div>
+		<!-- END UNLICENSED FEATURE INFO -->
+
+	</div>
+
+</div>

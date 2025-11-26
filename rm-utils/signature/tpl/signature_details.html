@@ -1,0 +1,60 @@
+
+<div ng-show="!vm.utils.signature_pad.show">
+	<div class="row">
+		<div class="col-12">
+			<label class="form-label">Signature</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-8">
+			<input type="text" class="form-control" ng-model="vm.utils.sig_full_name" placeholder="Full Name" >
+		</div>
+		<div class="col-4">
+			<button class="btn btn-primary" ng-click="vm.utils.signature_pad.start(vm.utils.sig_media_record, vm.utils.relations.record_type)" ng-show="!vm.utils.sig_media_record._id">
+				<span>
+					<i class="bi bi-pen" style="margin-right: 4px;"></i>
+					<span>Add signature</span>
+				</span>
+			</button>
+
+			<button class="btn btn-primary" ng-click="vm.utils.signature_pad.startReplace(vm.utils.sig_media_record, vm.utils.relations.record_type)" ng-show="vm.utils.sig_media_record._id">
+				<span>
+					<i class="bi bi-pen" style="margin-right: 4px;"></i>
+					<span ng-show="vm.utils.sig_media_record._id">Replace signature</span>
+				</span>
+			</button>
+		</div>
+	</div>
+
+	<!-- SIGNATURE DISPLAY -->
+	<div class="row mt-5" ng-show="vm.utils.sig_media_record._id && vm.utils.sig_media_record.url">
+		<div class="col-12">
+
+			<div class="text-center" ng-show="vm.utils.file_download.downloading">
+	            <img class="gears" src="images/cog_loader.gif">
+	        </div>
+
+	        <div ng-show="!vm.utils.sig_media_record.file_downloaded && !vm.utils.file_download.downloading" class="text-center padding">
+	            <a href="javascript: void(0);" style="text-decoration: none;" ng-click="vm.utils.file_download.downloadMediaFile(vm.utils.sig_media_record)">
+	                <i class="bi bi-cloud-arrow-down-fill text-primary" style="font-size: 2.5em;"></i>
+	            </a>
+	            <br>
+	            <span class="fw-bold">Download signature</span>
+	        </div>
+	       
+			<img ng-show="vm.utils.sig_media_record.file_downloaded == 'Yes'" ng-src="{{ vm.utils.sig_media_record.url }}" style="border: 1px solid #ddd; border-radius: 5px; max-width: 100%; height: auto;" >
+			<p>
+				<span ng-bind="vm.utils.sig_media_record.title" class="fw-bold"></span> 
+				<span ng-show="vm.utils.sig_media_record.date_added" ng-bind="vm.utils.sig_media_record.date_added | date: 'dd MMM yyyy h:mm a'"></span>
+				<span ng-show="!vm.utils.sig_media_record.date_added" ng-bind="vm.utils.sig_media_record.date_modified | date: 'dd MMM yyyy h:mm a'"></span>
+			</p>
+		</div>
+	</div>
+	<!-- END SIGNATURE DISPLAY -->
+</div>
+
+<div class="container">
+	<!-- START SIGNATURE PAD -->
+	<div data-signature-pad ng-show="vm.utils.signature_pad.show"></div>
+	<!-- END SIGNATURE PAD -->
+</div>

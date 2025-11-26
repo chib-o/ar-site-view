@@ -1,0 +1,9 @@
+<div class="form-group">
+	<label ng-class="{ 'text-danger': !vm.utils.ra_record.simple_risk_phrase_id_initial }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.simple_risk_phrase_id_initial"></i> Risk Before</label>
+	<select class="form-select" ng-model="vm.utils.ra_record.simple_risk_phrase_id_initial" ng-change="vm.utils.updateSimpleRiskValues(); vm.utils.notSaved();" ng-options="option.PhraseID as option.Phrase for option in vm.utils.risk_utils.hrn_list"></select>
+</div>
+
+<div class="form-group pt-5">
+	<label ng-class="{ 'text-danger': !vm.utils.ra_record.simple_risk_phrase_id_after }"><i class="bi bi-exclamation-circle-fill" ng-show="!vm.utils.ra_record.simple_risk_phrase_id_after"></i> Risk After</label>
+	<select class="form-select" ng-model="vm.utils.ra_record.simple_risk_phrase_id_after" ng-change="vm.utils.updateSimpleRiskValues(); vm.utils.notSaved();" ng-options="option.PhraseID as option.Phrase for option in vm.utils.risk_utils.hrn_list"></select>
+</div>

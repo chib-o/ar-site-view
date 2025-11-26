@@ -1,0 +1,84 @@
+<div class="container margin-top">
+    <div class="row">
+        <div class="col">
+
+            <!-- <div class="text-center" style="margin-bottom: 20px;">
+                <div>
+                    <img src="../images/logos/risk-mach-light.png" style="width: 250px;" />
+                </div>
+                <div class="text-center text-muted" style="font-weight: bold; font-size: 2em; margin-top: 10px;">WebApp</div>
+            </div> -->                
+
+            <div class="card smooth-shadow-md">
+
+                <div class="card-header">
+                    <img src="../images/logos/risk-mach-light.png" class="mb-4 text-inverse" alt="RiskMach Logo" style="width: 200px;">
+                    <h4>Select Profile</h4>
+
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.utils.profiles.refreshProfiles()">Refresh</button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- LOADING PROFILES INDICATOR -->
+                    <div ng-show="vm.utils.profiles.loading" class="text-center">
+                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+                        <div class="mt-4">
+                            <span class="fw-bold">Please Wait - Loading Profiles</span>
+                        </div>
+                    </div>
+                    <!-- END LOADING PROFILES INDICATOR -->
+
+                    <!-- REFRESHING PROFILES INDICATOR -->
+                    <div ng-show="vm.utils.profiles.refreshing" class="text-center">
+                        
+                        <img src="../images/loading-icon.gif" style="height: 40px; width: auto;" >
+
+                        <div class="mt-4">
+                            <span class="fw-bold">Refreshing profiles...</span>
+                        </div>
+
+                    </div>
+                    <!-- END REFRESHING PROFILES INDICATOR -->
+
+                    <div class="form-group" ng-show="!vm.utils.profiles.loading && !vm.utils.profiles.refreshing">
+                        <input type="text" class="form-control" ng-model="vm.utils.profiles.filters.profile_search" placeholder="Search profiles..." />
+                    </div>
+                
+                    <div ng-show="!vm.utils.profiles.loading && !vm.utils.profiles.refreshing">
+
+                        <div style="max-height: 400px; overflow-y: scroll;">
+                            <div ng-repeat="profile in vm.utils.profiles.data | filter: { 'CompanyName': vm.utils.profiles.filters.profile_search }" class="padding" style="border-bottom: 1px solid #ddd;">
+                                
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span class="fw-bold" ng-bind="profile.CompanyName || 'Untitled Company'"></span>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        
+                                        <ul class="menu-list-inline">
+                                            <li>
+                                                <a href="javascript: void(0);" ng-click="vm.utils.profiles.selectProfile(profile);" style="text-decoration: none; font-size: 1.2em;">
+                                                    <i class="bi bi-box-arrow-in-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

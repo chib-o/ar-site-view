@@ -1,0 +1,116 @@
+
+<!-- START FETCHING DATA INDICATOR -->
+<!-- <div ng-show="vm.utils.pdf_gen.fetching_data" class="container text-start">
+	<img src="../images/cog_loader.gif" style="width: 50px; height: auto;" >
+
+	<div class="mt-5">
+		<span class="fw-bold">Fetching data for PDF...</span>
+	</div>
+</div> -->
+<!-- END FETCHING DATA INDICATOR -->
+
+
+<!-- START GENERATING INDICATOR -->
+<!-- <div ng-show="vm.utils.pdf_gen.generating" class="container text-center">
+	<img src="../images/cog_loader.gif" style="width: 50px; height: auto;" >
+
+	<div class="mt-5">
+		<span class="fw-bold">Generating PDF...</span>
+	</div>
+</div> -->
+<!-- END GENERATING INDICATOR -->
+
+
+<!-- START PDF LOADING INDICATORS -->
+<div class="container mt-5 pdf-gen-align-text" ng-show="vm.utils.pdf_gen.loading">
+    
+    <p class="fw-bold" ng-show="vm.utils.pdf_gen.fetching_data">Fetching data for PDF... <img src="../images/cog_loader.gif" style="width: 20px; height: auto;" ></p>
+    <p class="fw-bold text-success" ng-show="vm.utils.pdf_gen.data_fetched">Fetched data <i class="bi bi-check"></i></p>
+
+    <p class="fw-bold" ng-show="vm.utils.pdf_gen.generating">Generating PDF... <img src="../images/cog_loader.gif" style="width: 20px; height: auto;" ></p>
+    <p class="fw-bold text-success" ng-show="vm.utils.pdf_gen.generated">PDF Generated <i class="bi bi-check"></i></p>
+
+</div>
+<!-- END PDF LOADING INDICATORS -->
+
+
+<!-- START ERROR MESSAGE -->
+<div ng-show="vm.utils.pdf_gen.error_handler.error" class="container pdf-gen-align-text">
+	<div class="fw-bold mb-5" style="font-size: 1.2em;">
+        <span><i class="bi bi-exclamation-circle-fill"></i> Error</span>
+    </div>
+
+    <div class="text-danger" style="margin-bottom: 40px;">
+        <span ng-bind="vm.utils.pdf_gen.error_handler.error_message"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <button class="btn btn-primary" ng-click="vm.utils.pdf_gen.start()"><i class="bi bi-arrow-clockwise"></i> Re-attempt</button>
+        </div>
+    </div>
+</div>
+<!-- END ERROR MESSAGE -->
+
+
+<!-- START PDF GENERATED NOTIFICATION -->
+<div ng-show="!vm.utils.pdf_gen.loading && vm.utils.pdf_gen.generated" class="print-hide">
+	<div class="row pb-5">
+		<div class="col-12 text-start">
+
+			<div class="mb-4 fw-bold" ng-show="vm.utils.pdf_gen.data.file_download_required"><i class="bi bi-exclamation-circle-fill text-danger"></i> There are image files that have not yet been downloaded. Please download them before generating the PDF</div>
+
+			<button type="button" class="btn btn-primary btn-sm" ng-show="vm.utils.pdf_gen.options.print" ng-disabled="vm.utils.pdf_gen.data.file_download_required" ng-click="vm.utils.pdf_gen.openPrint()"><i class="bi bi-printer-fill"></i> Print / Save</button>
+
+			<button type="button" class="btn btn-primary btn-sm" ng-show="vm.utils.pdf_gen.options.print && vm.utils.pdf_gen.data.file_download_required && !vm.utils.downloading_media_files" ng-click="vm.utils.downloadFetchedMediaFiles()"><i class="bi bi-cloud-arrow-down-fill"></i> Download images</button>
+		</div>
+	</div>
+
+</div>
+<!-- END PDF GENERATED NOTIFICATION -->
+
+
+<!-- START PDF VIEWER -->
+<!-- <iframe style="width: 98vw; height: 100vh;" src="{{ vm.utils.pdf_viewer.trustAsUrl(vm.utils.pdf_viewer.url) }}" ng-show="vm.utils.pdf_viewer.url"></iframe> -->
+
+<!-- <iframe id="pdfIframe" style="width: 98vw; height: 100vh;" ng-show="vm.utils.pdf_viewer.url"></iframe> -->
+<!-- <div style="width: 100%;">
+	<iframe id="pdfIframe" style="width: 0vw; height: 0vh; "></iframe>
+</div> -->
+<!-- END PDF VIEWER -->
+
+
+<!-- PROJECT FILES DOWNLOADING -->
+<div ng-show="vm.utils.downloading_media_files" class="text-center padding margin-top-lg">
+    <img class="gears" src="../images/cog_loader.gif">
+
+    <div style="margin-top: 20px;">
+        <p class="text-secondary" style="font-weight: 600;">Downloading media files...</p>
+    </div>
+
+    <!-- PROJECT FILES DOWNLOAD STATUS -->
+    <div class="margin-top-lg" style="padding-left: 10%; padding-right: 10%;">
+        <div class="alert alert-primary padding">
+            <p class="text-primary" ng-bind="vm.utils.files_download.meta.display_message || 'Initialising'"></p>
+            <br>
+            <p style="font-size: 1.2em;">Total files: <span style="color: black;" ng-bind="vm.utils.files_download.meta.num_media || '0'"></span></p>
+            <p style="font-size: 1.2em;">Total downloaded: <span style="color: black;" ng-bind="vm.utils.files_download.meta.num_media_downloaded || '0'"></span></p>
+        </div>
+
+        <div class="text-muted" style="font-size: 0.8em; margin-top: 10px;">If you don't want to wait, you can cancel downloading the files for now and get them later</div>
+        <br>
+        <a class="text-danger" style="font-size: 0.8em; font-weight: 600;" href="javascript: void(0);" ng-click="vm.utils.files_download.cancel()">Cancel download</a>
+    </div>
+    <!-- END PROJECT FILES DOWNLOAD STATUS -->
+
+</div>
+<!-- END PROJECT FILES DOWNLOADING -->
+
+
+<!-- START PDF TEMPLATE INCLUDE -->
+
+<!-- This renders the html from which the PDF is generated from -->
+<div class="pdf-paper" ng-show="!vm.utils.pdf_gen.loading && !vm.utils.downloading_media_files && vm.utils.pdf_gen.generated">
+	<div ng-include="vm.utils.pdf_gen.pdf_template" id="procedurePdf"></div>
+</div>
+<!-- END PDF TEMPLATE INCLUDE -->

@@ -1,0 +1,703 @@
+
+<div style="width: 100%; color: #000;">
+
+    <!-- START PROCEDURE INFO -->
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="width: 70%;">
+                    
+                <table style="width: 100%;" cellpadding="10">
+                    <tr>
+                        <td colspan="2" style="color: #333; font-size: 9pt;">
+                            Standard Operating Procedure TEST
+                            <br />
+                            <span style="font-weight: bold; font-size: 9pt;" ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.title || 'Not named'"></span>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 40%;">
+
+                            <div ng-show="vm.utils.pdf_gen.data.structured_procedure.subject_record.media.length" ng-repeat="media in vm.utils.pdf_gen.data.structured_procedure.subject_record.media | limitTo: 1">
+                                <!-- <img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="max-width: 100% !important; width: 100%; height: auto;" > -->
+                                <img src="{{ media.url }}" style="max-width: 100% !important; width: 100%; height: auto;" >
+
+                                <!-- <img ng-show="media.file_downloaded == null" src="../images/custom_icons/No Media.png" style="max-width: 100% !important; width: 100%; height: auto;" > -->
+                            </div>
+
+                            <div ng-show="!vm.utils.pdf_gen.data.structured_procedure.subject_record.media.length">
+                                <img style="max-width: 100% !important; width: 100%;" src="../images/custom_icons/No Media.png">
+                            </div>
+                        </td>
+                        <td style="width: 50%;">
+                            
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td>
+                                        <span style="font-size: 8pt; color: #333;">Managed Risk</span>
+                                        <br />
+                                        <table style="width: 100%; background-color: {{ vm.utils.pdf_gen.data.structured_procedure.procedure_record.mr_initial_colour }};">
+                                            <tr>
+                                                <td style="text-align: center; color: #fff; font-weight: bold; font-size: 9pt;">
+                                                    <span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.mr_matrix_score_phrase_initial"></span> [<span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.mr_matrix_score_initial"></span>]
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 8pt;">
+                                        <div>&nbsp;</div>
+                                        <span style="color: #333;">Subject</span>
+                                        <br />
+                                        <span style="font-size: 9pt; font-weight: bold;" ng-bind="vm.utils.pdf_gen.data.structured_procedure.subject_record.asset_ref || 'Not named'"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 8pt;">
+                                        <div>&nbsp;</div>
+                                        <span style="color: #333;">Location</span>
+                                        <br />
+                                        <span>--/--</span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+                    
+                </table>
+
+            </td>
+            <td style="width: 30%;">
+                
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 50%;">
+
+                            <table style="width: 100%;" cellpadding="10">
+                                <tr>
+                                    <td>
+                                        <span style="color: #333; font-size: 8pt;">Issued</span>
+                                        <br />
+                                        <span style="font-weight: bold; font-size: 8pt;" ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.todays_date | date: 'dd/MM/yyyy'"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 8pt;">
+                                        <span style="color: #333;">Reviewed By</span>
+                                        <br />
+                                        <span>--/--</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 8pt;">
+                                        <span style="color: #333;">Owner</span>
+                                        <br />
+                                        <span>--/--</span>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                        <td style="width: 50%;">
+
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td>
+                                        <!-- IMAGE AND QR -->
+                                        <div style="background-color: black; max-width: 100% !important; width: 100%; height: 200px; margin-bottom: 10px;"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <span style="color: #333; font-size: 8pt;">
+                                            <span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.rm_ref || '-'"></span> <span ng-bind="vm.utils.pdf_gen.data.structured_procedure.procedure_record.revision_number || '-'"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+    <!-- END PROCEDURE INFO -->
+
+
+    <div style="line-height: 20px;">&nbsp;</div>
+
+    <!-- RELEVANT HAZARD TYPES/CONTROL TYPES -->
+    <table style="width: 100%;" cellpadding="15" style="background-color: #000;">
+        <tr>
+            <td style="width: 50%; vertical-align: top;">
+                <!-- START RELEVANT HAZARDS -->
+                <table style="width: 100%;" cellpadding="5" style="background-color: whitesmoke;">
+                    <tr>
+                        <td style="font-weight: bold; font-size: 9pt; background-color: #ddd; width: 100%;">Relevant Hazard Types</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 6pt; color: #333; font-style: italic; width: 100%;">**A hazard type may occur multiple times within the procedure</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100%;">
+
+                            <!-- <div style="line-height: 50px;">&nbsp;</div> -->
+                            
+                            <table style="width: 100%; border-collapse: collapse;" cellpadding="0">
+
+                                <tr ng-show="vm.utils.pdf_gen.data.unique_hazard_types.length == 0">
+                                    <td colspan="2" style="text-align: center; font-weight: bold; font-size: 8pt;">No hazards identified</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 100%;">
+                                        
+                                        <div style="display: flex; flex-wrap: wrap; max-width: 100% !important; margin-top: 20px;">
+                                            <div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; text-align: center; margin-bottom: 20px;" ng-repeat="hazard_type in vm.utils.pdf_gen.data.unique_hazard_types">
+                                                <img ng-src="{{ hazard_type.hazard_type_icon_path }}" style="max-width: 20px; max-height: 20px;">
+                                                <br>
+                                                <span ng-bind="hazard_type.hazard_type_name || 'Not named'" style="font-size: 8pt; color: #000;"></span>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+                                <!-- <tr>
+                                    <td style="width: 100%; background-color: yellow;">
+                                        <span>This is where the hazards will go</span>
+                                    </td>
+                                    <td style="width: 100%; background-color: red;">Another cell</td>
+                                </tr> -->
+
+                            </table>
+
+                        </td>
+                    </tr>
+                </table>
+                <!-- END RELEVANT HAZARDS -->
+            </td>
+            <td style="width: 50%; vertical-align: top;">
+                <!-- START RELEVANT CONTROLS -->
+                <table style="width: 100%;" cellpadding="5">
+                    <tr>
+                        <td style="font-weight: bold; font-size: 9pt; background-color: #ddd;">Relevant Control Types</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 6pt; color: #333; font-style: italic;">**A control type may occur multiple times within the procedure</td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <!-- <div style="line-height: 50px;">&nbsp;</div> -->
+                            
+                            <table style="width: 100%; border-collapse: collapse;" cellpadding="0">
+                                <tr ng-show="vm.utils.pdf_gen.data.unique_control_types.length == 0">
+                                    <td colspan="2" style="text-align: center; font-weight: bold; font-size: 8pt;">No controls identified</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 100%;">
+                                        <div style="display: flex; flex-wrap: wrap; max-width: 100% !important; margin-top: 20px;">
+                                            <div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; text-align: center; margin-bottom: 20px;" ng-repeat="control_type in vm.utils.pdf_gen.data.unique_control_types">
+
+                                                <img ng-src="{{ control_type.icon_url }}" style="max-width: 40px; max-height: 40px;">
+
+                                                <!-- <img src="../images/rrm_icons/ISO7010/ISO_7010_F001.svg.png" style="max-width: 40px; max-height: 40px;"> -->
+                                                <br>
+                                                <span ng-bind="control_type.rrm3_name || 'Not named'" style="font-size: 8pt; color: #000;"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- <tr>
+                                    <td style="width: 100%; background-color: yellow;">
+                                        <span>This is where the controls will go</span>
+                                    </td>
+                                    <td style="width: 100%; background-color: red;">Another cell</td>
+                                </tr> -->
+
+                            </table>
+
+                        </td>
+                    </tr>
+                </table>
+                <!-- END RELEVANT CONTROLS -->
+            </td>
+        </tr>
+    </table>
+    <!-- END RELEVANT HAZARD TYPES/CONTROL TYPES -->
+
+    <!-- <div style="line-height: 20px;">&nbsp;</div> -->
+
+    <!-- START SIGNIFICANT CONCERNS -->
+    <table style="width: 100%;" cellpadding="15">
+        <tr>
+            <td>
+
+                <table style="width: 100%; font-size: 8pt;" cellpadding="2">
+                    <tr>
+                        <td style="font-weight: bold; background-color: #eee; font-size: 9pt; border: 1px solid #eee;" colspan="3">! Significant Concerns (S.C.) <span style="color: #333; font-size: 8pt;">Where the author recognises a significant risk that could have been avoided by design or planning.</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color: #eee; border: 1px solid #eee;">Step</td>
+                        <td style="font-weight: bold; background-color: #eee; border: 1px solid #eee;">Category</td>
+                        <td style="font-weight: bold; background-color: #eee; border: 1px solid #eee;">Concern</td>
+                    </tr>
+
+                    <tr ng-show="vm.utils.pdf_gen.data.significant_concerns.length" ng-repeat="concern in vm.utils.pdf_gen.data.significant_concerns">
+                        <td style="border: 1px solid #eee;">
+                            <span style="font-size: 6pt; font-weight: bold;">
+                                (<span ng-bind="concern.section_title"></span>)
+                            </span>
+                            <br>
+                            <br>
+                            <span style="font-weight: bold;">
+                                <span ng-bind="concern.section_index"></span>.<span ng-bind="concern.step_index"></span>
+                            </span> <span ng-bind="concern.step_name" style="font-size: 8pt;"></span>
+                        </td>
+                        <td style="border: 1px solid #eee;"><img ng-src="{{ concern.icon_path }}" style="width: 40px;" />&nbsp;&nbsp;<span style="font-weight: bold; font-size: 8pt;" ng-bind="concern.concern_category"></span></td>
+                        <td style="border: 1px solid #eee;"><span ng-bind="concern.concern_description" style="font-size: 8pt;"></span></td>
+                    </tr>
+
+                        
+                        <tr ng-show="!vm.utils.pdf_gen.data.significant_concerns.length">
+                            <td colspan="4" style="text-align: center; font-weight: bold; font-size: 8pt; color: #333; border: 1px solid #ddd;">The author has not identified any significant concerns for this procedure</td>
+                        </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+    <!-- END SIGNIFICANT CONCERNS -->
+
+    <!-- <div style="line-height: 20px;">&nbsp;</div> -->
+
+    <!-- START PROCEDURE SECTIONS -->
+    <table style="width: 100%;" cellpadding="15">
+        <tr>
+            <td>
+                
+                <table style="width: 100%; border: 1px solid #ddd; border-collapse: collapse;" cellpadding="4">
+                    <tr>
+                        <td style="font-weight: bold; font-size: 8pt; background-color: #ddd; border: 1px solid #ddd;">Procedure Sections</td>
+                    </tr>
+
+                    <tr ng-repeat="section in vm.utils.pdf_gen.data.structured_procedure.sections" nobr="true">
+                        <td style="font-size: 8pt; border: 1px solid #ddd;">
+                            <span ng-bind="section.section_index"></span>. <span ng-bind="section.title"></span>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+    <!-- END PROCEDURE SECTIONS -->
+
+    <!-- START STRUCTURED PROCEDURE -->
+    <table style="width: 100%;" cellpadding="15" class="break-before">
+        <tr>
+            <td>
+
+                <table style="width: 100%; border-collapse: collapse;" cellpadding="0" ng-repeat="section in vm.utils.pdf_gen.data.structured_procedure.sections" class="break-avoid">
+                    <tr>
+                        <td style="background-color: #ddd;">
+                            <table style="width: 100%; border-collapse: collapse;" cellpadding="2">
+                                <tr>
+                                    <td style="font-weight: bold;"><span style="color: #666; font-size: 8pt; font-weight: bold;" ng-bind="section.section_index"></span>. <span style="font-size: 8pt; color: #000;" ng-bind="section.title"></span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <!-- START STEP REPEAT -->
+                            <table style="width: 100%; border-collapse: collapse;" cellpadding="0" nobr="true" ng-repeat="step in section.steps">
+                                <tr>
+                                    <td style="width: 5%; background-color: #eee;">
+                                        <table style="width: 100%;" cellpadding="2">
+                                            <tr>
+                                                <td><span style="font-size: 8pt; color: #666;"><span ng-bind="step.section_index"></span>.<span ng-bind="step.step_index"></span></span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="width: 95%; background-color: #eee;">
+
+                                        <table style="width: 100%;" cellpadding="2">
+                                            <tr>
+                                                <td>
+                                                    <span style="color: #000; font-size: 8pt;" ng-bind="step.description"></span>
+
+                                                    <div ng-show="step.concern_category">
+                                                        <img ng-src="{{ step.concern_icon_path }}" style="width: 16px; height: 16px; display: inline-block;" >
+                                                        <span style="font-size: 8pt; color: #000;">
+                                                            <span style="font-weight: bold;" ng-bind="step.concern_category"></span>: 
+                                                            <span ng-bind="step.concern_description"></span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+                                <tr ng-show="step.media.length">
+                                    <td colspan="2" style="width: 100%;">
+                                        
+                                        <table style="width: 100%; border-collapse: collapse; text-align: center;" cellpadding="10">
+
+                                            <tr ng-show="!step.media.length">
+                                                <td colspan="2" style="font-size: 8pt; font-weight: bold;">
+                                                    <!-- <div style="line-height: 15px;">&nbsp;</div>
+                                                    The author has not documented any images for this step -->
+                                                </td>
+                                            </tr>
+
+                                            <tr ng-show="step.media.length">
+                                                <td style="width: 100%;">
+
+                                                    <div style="display: flex; flex-wrap: nowrap; max-width: 100% !important; margin-top: 20px;">
+                                                        <div style="width: 50%; flex: 0 0 auto; max-width: 100% !important; text-align: center; margin-bottom: 20px;" ng-repeat="media in step.media | limitTo: 2">
+                                                            <img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="width: 90%; height: auto;" />
+
+                                                            <img ng-show="media.file_downloaded == null" ng-src="../images/custom_icons/No Media.png" style="width: 90%; height: auto">
+
+                                                            <div ng-repeat="annotation in media.annotations" ng-show="media.annotations.length" style="width: 100%; text-align: left; margin-top: 4px;">
+                                                                <img style="display: inline-block; margin-right: 2px; width: 25px;" src="../images/markers/{{ annotation.file_name }}">
+                                                                <span style="font-size: 8pt; color: #000;" ng-bind="annotation.description"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2" style="width: 100%;">
+                                        <!-- START HAZARD IMAGES -->
+
+                                        <table style="width: 100%;" cellpadding="15">
+                                            <tr>
+                                                <!-- <td style="font-size: 8pt; font-weight: bold; line-height: 20px;">&nbsp;</td> -->
+                                            </tr>
+                                            <!-- <tr>
+                                                <td style="font-size: 6pt; font-style: italic; color: #333;">** Use the hazard list at the end of this document to lookup associated controls by its [ref] (in square brackets)</td>
+                                            </tr> -->
+                                        </table>
+
+
+                                        <table style="width: 100%; background-color: #fff;" cellpadding="15" ng-repeat="hazard in step.hazards_w_controls track by $index" ng-show="step.hazards_w_controls.length">
+                                            <tr>
+                                                <td style="width: 50%; vertical-align: top;">
+                                                    <!-- START HAZARD INFO CELL -->
+
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td style="width: 10%; vertical-align: top;">
+                                                                <img ng-src="{{ hazard.index_icon_path }}" style="max-width: 100%; height: auto;" />
+                                                            </td>
+                                                            <td style="width: 30%; vertical-align: top;">
+                                                                <img ng-src="{{ hazard.hazard_type_icon_path }}" style="max-width: 100%; height: auto;" />
+                                                            </td>
+                                                            <td style="width: 40%; font-size: 8pt; vertical-align: top;">
+                                                                <span style="font-weight: bold;" ng-bind="hazard.hazard_type_name"></span> [<span style="color: #666; font-size: 8pt;" ng-bind="hazard.rm_ref"></span>]
+                                                            </td>
+                                                            <td style="width: 20%; text-align: right; vertical-align: top; color: {{ hazard.initial_colour }}; font-size: 8pt;">
+                                                                <span ng-bind="hazard.matrix_score_phrase_initial"></span> [<span ng-bind="hazard.matrix_score_initial"></span>] 
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+
+                                                    <!-- END HAZARD INFO CELL -->
+                                                </td>
+                                                <td style="width: 50%; vertical-align: top;">
+                                                    <!-- START CONTROL INFO CELL -->
+                                                    <table style="width: 100%;" ng-repeat="control in hazard.controls" ng-show="hazard.controls.length">
+                                                        <tr>
+                                                            <td style="width: 10%; vertical-align: top;">
+                                                                <img ng-src="{{ control.index_icon_path }}" style="max-width: 100%; height: auto;" />
+                                                            </td>
+                                                            <td style="width: 30%; vertical-align: top;">
+                                                                
+                                                                <img ng-show="control.icon_url" ng-src="{{ control.icon_url }}" style="max-width: 100%; height: auto;" >
+
+                                                                <img ng-show="!control.icon_url" src="../images/custom_icons/Control Item Grey.png" style="max-width: 100%; height: auto;" >
+
+                                                            </td>
+                                                            <td style="width: 40%; font-size: 8pt; vertical-align: top;">
+                                                                
+                                                                <span style="font-weight: bold;" ng-bind="control.rrm3_name"></span>, <span ng-bind="control.rrm1_name"></span>, <span ng-bind="control.rrm2_name"></span>
+
+                                                            </td>
+                                                            <td style="width: 20%; text-align: right; font-size: 7pt; vertical-align: top;">
+                                                                <span style="color: #666;">[<span ng-bind="control.rm_ref"></span>]</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+
+                                                    
+                                                    <table style="width: 100%;" ng-show="!hazard.controls.length">
+                                                        <tr>
+                                                            <td style="text-align: left;"><img src="../images/custom_icons/Control Item Grey.png" style="width: 25px;" /> <span style="font-size: 8pt;">No relevant controls recorded for this hazard</span></td>
+                                                        </tr>
+                                                    </table>
+                                                    <!-- END CONTROL INFO CELL -->
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <table style="width: 100%;" cellpadding="15" ng-show="!step.hazards_w_controls.length">
+                                            <tr>
+                                                <td style="text-align: center; font-weight: bold; font-size: 8pt; color: #333;">The author has not identified any hazards for this step</td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- END HAZARD IMAGES -->
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- <div style="line-height: 80px;">&nbsp;</div> -->
+                            <!-- END STEP REPEAT -->
+
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+    <!-- END STRUCTURED PROCEDURE -->
+
+    <h3></h3>
+
+    <!-- HAZARD/CONTROL APPENDIX -->
+    <div style="padding: 15px;" id="appendix">
+
+        <h3 style="font-size: 12pt; font-weight: bold; color: #000;">Appendix - Detailed Hazards and Controls List</h3>
+
+        <div ng-show="!vm.utils.pdf_gen.data.hazards.length" style="width: 100%; font-weight: bold; font-size: 9pt; text-align: center; color: #333;">No hazards recorded for this procedure</div>
+
+        <table style="width: 100%;" ng-repeat="hazard in vm.utils.pdf_gen.data.hazards" ng-show="vm.utils.pdf_gen.data.hazards.length">
+            <tr>
+                <td>
+                    
+                    <table style="width: 100%; background-color: #f5f4f5;" cellpadding="15">
+                        <tr>
+                            <td style="font-weight: bold;">
+                                <img src="{{ hazard.index_icon_path }}" style="height: 20px; width: 20px; display: inline-block;" >
+                                <span style="font-weight: bold; font-size: 9pt; color: #000;" ng-bind="hazard.hazard_type_name"></span>
+                            </td>
+                            <td style="text-align: right; font-size: 8pt; color: #333;">[<span ng-bind="hazard.rm_ref"></span>]</td>
+                        </tr>
+                        <!-- <tr>
+                            <td colspan="2">
+                                <div style="line-height: 20px;">&nbsp;</div>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td style="width: 60%;">
+                                <!-- START HAZARD INFO TABLE -->
+
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <div style="color: #333; font-size: 8pt;">Without Controls</div>
+                                        
+                                            <table style="width: 100%; background-color: {{ hazard.initial_colour }};" cellpadding="2">
+                                                <tr>
+                                                    <td style="color: #fff; font-weight: bold; font-size: 10pt;"><span ng-bind="hazard.matrix_score_phrase_initial"></span> [<span ng-bind="hazard.matrix_score_initial"></span>]</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <div style="color: #333; font-size: 8pt;">With Controls</div>
+                                        
+                                            <table style="width: 100%; background-color: {{ hazard.after_colour }};" cellpadding="2">
+                                                <tr>
+                                                    <td style="color: #fff; font-weight: bold; font-size: 10pt;"><span ng-bind="hazard.matrix_score_phrase_after"></span> [<span ng-bind="hazard.matrix_score_after"></span>]</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td colspan="2">
+                                            <div style="line-height: 80px;">&nbsp;</div>
+                                        </td>
+                                    </tr> -->
+                                    <tr>
+                                        <td style="width: 40%; vertical-align: top;">
+                                            <img ng-src="{{ hazard.hazard_type_icon_path }}" style="max-width: 100%; height: auto;" />
+                                        </td>
+                                        <td style="width: 60%; vertical-align: top;">
+                        
+                                            <table style="width: 100%;" cellpadding="15">
+                                                <tr>
+                                                    <td style="width: 30%; color: #333; font-size: 8pt; vertical-align: top;">ORIGIN</td>
+                                                    <td style="width: 70%; vertical-align: top; font-size: 8pt;">
+                                                        <span ng-show="hazard.hazard_origin_name" ng-bind="hazard.hazard_origin_name"></span>
+                                                        <span ng-show="!hazard.hazard_origin_name">N/A</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color: #333; font-size: 8pt; vertical-align: top;">RESULT</td>
+                                                    <td style="vertical-align: top; font-size: 8pt;">
+                                                        <span ng-show="hazard.hazard_consequence_name" ng-bind="hazard.hazard_consequence_name"></span>
+                                                        <span ng-show="!hazard.hazard_consequence_name">N/A</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color: #333; font-size: 8pt; vertical-align: top;">NOTES</td>
+                                                    <td style="vertical-align: top; font-size: 8pt;">
+                                                        <span ng-show="hazard.hazard_description" ng-bind="hazard.hazard_description"></span>
+                                                        <span ng-show="!hazard.hazard_description">N/A</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- END HAZARD INFO TABLE -->
+                            </td>
+                            <td style="width: 40%; text-align: center;">
+                                <!-- HAZARD IMAGE HERE -->
+
+                                <div ng-show="hazard.media.length" ng-repeat="media in hazard.media | limitTo: 1">
+                                    <img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="max-width: 100%; height: auto;" >
+
+                                    <img ng-show="media.file_downloaded == null" src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+                                </div>
+
+                                <div ng-show="!hazard.media.length">
+                                    <img src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+                                </div>
+
+                                <!-- END IMAGE HERE -->
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <!-- START APPLICABLE CONTROLS AREA -->
+
+                    <table style="width: 100%;" nobr="true">
+                        <tr>
+                            <td style="width: 10%; text-align: center;">
+                                <!-- <div style="line-height: 30px;">&nbsp;</div> -->
+                                <img src="../images/custom_icons/Control Item Grey.png" />
+                            </td>
+                            <td style="width: 90%;">
+                                <!-- START REPEAT CONTROLS -->
+
+                                <!-- <div style="line-height: 30px;">&nbsp;</div> -->
+
+                                <!-- START CONTROL TABLE -->
+                                <table style="width: 100%; background-color: #f5f4f5; margin-bottom: 4px;" cellpadding="15" ng-repeat="control in hazard.controls" ng-show="hazard.controls.length">
+                                    <tr>
+                                        <td>
+                                            <table style="width: 100%;">
+                                                <tr>
+                                                    <td style="color: #333; font-size: 8pt;">WE WILL HAVE/DO/USE:</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-weight: bold; vertical-align: top;"><img src="{{ control.index_icon_path }}" style="height: 20px; width: 20px; display: inline-block;" > <span style="font-weight: bold; font-size: 8pt; color: #000;" ng-bind="control.rrm3_name"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color: #333; font-size: 8pt;"><span ng-bind="control.rrm2_name"></span>, <span ng-bind="control.rrm1_name"></span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="text-align: right; font-size: 8pt; color: #333;">[<span ng-bind="hazard.rm_ref"></span>]</td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td colspan="2">
+                                            <div style="line-height: 20px;">&nbsp;</div>
+                                        </td>
+                                    </tr> -->
+                                    <tr>
+                                        <td style="width: 60%; vertical-align: top;">
+                                            <!-- START CONTROL INFO TABLE -->
+
+                                            <table style="width: 100%;">
+                                                <tr>
+                                                    <td colspan="2">
+
+                                                        <img ng-show="control.icon_url" ng-src="{{ control.icon_url }}" style="max-width: 100%; height: auto;" >
+
+                                                        <img ng-show="!control.icon_url" src="../images/custom_icons/Control Item Grey.png" style="max-width: 100%; height: auto;" >
+                                
+                                                        <!-- <div style="line-height: 50px;">&nbsp;</div> -->
+
+                                                        <table style="width: 100%;" cellpadding="2">
+                                                            <tr>
+                                                                <td style="color: #333; font-size: 8pt;">DESCRIPTION</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="font-size: 8pt;">
+                                                                    <span ng-show="control.description" ng-bind="control.description"></span>
+                                                                    <span ng-show="!control.description">N/A</span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <!-- END CONTROL INFO TABLE -->
+                                        </td>
+                                        <td style="width: 40%; text-align: center; vertical-align: top;">
+                                            <!-- CONTROL IMAGE HERE -->
+
+                                            <div ng-show="control.media.length" ng-repeat="media in control.media | limitTo: 1">
+                                                <img ng-show="media.file_downloaded == 'Yes'" ng-src="{{ media.url }}" style="max-width: 100%; height: auto;" >
+
+                                                <img ng-show="media.file_downloaded == null" src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+                                            </div>
+
+                                            <div ng-show="!control.media.length">
+                                                <img src="../images/custom_icons/No Media.png" style="max-width: 100%; height: auto;" >
+                                            </div>
+
+                                            <!-- END IMAGE HERE -->
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- END CONTROL TABLE -->
+
+                                <span style="text-align: center; font-size: 8pt;">No relevant controls recorded for this hazard</span>
+
+                                <!-- END REPEAT CONTROLS -->
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- END APPLICABLE CONTROLS AREA -->
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <!-- END HAZARD/CONTROL APPENDIX -->
+
+</div>

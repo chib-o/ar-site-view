@@ -1,0 +1,36 @@
+
+<div class="h-100">
+
+	<div class="container pt-5 pt-md-10">
+
+		<div class="panel panel-white p-5">
+
+			<!-- REFRESHING LICENSES INDICATOR -->
+			<div ng-show="vm.utils.company_licenses.refreshing" class="text-center">
+					
+				<img src="../images/loading-icon.gif" style="height: 50px; width: auto;" >
+
+				<div class="mt-4">
+					<p>Refreshing licenses...</p>
+				</div>
+			</div>
+			<!-- END REFRESHING LICENSES INDICATOR -->
+
+
+			<div ng-show="!vm.utils.company_licenses.refreshing" class="text-center">
+				
+				<h3 class="text-success">Thank you for your purchase!</h3>
+
+				<p>Your products will be activated once payment has been recieved.</p>
+
+				<div class="mt-5">
+					<a href="javascript: void(0);" ng-click="vm.utils.document_handler.redirect();">Return</a>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,56 @@
+<div>
+            
+    <div class="card p-5 my-5">
+        <div class="row">
+            <div class="col-2 col-lg-1 text-center">
+                <i class="bi bi-camera-fill" style="font-size: 3em;"></i>
+                <i class="bi bi-mic-fill" style="font-size: 3em;"></i>
+            </div>
+            <div class="col-10 col-lg-11">
+                <p class="fw-bold" style="font-size: 1.2em;">Media Permissions</p>
+
+                <p>You may need to capture images, video and audio to manage Core. Please give permission to access these on your device</p>
+
+                <div ng-show="!vm.utils.permissions.media.loading">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.utils.permissions.media.requestMediaPermissions()" ng-show="!vm.utils.permissions.media.requested">Set permissions</button>
+
+                    <span class="fw-bold text-success" ng-show="vm.utils.permissions.media.requested && !vm.utils.permissions.media.error">Media enabled!</span>
+
+                    <span class="fw-bold text-danger" ng-show="vm.utils.permissions.media.requested && vm.utils.permissions.media.error" ng-bind="vm.utils.permissions.media.error_message"></span>
+                </div>
+
+                <div ng-show="vm.utils.permissions.media.loading">
+                    <img src="../images/loading-icon.gif" style="height: 40px;" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5 my-5">
+        <div class="row">
+            <div class="col-2 col-lg-1 text-center">
+                <i class="bi bi-geo-alt-fill" style="font-size: 3em;"></i>
+            </div>
+            <div class="col-10 col-lg-11">
+                <p class="fw-bold" style="font-size: 1.2em;">Location Permissions</p>
+
+                <p>We will try and access your current location during inspections and audits. Please give permission to access this on your device</p>
+
+                <div ng-show="!vm.utils.permissions.geo_location.loading">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.utils.permissions.geo_location.requestLocationPermissions()" ng-show="!vm.utils.permissions.geo_location.requested">Set permissions</button>
+
+                    <span class="fw-bold text-success" ng-show="vm.utils.permissions.geo_location.requested && !vm.utils.permissions.geo_location.error">Location enabled!</span>
+
+                    <span class="fw-bold text-danger" ng-show="vm.utils.permissions.geo_location.requested && vm.utils.permissions.geo_location.error" ng-bind="vm.utils.permissions.geo_location.error_message"></span>
+                </div>
+
+                <div ng-show="vm.utils.permissions.geo_location.loading">
+                    <img src="../images/loading-icon.gif" style="height: 40px;" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

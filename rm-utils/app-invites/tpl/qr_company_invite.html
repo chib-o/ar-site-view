@@ -1,0 +1,168 @@
+<div class="px-4 py-4">
+	
+	<div class="row text-center">
+
+		<!-- INVITING DISABLED -->
+		<div class="col-10 col-sm-8 col-md-4 col-lg-4 offset-1 offset-sm-2 offset-md-4 offset-lg-4 py-5" style="background-color: #ffffff; border-radius: 5px;" ng-show="vm.utils.disabled_handler.disabled">
+
+			<div class="row">
+				<div class="col">
+					<p style="font-size: 1.2em;"><i class="bi bi-lock-fill text-danger"></i></p>
+
+					<p class="fw-bold text-danger" ng-bind="vm.utils.disabled_handler.disabled_message"></p>
+				</div>
+			</div>
+
+		</div>
+		<!-- END INVITING DISABLED -->
+
+		<!-- QR INVITE CARD -->
+		<div class="col-10 col-sm-8 col-md-4 col-lg-4 offset-1 offset-sm-2 offset-md-4 offset-lg-4 py-5" style="background-color: #ffffff; border-radius: 5px;" ng-show="!vm.utils.disabled_handler.disabled">
+
+			<p class="fw-bold mb-0" style="font-size: 1.2em;" ng-bind="vm.utils.user_profile.CompanyName"></p>
+
+			<!-- QR CODE TAB -->
+			<div ng-show="vm.utils.tabs.tabActive('qr_code')">
+				
+				<div class="row" ng-show="!vm.utils.error_handler.error">
+					<div class="col p-5">
+						
+						<div ng-show="vm.utils.timer.running">
+							<p ng-show="!vm.utils.isAgent()">Scan this code to join <span ng-bind="vm.utils.user_profile.CompanyName"></span></p>
+
+							<p ng-show="vm.utils.isAgent()">Scan this code to begin creating your RiskMach account</p>
+						</div>
+
+						<p ng-show="vm.utils.timer.running" class="fw-bold">QR code expires in <span ng-bind="vm.utils.timer.seconds"></span> second(s)</p>
+
+						<button class="btn btn-sm btn-primary mt-10" ng-show="!vm.utils.timer.running && !vm.utils.generating_qr" ng-click="vm.utils.generateQr();">Generate another invite <i class="bi bi-qr-code"></i></button>
+					</div>
+				</div>
+
+				<!-- LOADING INDICATOR -->
+				<div class="row mt-5" ng-show="vm.utils.generating_qr">
+					<div class="col">
+						<img src="../images/loading-icon.gif" style="height: 50px;" >
+					</div>
+				</div>
+				<!-- END LOADING INDICATOR -->
+
+				<!-- QR CODE SECTION -->
+				<div class="row mt-5" ng-show="!vm.utils.error_handler.error">
+					<div class="col-10 col-md-10 col-lg-8 offset-1 offset-md-1 offset-lg-2">
+						<!-- <div style="width: 100%; height: 100px; margin-bottom: 10px; background-color: black;" ng-show="!vm.utils.generating_qr"></div> -->
+
+						<div id="company-invite-qrcode" style="width: 100%; height: 100%; margin-bottom: 10px;"></div>
+					</div>
+				</div>
+				<!-- END QR CODE SECTION -->
+
+				<!-- ERROR HANDLER SECTION -->
+				<div class="row mt-5" ng-show="vm.utils.error_handler.error">
+					<div class="col text-center">
+						<p style="font-size: 1.2em;"><i class="bi bi-exclamation-circle-fill text-danger"></i></p>
+
+						<p class="fw-bold text-danger" ng-bind="vm.utils.error_handler.error_message"></p>
+
+						<button class="btn btn-sm btn-primary mt-10" ng-show="!vm.utils.timer.running && !vm.utils.generating_qr" ng-click="vm.utils.reAttemptGenerateQr();">Re-attempt <i class="bi bi-arrow-clockwise"></i></button>
+					</div>
+				</div>
+				<!-- END ERROR HANDLER SECTION -->
+
+			</div>
+			<!-- END QR CODE TAB -->
+
+			<!-- SHARE INVITE CODE TAB -->
+			<div ng-show="vm.utils.tabs.tabActive('share_invite')">
+				
+				<!-- SHARE INVITE INPUT -->
+				<div class="row mt-5" ng-show="!vm.utils.email_code.invite_sent && !vm.utils.email_code_error_handler.error">
+					<div class="col-10 col-md-10 col-lg-8 offset-1 offset-md-1 offset-lg-2">
+
+						<div ng-show="vm.utils.email_code.validation_error">
+							<span class="fw-bold text-danger" ng-bind="vm.utils.email_code.validation_error_message"></span>
+						</div>
+
+						<input type="text" class="form-control" ng-model="vm.utils.email_code.email" placeholder="Email address..." />
+
+						<button class="btn btn-sm btn-primary mt-5" ng-click="vm.utils.email_code.send();">Send invite</button>
+
+					</div>
+				</div>
+				<!-- END SHARE INVITE INPUT -->
+
+				<!-- SHARE INVITE SUCCESS -->
+				<div class="row" ng-show="vm.utils.email_code.invite_sent">
+					<div class="col text-center">
+						<p style="font-size: 1.2em;"><i class="bi bi-check-circle-fill text-success"></i></p>
+
+						<p class="fw-bold">An invite link has been sent to <span ng-bind="vm.utils.email_code.email"></span></p>
+
+						<button class="btn btn-sm btn-primary mt-10" ng-click="vm.utils.email_code.reset();">Share another</button>
+
+					</div>
+				</div>
+				<!-- END SHARE INVITE SUCCESS -->
+
+				<!-- SHARE LINK ERROR HANDLER SECTION -->
+				<div class="row mt-5" ng-show="vm.utils.email_code_error_handler.error">
+					<div class="col text-center">
+						<p style="font-size: 1.2em;"><i class="bi bi-exclamation-circle-fill text-danger"></i></p>
+
+						<p class="fw-bold text-danger" ng-bind="vm.utils.email_code_error_handler.error_message"></p>
+
+						<button class="btn btn-sm btn-primary mt-10" ng-click="vm.utils.email_code.reset();"><i class="bi bi-caret-left-fill"></i> Back</button>
+					</div>
+				</div>
+				<!-- END SHARE LINK ERROR HANDLER SECTION -->
+
+			</div>
+			<!-- END SHARE INVITE CODE TAB -->
+
+		</div>
+		<!-- END QR INVITE CARD -->
+
+	</div>
+
+	<!-- SEND INVITE SECTION -->
+	<div class="row text-center mt-5">
+		<div class="col-10 col-sm-8 col-md-4 col-lg-4 offset-1 offset-sm-2 offset-md-4 offset-lg-4 py-5" ng-show="!vm.utils.disabled_handler.disabled && !vm.utils.tabs.tabActive('share_invite') && !vm.utils.isAgent()">
+
+			<!-- SHARE LINK SECTION -->
+			<div class="row mt-5" ng-show="!vm.utils.email_code_error_handler.error">
+				<div class="col-10 col-md-10 col-lg-8 offset-1 offset-md-1 offset-lg-2">
+
+					<a href="javascript: void(0);" class="fw-bold text-dark" ng-click="vm.utils.email_code.start();">
+						<i class="bi bi-share-fill"></i> Share invite
+					</a>
+
+				</div>
+			</div>
+			<!-- END SHARE LINK SECTION -->
+
+		</div>
+	</div>
+	<!-- END SEND INVITE SECTION -->
+
+
+	<!-- GENERATE QR CODE SECTION -->
+	<div class="row text-center mt-5">
+		<div class="col-10 col-sm-8 col-md-4 col-lg-4 offset-1 offset-sm-2 offset-md-4 offset-lg-4 py-5" ng-show="!vm.utils.disabled_handler.disabled && !vm.utils.tabs.tabActive('qr_code')">
+
+			<!-- SHARE LINK SECTION -->
+			<div class="row mt-5" ng-show="!vm.utils.email_code_error_handler.error">
+				<div class="col-10 col-md-10 col-lg-8 offset-1 offset-md-1 offset-lg-2">
+
+					<a href="javascript: void(0);" class="fw-bold text-dark" ng-click="vm.utils.tabs.changeTab('qr_code');">
+						<i class="bi bi-qr-code"></i> Generate QR invite
+					</a>
+
+				</div>
+			</div>
+			<!-- END SHARE LINK SECTION -->
+
+		</div>
+	</div>
+	<!-- END GENERATE QR CODE SECTION -->
+
+</div>

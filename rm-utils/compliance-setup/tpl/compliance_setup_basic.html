@@ -1,0 +1,32 @@
+
+<div ng-show="vm.utils.compliance_setup.loading" class="text-center my-5">
+	<p class="fw-bold">Loading Compliance Setup...</p>
+</div>
+
+<div ng-show="!vm.utils.compliance_setup.loading && !vm.utils.ipp_score_form.show" class="tr-list-item mx-0" style="max-width: 100%;" ng-repeat="profile_point in vm.utils.profile_points.visible_data track by profile_point.ProfileID">
+
+	<div class="row py-2">
+
+		<div class="col-8 col-sm-10">
+			<span ng-bind="profile_point.Title || 'Title not set'"></span>
+		</div>
+		<div class="col-2 col-sm-1 text-center">
+			<div class="form-check form-switch" style="display: inline-block;">
+				<input class="form-check-input" type="checkbox" role="switch" ng-model="profile_point.has_ipp_record" ng-change="vm.utils.profile_points.toggleSaveProfilePointApplicable(profile_point)" ng-disabled="profile_point.saving" style="cursor: pointer;">
+			</div>
+		</div>
+		<div class="col-2 col-sm-1 text-center">
+			<a href="javascript: void(0);" style="text-decoration: none;" ng-show="vm.utils.profile_points.hasLiveIppRecord(profile_point)">
+				<img src="{{ vm.utils.profile_points.ippScoreIcon(profile_point) }}" class="panel-icon" ng-click="vm.utils.ipp_score_form.open(profile_point)">
+			</a>
+		</div>
+
+	</div>
+		
+</div>
+
+<!-- START IPP SCORE RATING -->
+<div ng-show="vm.utils.ipp_score_form.show" class="p-2">
+	<div data-ipp-score-form data-recordid="vm.utils.ipp_score_form.record_id" data-recordtype="vm.utils.ipp_score_form.record_type" data-profilepointref="vm.utils.ipp_score_form.profile_point_ref" data-options="{change_compliance: false}"></div>
+</div>
+<!-- END IPP SCORE RATING -->
