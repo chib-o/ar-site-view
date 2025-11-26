@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="riskmachArModel" ng-controller="arModelPageController as vm">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AR Model Viewer</title>
+
+    <link rel="manifest" href="../app.webmanifest">
+    <link rel="icon" href="../images/rm-favicon.ico" type="image/x-icon">
+
+    <!-- BOOTSTRAP 5.3 (same as other features) -->
+    <link href="../vendor/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/libs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../vendor/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <link href="../css/bootstrap-additions.min.css" rel="stylesheet">
+    <link href="../css/dashui.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- TOP BAR (copied pattern from checklist library) -->
+    <div class="navbar-custom" style="width:100%; box-shadow:0 2px 4px rgba(0,0,20,.08), 0 1px 2px rgba(0,0,20,.08); padding:0.625rem 1.5rem; position:fixed; right:0; top:0; z-index:1000;">
+
+        <!-- OFFLINE INSTALL STATUS -->
+        <div data-offline-install-status></div>
+
+        <div class="container py-1">
+            <div class="row">
+                <div class="col-7 col-sm-8">
+                    <p class="fw-bold">AR Model Viewer</p>
+                    <p class="text-muted">View BIM-derived models on site in AR</p>
+                </div>
+                <div class="col-5 col-sm-4 text-end" style="padding-top:5px;">
+                    <ul class="menu-list-inline">
+                        <li>
+                            <a href="javascript:void(0);" ng-click="vm.utils.theme.switchTheme();" class="form-check form-switch theme-switch btn btn-ghost btn-icon rounded-circle mb-0">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" ng-click="vm.utils.goBack();" style="text-decoration:none;">
+                                <img src="../images/custom_icons/RM Exit Red.png" style="width:30px;" />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- simple tabs for screens -->
+            <div class="row">
+                <div class="col-12 text-start" style="padding-top:5px;">
+                    <ul class="nav nav-underline">
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" class="nav-link"
+                               ng-class="{'active': vm.utils.screen.isActive('site_list')}"
+                               ng-click="vm.utils.screen.change('site_list')">Sites</a>
+                        </li>
+                        <li class="nav-item" ng-show="vm.state.site">
+                            <a href="javascript:void(0);" class="nav-link"
+                               ng-class="{'active': vm.utils.screen.isActive('floor_list')}"
+                               ng-click="vm.utils.screen.change('floor_list')">Floors</a>
+                        </li>
+                        <li class="nav-item" ng-show="vm.state.floor">
+                            <a href="javascript:void(0);" class="nav-link"
+                               ng-class="{'active': vm.utils.screen.isActive('ar_view')}"
+                               ng-click="vm.utils.screen.change('ar_view')">AR View</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPACER -->
+    <div style="margin-top:9.75rem;"></div>
+
+    <!-- REPLACE WITH DYNAMIC VIEW MAYBE -->
+    <br>
+    <br>
+    <br>
+    <!-- REPLACE WITH DYNAMIC VIEW MAYBE -->
+
+    <!-- MAIN CONTENT -->
+    <div class="container" id="AppContainer">
+
+        <!-- SITE LIST SCREEN -->
+        <div class="row" ng-show="vm.utils.screen.isActive('site_list')">
+            <div class="col-12">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Select a site</h4>
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.actions.refreshSites()" ng-disabled="vm.loading.sites">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center py-4" ng-show="vm.loading.sites">
+                            <img src="../images/loading-icon.gif" style="height:40px; width:auto;">
+                            <p class="mt-3 text-secondary fw-bold">Loading sites...</p>
+                        </div>
+
+                        <div ng-show="!vm.loading.sites">
+                            <div ng-show="!vm.data.sites.length" class="text-center text-secondary">
+                                <p class="fw-bold">No sites found</p>
+                                <p>Try refreshing the list.</p>
+                            </div>
+                            <ul class="list-group" ng-show="vm.data.sites.length">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    ng-repeat="site in vm.data.sites">
+                                    <span>{{ site.name || ('Site ' + site.id) }}</span>
+                                    <button class="btn btn-outline-primary btn-sm" ng-click="vm.actions.selectSite(site)">Open</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLOOR LIST SCREEN -->
+        <div class="row" ng-show="vm.utils.screen.isActive('floor_list')">
+            <div class="col-12">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Floors for {{ vm.state.site.name || ('Site ' + vm.state.site.id) }}</h4>
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.actions.refreshFloors()" ng-disabled="vm.loading.floors">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center py-4" ng-show="vm.loading.floors">
+                            <img src="../images/loading-icon.gif" style="height:40px; width:auto;">
+                            <p class="mt-3 text-secondary fw-bold">Loading floors...</p>
+                        </div>
+
+                        <div ng-show="!vm.loading.floors">
+                            <div ng-show="!vm.data.floors.length" class="text-center text-secondary">
+                                <p class="fw-bold">No floors found</p>
+                            </div>
+                            <ul class="list-group" ng-show="vm.data.floors.length">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    ng-repeat="floor in vm.data.floors">
+                                    <span>{{ floor.name || ('Floor ' + floor.id) }}</span>
+                                    <div>
+                                        <button class="btn btn-success btn-sm"
+                                                ng-click="vm.actions.prepareOffline(floor)"
+                                                ng-disabled="floor.downloading">
+                                            <span ng-hide="floor.offlineReady || floor.downloading">
+                                                <i class="bi bi-download"></i> Prepare Offline
+                                            </span>
+                                            <span ng-show="floor.downloading">
+                                                <i class="bi bi-hourglass-split"></i> Downloading...
+                                            </span>
+                                            <span ng-show="floor.offlineReady && !floor.downloading">
+                                                <i class="bi bi-check-circle"></i> Ready
+                                            </span>
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm" ng-click="vm.actions.openAR(floor)">
+                                            <i class="bi bi-camera"></i> AR
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AR VIEW SCREEN -->
+        <div class="row" ng-show="vm.utils.screen.isActive('ar_view')">
+            <div class="col-12">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            AR View – {{ vm.state.site.name || ('Site ' + vm.state.site.id) }},
+                            {{ vm.state.floor.name || ('Floor ' + vm.state.floor.id) }}
+                        </h4>
+                        <button class="btn btn-outline-secondary btn-sm" ng-click="vm.actions.stopAR()">
+                            <i class="bi bi-stop-circle"></i> Stop AR
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div ng-show="vm.loading.ar">
+                            <div class="text-center py-4">
+                                <img src="../images/loading-icon.gif" style="height:40px; width:auto;">
+                                <p class="mt-3 text-secondary fw-bold">Initialising AR...</p>
+                            </div>
+                        </div>
+
+                        <p class="text-danger" ng-bind="vm.error.ar" ng-show="vm.error.ar"></p>
+
+                        <div class="ar-canvas-wrapper" style="position:relative; width:100%; height:60vh;" ng-show="!vm.loading.ar && !vm.error.ar">
+                            <canvas id="arCanvas" style="width:100%; height:100%; background:black;"></canvas>
+                        </div>
+
+                        <div class="mt-3">
+                            <button class="btn btn-primary btn-sm" ng-click="vm.actions.prepareSyncPayload()">
+                                Prepare Sync Payload
+                            </button>
+                            <pre class="mt-2 small bg-light p-2" style="max-height:200px; overflow:auto;"
+                                 ng-bind="vm.syncPayloadPreview"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- SIMPLE ASIDE TEMPLATE DEMO (optional) -->
+    <script type="text/ng-template" id="tpl/asset_aside.html">
+        <div class="aside" tabindex="-1" role="dialog">
+          <div class="aside-dialog">
+            <div class="aside-content">
+              <div class="aside-body">
+                <!-- reusing pattern from blank_aside.html :contentReference[oaicite:1]{index=1} -->
+                <h5>{{ vm.activeAsset.name }}</h5>
+                <p><strong>ID:</strong> {{ vm.activeAsset.assetId }}</p>
+                <p><strong>Type:</strong> {{ vm.activeAsset.type }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+    <!-- LOADING SPLASH (optional, same pattern as other pages) -->
+    <div id="LoadingSplashContainer" class="text-center">
+        <div class="splash-content">
+            <img src="../images/RiskMach-Animation.gif" />
+            <div class="text-center text-muted" style="font-weight:bold; margin-top:15px;">Please Wait - Loading</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT (copied vendor stack from checklist library, then our feature scripts) -->
+    <script src="../vendor/Blowfish.js"></script>
+    <script src="../vendor/jquery-3.6.0.min.js"></script>
+    <script src="../vendor/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/libs/dashui/feather-icons/feather.min.js"></script>
+    <script src="../vendor/libs/dashui/js/theme.min.js"></script>
+
+    <script src="../vendor/pouchdb-7.3.0.js"></script>
+    <script src="../vendor/pouchdb.find.js"></script>
+
+    <script src="../vendor/angular-1.3.15.js"></script>
+    <script src="../vendor/ng-rollbar.min.js"></script>
+    <script src="../vendor/howler.min.js"></script>
+    <script src="../vendor/URI.min.js"></script>
+    <script src="../vendor/jquery.URI.min.js"></script>
+
+    <script src="../vendor/ang-strap/parse-options.js"></script>
+    <script src="../vendor/angular-strap.min.js"></script>
+    <script src="../vendor/angular-strap.tpl.min.js"></script>
+    <script src="../vendor/angular-jwt.min.js"></script>
+    <script src="../vendor/draggable.js"></script>
+
+    <!-- existing riskmach modules -->
+    <script src="../rm-utils/database/module.js"></script>
+    <script src="../rm-utils/utils.js"></script>
+    <script src="../rm-utils/models/module.js"></script>
+    <script src="../rm-utils/offline-install-status/module.js"></script>
+    <script src="../fetch-utils/module.js"></script>
+
+    <!-- Three.js + GLTFLoader (dev only, you can self-host later) ->
+    <script src="../vendor/threejs/three.module.js"></script>
+    <script src="../vendor/threejs/GLTFLoader.js"></script-->
+
+    <!--script type="module">
+        import * as THREE from "../vendor/threejs/three.module.js";
+        import { GLTFLoader } from "../vendor/threejs/GLTFLoader.js";
+
+        // make them available to non-module scripts
+        window.THREE = THREE;
+        window.THREE.GLTFLoader = GLTFLoader;
+    </script-->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "../vendor/threejs/three.module.js",
+        "gltf": "../vendor/threejs/libs/GLTFLoader.js"
+      }
+    }
+    </script>
+
+
+    <!-- our AR storage + engine -->
+    <script src="js/storage.js" ></script>
+    <script type="module" src="js/arEngine.js" ></script>
+
+    <!-- this feature’s Angular module -->
+    <script src="js/app.js"></script>
+
+    <script>
+        $("#LoadingSplashContainer").show();
+        $(document).ready(function () {
+            setTimeout(function () {
+                $("#LoadingSplashContainer").fadeOut("fast");
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
