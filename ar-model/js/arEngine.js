@@ -147,7 +147,7 @@
     const loader = new GLTFLoader();
 
     // You can later switch this to use options.bundle.manifest.modelUrl
-    var modelUrl = "../ar-model/mock/mock-model.glb";
+    var modelUrl = "./ar-model/mock/mock-model.glb";
     //real model
     //var modelUrl = options.bundle.manifest.modelUrl;
 
