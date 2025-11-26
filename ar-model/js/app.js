@@ -391,8 +391,8 @@
                         siteId: vm.state.site.id,
                         floorId: floor.id,
                         version: "dev-mock",
-                        modelUrl: "../ar-model/mock/mock-model.glb",
-                        configUrl: "../ar-model/mock/mock-config.json"
+                        modelUrl: "./ar-model/mock/mock-model.glb",
+                        configUrl: "./ar-model/mock/mock-config.json"
                     },
                     config: {
                         siteId: vm.state.site.id,
