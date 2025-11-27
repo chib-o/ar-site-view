@@ -46,15 +46,19 @@
 
 
     import * as THREE from 'three';
-    import { GLTFLoader } from 'gltf';
+    //import { GLTFLoader } from 'gltf';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
     /*var ProcureAREngine = {
         init: init,
         stop: stop
     };*/
 
-    var running = false;
-    var renderer, scene, camera, model, animationId;
+    /*var running = false;
+    var renderer, scene, camera, model, animationId;*/
+    let running = false;
+    let renderer, scene, camera, model;
+    let animationId = null;
 
     export function init(canvas, options) {
         running = true;
@@ -83,9 +87,15 @@
         // 🔴 THIS turns on WebXR support in Three.js
         renderer.xr.enabled = true;
 
-        loadTestModel();
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+        hemiLight.position.set(0, 1, 0);
+        scene.add(hemiLight);
+    
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        dirLight.position.set(3, 10, 10);
+        scene.add(dirLight);
 
-        startAR();
+        
 
         // --- 1. Set up Three.js renderer using your existing canvas ---
         /*renderer = new THREE.WebGLRenderer({
@@ -97,17 +107,30 @@
 
         // function to match canvas size
         function resize() {
-            var rect = canvas.getBoundingClientRect();
+            /*var rect = canvas.getBoundingClientRect();
             var width = rect.width || window.innerWidth;
             var height = rect.height || window.innerHeight;
             renderer.setSize(width, height, false);
             if (camera) {
                 camera.aspect = width / height;
                 camera.updateProjectionMatrix();
-            }
+            }*/
+
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width || window.innerWidth;
+            const height = rect.height || window.innerHeight;
+    
+            renderer.setSize(width, height, false);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
         }
         resize();
         window.addEventListener('resize', resize);
+
+
+        loadTestModel();
+
+        startAR();
 
         // --- 2. Create scene + camera + light ---
         /*scene = new THREE.Scene();
@@ -126,7 +149,7 @@
 
 
         // --- 4. Simple render loop (no WebXR yet) ---
-        function renderLoop() {
+        /*function renderLoop() {
             if (!running) return;
 
             if (model) {
@@ -137,7 +160,7 @@
             animationId = requestAnimationFrame(renderLoop);
         }
 
-        renderLoop();
+        renderLoop();*/
     }
 
 
@@ -152,7 +175,7 @@
     //var modelUrl = options.bundle.manifest.modelUrl;
 
 
-    loader.load(
+    /*loader.load(
         modelUrl,
         function (gltf) {
             model = gltf.scene;
@@ -166,11 +189,37 @@
         function (error) {
             console.error("Error loading GLB:", error);
         }
-        );
+        );*/
+            loader.load(
+        modelUrl,
+        (gltf) => {
+            model = gltf.scene;
+
+            // Put it 1 meter in front of the camera
+            model.position.set(0, 0, -1);
+
+            // Reasonable default scale (tweak if huge/tiny)
+            model.scale.set(0.2, 0.2, 0.2);
+
+            // Debug: use normal material so lighting/textures can’t “hide” it
+            model.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = new THREE.MeshNormalMaterial();
+                }
+            });
+
+            scene.add(model);
+            console.log('Model loaded:', model);
+        },
+        undefined,
+        (error) => {
+            console.error('Error loading GLB:', error);
+        }
+    );
     }
 
 
-    function stop() {
+    /*function stop() {
         running = false;
         console.log('AR Engine stopped');
         if (animationId) {
@@ -181,9 +230,9 @@
             renderer.dispose();
         }
         // Note: you might also want to remove event listeners, dispose geometry, etc.
-    }
+    }*/
 
-    function startAR() {
+    /*function startAR() {
     // This will simply reject on devices that don’t support AR
     const sessionInit = {
         requiredFeatures: ['local-floor'],   // floor-level tracking
@@ -199,17 +248,72 @@
             console.error('Failed to start WebXR AR session:', err);
             // No fallback – it will just log the error and stop here
         });
+    }*/
+
+function startAR() {
+    const sessionInit = {
+        requiredFeatures: ['local-floor'],
+        optionalFeatures: ['hit-test']
+    };
+
+    if (!navigator.xr) {
+        console.error('WebXR not supported on this device/browser');
+        return;
     }
 
-    function onXRFrame(time, frame) {
+    navigator.xr.requestSession('immersive-ar', sessionInit)
+        .then((session) => {
+            renderer.xr.setSession(session);
+
+            // Use XR animation loop – no separate requestAnimationFrame loop
+            renderer.setAnimationLoop(onXRFrame);
+        })
+        .catch((err) => {
+            console.error('Failed to start WebXR AR session:', err);
+        });
+}
+
+    /*function onXRFrame(time, frame) {
         // Any per-frame logic (animations, etc.)
         renderer.render(scene, camera);
+    }*/
+// XR frame loop
+function onXRFrame(time, frame) {
+    if (!running) return;
+
+    // Simple spin for visibility
+    if (model) {
+        model.rotation.y += 0.01;
     }
 
+    // 🔑 Use XR camera (Three will manage it)
+    renderer.render(scene, renderer.xr.getCamera());
+}
 
-    export const ProcureAREngine = { init, stop };
+export function stop() {
+    running = false;
+    console.log('AR Engine stopped');
+
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+
+    if (renderer) {
+        renderer.setAnimationLoop(null);
+        renderer.dispose();
+    }
+}
+
+    /*export const ProcureAREngine = { init, stop };
     //export const ProcureAREngine = { init, stop };
+    window.ProcureAREngine = ProcureAREngine;*/
+
+// Export + attach to window for older code that expects window.ProcureAREngine
+export const ProcureAREngine = { init, stop };
+if (typeof window !== 'undefined') {
     window.ProcureAREngine = ProcureAREngine;
+}
 
 
 
