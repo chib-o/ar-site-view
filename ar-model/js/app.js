@@ -231,23 +231,36 @@
                 .catch(function () { alert('Failed to download AR bundle'); })
                 .finally(function () { floor.downloading = false; });*/
 
-            // Mock bundle manifest + config + model data
+            ///// FOR TESTING Mock bundle manifest + config + model data
             var mockManifest = {
                 siteId: vm.state.site.id,
                 floorId: floor.id,
                 version: "v1",
-                modelUrl: "../ar-model/mock/mock-model.glb",
-                configUrl: "../ar-model/mock/mock-config.json"
+                modelUrl: "ar-model/mock/test_site.glb",
+                configUrl: "ar-model/mock/mock-site-config.json"
             };
 
-            var mockConfig = {
+            /*function loadTestBundle(manifest) {
+            return fetch(manifest.configUrl)
+                .then(response => response.json())
+                .then(config => {
+                    return {
+                        manifest: manifest,
+                        config: config
+                    };
+                });
+            }
+
+            var mockConfig = loadTestBundle(manifest)*/
+
+            /*var mockConfig = {
                 siteId: vm.state.site.id,
                 floorId: floor.id,
                 version: "v1",
                 alignment: { method: "mock" },
                 assets: [],
                 rooms: []
-            };
+            };*/
 
             // Fake GLB data as empty ArrayBuffer
             var mockModelBinary = new ArrayBuffer(8);
@@ -337,8 +350,8 @@
                     siteId: vm.state.site.id,
                     floorId: vm.state.floor.id,
                     version: 'dev-mock',
-                    modelUrl: '../mock/mock-model.glb',
-                    configUrl: '../mock/mock-config.json'
+                    modelUrl: '../mock/test_site.glb', //Fallback not applied dont know why?
+                    configUrl: '../mock/mock-site-config.json'
                 },
                 config: {
                     siteId: vm.state.site.id,

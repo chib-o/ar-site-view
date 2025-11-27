@@ -128,7 +128,19 @@
         window.addEventListener('resize', resize);
 
 
-        loadTestModel();
+
+
+        //loadTestModel();
+        // 🔹 Use the bundle’s model URL:
+        //loadBimModel(options.bundle.manifest.modelUrl, options.bundle.config);
+        fetch(options.bundle.manifest.configUrl)
+          .then(response => response.json())
+          .then(data => {
+            //console.log(data); // JS object
+            loadBimModel(options.bundle.manifest.modelUrl, data);
+          });
+
+        //loadBimModel(options.bundle.manifest.modelUrl, options.bundle.manifest.configUrl);
 
         startAR();
 
@@ -162,6 +174,90 @@
 
         renderLoop();*/
     }
+
+    function loadBimModel(modelUrl, config) {
+        console.log('the configggg:', config);
+
+        const loader = new GLTFLoader();
+
+        loader.load(
+            modelUrl,
+            (gltf) => {
+                model = gltf.scene;
+
+                // Position the whole floor model according to alignment
+                applyAlignmentTransform(model, config.alignment);
+
+                scene.add(model);
+                console.log('BIM model loaded:', model);
+
+                // After BIM is in place, add asset overlays
+                addAssetOverlays(config.assets, config.alignment);
+            },
+            undefined,
+            (error) => {
+                console.error('Error loading BIM GLB:', error);
+            }
+        );
+    }
+
+    function applyAlignmentTransform(model, alignment) {
+        if (!alignment) return;
+
+        // Very simplified example:
+        const rotRad = (alignment.rotationDeg || 0) * Math.PI / 180;
+
+        model.position.set(
+            alignment.origin[0] || 0,
+            alignment.origin[1] || 0,
+            alignment.origin[2] || 0
+        );
+
+        model.rotation.set(0, rotRad, 0);
+        model.scale.setScalar(alignment.scale || 1);
+    }
+
+
+    function addAssetOverlays(assets = [], alignment) {
+        assets.forEach(asset => {
+            const worldPos = mapToWorld(asset.mapPosition, asset.height || 0, alignment);
+
+            const markerGeom = new THREE.SphereGeometry(0.1, 16, 16);
+            const markerMat  = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const marker     = new THREE.Mesh(markerGeom, markerMat);
+
+            marker.position.copy(worldPos);
+            marker.userData.assetId = asset.id;
+
+            scene.add(marker);
+        });
+    }
+
+    function mapToWorld(mapPos, height, alignment) {
+        const scale = alignment?.scale || 1;
+        const rot = (alignment?.rotationDeg || 0) * Math.PI / 180;
+
+        // 2D rotation + scale
+        const x = mapPos.x * scale;
+        const z = mapPos.y * scale;   // assuming map Y maps to world Z
+
+        const cos = Math.cos(rot);
+        const sin = Math.sin(rot);
+
+        const xr = x * cos - z * sin;
+        const zr = x * sin + z * cos;
+
+        const origin = alignment?.origin || [0, 0, 0];
+
+        return new THREE.Vector3(
+            origin[0] + xr,
+            origin[1] + height,
+            origin[2] + zr
+        );
+    }
+
+
+
 
 
     function loadTestModel() {
